@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Forum</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .post {
+            border-bottom: 1px solid #ddd;
+            padding: 15px 0;
+        }
+
+        .post:last-child {
+            border-bottom: none;
+        }
+
+        .post-title {
+            font-size: 1.2em;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+
+        .post-details {
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .new-post {
+            margin-bottom: 20px;
+        }
+
+        .new-post input,
+        .new-post textarea,
+        .new-post button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+
+        .new-post button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .new-post button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Forum</h1>
+    </header>
+    <div class="container">
+        <div class="new-post">
+            <h2>Create a New Post For {{.Username}} {{.Password}}</h2>
+            <form action="" method="post">
+                <input type="text" name="title" placeholder="Post Title" required>
+                <textarea name="content" rows="5" placeholder="Write your post here..." required></textarea>
+                <button type="submit">Post</button>
+            </form>
+        </div>
+        <div class="post">
+            <div class="post-title">Example Post Title</div>
+            <div class="post-details">Posted by User123 on 2024-12-06</div>
+            <p>This is an example post content. Users can write their messages here and discuss topics of interest.</p>
+        </div>
+        <div class="post">
+            <div class="post-title">Another Example Post</div>
+            <div class="post-details">Posted by Admin on 2024-12-05</div>
+            <p>Here is another example post to showcase how this forum layout looks.</p>
+        </div>
+    </div>
+</body>
+
+</html>

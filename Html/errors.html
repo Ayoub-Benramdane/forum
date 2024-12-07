@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error {{.Code}}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 50px;
+        }
+
+        .error-container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .error-container h1 {
+            color: #ff6b6b;
+        }
+
+        .error-container p {
+            color: #555;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 15px;
+            color: #007bff;
+            text-decoration: none;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+        }
+
+        .back-link:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="error-container">
+        <img src="https://media.istockphoto.com/id/1197233052/sv/vektor/sidan-hittades-inte-fel-404-robot-fix-reparation-fatal-br%C3%B6t-krasch-handritad-skiss-vektor.jpg?s=170667a&w=0&k=20&c=3xWhh68h8UVoTDnS-EiiGur2GPaGDthU5EETRJFPYYw=" alt="" width="100%">
+        <h1>Error {{.Code}}</h1>
+        <p>{{.Message}}</p>
+        <a class="back-link" href="/">Go Back to Home</a>
+    </div>
+</body>
+
+</html>

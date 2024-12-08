@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum - Home</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
+
+        .navbar {
+            background-color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            color: #1a73e8;
+            margin: 0;
+        }
+
+        .user-info {
+            color: #666;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .new-post {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .new-post h2 {
+            color: #333;
+            margin-top: 0;
+        }
+
+        .new-post textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+
+        .new-post button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .new-post button:hover {
+            background-color: #1557b0;
+        }
+
+        .post {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .post-title {
+            color: #333;
+            margin: 0 0 0.5rem 0;
+            font-size: 1.25rem;
+        }
+
+        .post-details {
+            color: #666;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .post-content {
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .post-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .post-actions button {
+            background-color: transparent;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .post-actions button:hover {
+            color: #1a73e8;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <h1>Forum</h1>
+        <div class="user-info">
+            Welcome, {{.Username}}
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="new-post">
+            <h2>Create a New Post</h2>
+            <form action="/post/create" method="POST">
+                <textarea name="content" rows="4" placeholder="What's on your mind?" required></textarea>
+                <button type="submit">Post</button>
+            </form>
+        </div>
+
+        {{range .Posts}}
+        <div class="post">
+            <h3 class="post-title">{{.Title}}</h3>
+            <div class="post-details">
+                Posted by {{.Author.Username}} on {{.CreatedAt.Format "2006-01-02 15:04"}}
+            </div>
+            <div class="post-content">
+                {{.Content}}
+            </div>
+            <div class="post-actions">
+                <button>Like</button>
+                <button>Comment</button>
+                <button>Share</button>
+            </div>
+        </div>
+        {{end}}
+    </div>
+</body>
+
+</html>

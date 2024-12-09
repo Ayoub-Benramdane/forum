@@ -6,14 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Error {{.Code}}</title>
     <style>
-        body {
+        #E_P {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             text-align: center;
             padding: 50px;
         }
 
-        .error-container {
+        #E_P .error-container {
             max-width: 600px;
             margin: auto;
             background: #fff;
@@ -21,15 +21,15 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        .error-container h1 {
+        #E_P .error-container h1 {
             color: #ff6b6b;
         }
 
-        .error-container p {
+        #E_P .error-container p {
             color: #555;
         }
 
-        .back-link {
+        #E_P .back-link {
             display: inline-block;
             margin-top: 20px;
             padding: 10px 15px;
@@ -39,19 +39,19 @@
             border-radius: 5px;
         }
 
-        .back-link:hover {
+        #E_P .back-link:hover {
             background-color: #007bff;
             color: #fff;
         }
     </style>
 </head>
 
-<body>
+<body id="E_P">
     <div class="error-container">
         <img src="https://media.istockphoto.com/id/1197233052/sv/vektor/sidan-hittades-inte-fel-404-robot-fix-reparation-fatal-br%C3%B6t-krasch-handritad-skiss-vektor.jpg?s=170667a&w=0&k=20&c=3xWhh68h8UVoTDnS-EiiGur2GPaGDthU5EETRJFPYYw=" alt="" width="100%">
         <h1>Error {{.Code}}</h1>
         <p>{{.Message}}</p>
-        <a class="back-link" href="/">Go Back to Home</a>
+        <a class="back-link" href="/login">Go Back to Home</a>
     </div>
 </body>
 

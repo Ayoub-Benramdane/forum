@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forum - Sign Up</title>
     <style>
-        body {
+        #S_U {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
@@ -17,7 +17,7 @@
             background-color: #f0f2f5;
         }
 
-        .signup-container {
+        #S_U .signup-container {
             background-color: white;
             padding: 2rem;
             border-radius: 8px;
@@ -26,24 +26,24 @@
             max-width: 400px;
         }
 
-        h1 {
+        #S_U h1 {
             text-align: center;
             color: #1a73e8;
             margin-bottom: 2rem;
         }
 
-        .form-group {
+        #S_U .form-group {
             margin-bottom: 1.5rem;
         }
 
-        label {
+        #S_U label {
             display: block;
             margin-bottom: 0.5rem;
             color: #333;
             font-weight: 500;
         }
 
-        input {
+        #S_U input {
             width: 100%;
             padding: 0.75rem;
             border: 1px solid #ddd;
@@ -52,13 +52,13 @@
             box-sizing: border-box;
         }
 
-        input:focus {
+        #S_U input:focus {
             outline: none;
             border-color: #1a73e8;
             box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
         }
 
-        button {
+        #S_U button {
             width: 100%;
             padding: 0.75rem;
             background-color: #1a73e8;
@@ -70,33 +70,33 @@
             transition: background-color 0.2s;
         }
 
-        button:hover {
+        #S_U button:hover {
             background-color: #1557b0;
         }
 
-        .login-link {
+        #S_U .login-link {
             text-align: center;
             margin-top: 1.5rem;
             color: #666;
         }
 
-        .login-link a {
+        #S_U .login-link a {
             color: #1a73e8;
             text-decoration: none;
         }
 
-        .login-link a:hover {
+        #S_U .login-link a:hover {
             text-decoration: underline;
         }
 
-        .error-message {
+        #S_U .error-message {
             color: #d93025;
             font-size: 0.875rem;
             margin-top: 0.5rem;
             display: none;
         }
 
-        .password-requirements {
+        #S_U .password-requirements {
             font-size: 0.875rem;
             color: #666;
             margin-top: 0.5rem;
@@ -104,7 +104,7 @@
     </style>
 </head>
 
-<body>
+<body id="S_U">
     <div class="signup-container">
         <h1>Create Account</h1>
         <form action="/register" method="POST" onsubmit="return validateForm()">
@@ -134,7 +134,7 @@
         </form>
 
         <div class="login-link">
-            Already have an account? <a href="/">Log in here</a>
+            Already have an account? <a href="/login">Log in here</a>
         </div>
     </div>
 

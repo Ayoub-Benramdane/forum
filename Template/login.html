@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forum - Login</title>
     <style>
-        body {
+        #S_I {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
@@ -17,7 +17,7 @@
             background-color: #f0f2f5;
         }
 
-        .login-container {
+        #S_I .login-container {
             background-color: white;
             padding: 2rem;
             border-radius: 8px;
@@ -26,24 +26,24 @@
             max-width: 400px;
         }
 
-        h1 {
+        #S_I h1 {
             text-align: center;
             color: #1a73e8;
             margin-bottom: 2rem;
         }
 
-        .form-group {
+        #S_I .form-group {
             margin-bottom: 1.5rem;
         }
 
-        label {
+        #S_I label {
             display: block;
             margin-bottom: 0.5rem;
             color: #333;
             font-weight: 500;
         }
 
-        input {
+        #S_I input {
             width: 100%;
             padding: 0.75rem;
             border: 1px solid #ddd;
@@ -52,13 +52,13 @@
             box-sizing: border-box;
         }
 
-        input:focus {
+        #S_I input:focus {
             outline: none;
             border-color: #1a73e8;
             box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
         }
 
-        button {
+        #S_I button {
             width: 100%;
             padding: 0.75rem;
             background-color: #1a73e8;
@@ -70,26 +70,26 @@
             transition: background-color 0.2s;
         }
 
-        button:hover {
+        #S_I button:hover {
             background-color: #1557b0;
         }
 
-        .register-link {
+        #S_I .register-link {
             text-align: center;
             margin-top: 1.5rem;
             color: #666;
         }
 
-        .register-link a {
+        #S_I .register-link a {
             color: #1a73e8;
             text-decoration: none;
         }
 
-        .register-link a:hover {
+        #S_I .register-link a:hover {
             text-decoration: underline;
         }
 
-        .error-message {
+        #S_I .error-message {
             color: #d93025;
             font-size: 0.875rem;
             margin-top: 0.5rem;
@@ -98,10 +98,10 @@
     </style>
 </head>
 
-<body>
+<body id="S_I">
     <div class="login-container">
-        <h1>Welcome Back</h1>
-        <form action="/" method="POST">
+        <h1>LOGIN</h1>
+        <form action="/login" method="POST">
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" required>

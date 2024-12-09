@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Post.Title}} - Forum</title>
+    <style>
+        #D_P body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
+
+        #D_P .navbar {
+            background-color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #D_P .navbar h1 {
+            color: #1a73e8;
+            margin: 0;
+        }
+
+        #D_P .user-info button {
+            color: #666;
+            border: none;
+            background-color: white;
+            font-size: 15px;
+            font-weight: bolder;
+        }
+
+        #D_P .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        #D_P .post {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        #D_P .post-title {
+            color: #333;
+            margin: 0 0 0.5rem 0;
+            font-size: 1.5rem;
+        }
+
+        #D_P .post-details {
+            color: #666;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        #D_P .post-author {
+            color: #1a73e8;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        #D_P .post-content {
+            color: #333;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        #D_P .comment-section {
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        #D_P .comment {
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        #D_P .new-comment {
+            margin-top: 2rem;
+        }
+
+        #D_P .new-comment textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            box-sizing: border-box;
+        }
+
+        #D_P .new-comment button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #D_P .new-comment button:hover {
+            background-color: #1557b0;
+        }
+    </style>
+</head>
+
+<body id="D_P">
+    <nav class="navbar">
+        <h1>Forum</h1>
+        <div class="user-info">
+            <form action="/logout" method="POST" style="display: inline;">
+                <h1>{{.User.Username}} <br> <button type="submit">{{.User.Statut}}</button></h1>
+            </form>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="post">
+            <h2 class="post-author"> {{.Post.Author}} </h2>
+            <h2 class="post-title">{{.Post.Title}}</h2>
+            <div class="post-content">
+                {{.Post.Content}}
+            </div>
+            <div class="post-details">
+                Posted on {{.Post.CreatedAt.Format "2006-01-02 15:04"}}
+            </div>
+        </div>
+
+        <div class="comment-section">
+            <h3>Comments</h3>
+            {{range .Comments}}
+            <div class="comment">
+                <strong>{{.Author}}:</strong> {{.Content}} <br>
+                <em>Posted on {{.CreatedAt.Format "2006-01-02 15:04"}}</em>
+            </div>
+            {{else}}
+            <p>No comments yet.</p>
+            {{end}}
+        </div>
+        {{if eq .User.Statut "Logout"}}
+        <div class="new-comment">
+            <h3>Add a Comment</h3>
+            <form action="/post/{{.Post.ID}}" method="POST">
+                <textarea name="content" rows="4" placeholder="Write your comment here..." required></textarea>
+                <button type="submit">Submit Comment</button>
+            </form>
+        </div>
+        {{end}}
+    </div>
+</body>
+
+</html>

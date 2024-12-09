@@ -11,10 +11,12 @@ func main() {
     if err := database.ConnectDatabase(); err != nil {
         log.Fatalf("Failed to initialize database: %v", err)
     }
-	http.HandleFunc("/", server.LogIn)
 	http.HandleFunc("/register", server.LogUp)
-	http.HandleFunc("/home", server.Home)
+	http.HandleFunc("/login", server.LogIn)
+	http.HandleFunc("/logout", server.LogOut)
+	http.HandleFunc("/", server.Home)
+	http.HandleFunc("/post/", server.Post)
 	log.Println("Server is running...")
-	log.Println("Link: http://localhost:8080/")
+	log.Println("Link: http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

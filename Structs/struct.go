@@ -10,12 +10,20 @@ type User struct {
 	Password string `sqlite:"password" json:"-"`
 }
 
+type Session struct {
+	ID       int64  `sqlite:"id" json:"id"`
+	Username string `sqlite:"username" json:"username"`
+	UserID   int64  `sqlite:"user_id" json:"user_id"`
+	Statut   string `sqlite:"statut" json:"statut"`
+}
+
 type Post struct {
 	ID        int64     `sqlite:"id" json:"id"`
 	Title     string    `sqlite:"title" json:"title"`
 	Content   string    `sqlite:"content" json:"content"`
 	UserID    int64     `sqlite:"user_id" json:"user_id"`
 	CreatedAt time.Time `sqlite:"created_at" json:"created_at"`
+	Author    string    `sqlite:"author" json:"author"`
 }
 
 type Comment struct {
@@ -24,6 +32,7 @@ type Comment struct {
 	UserID    int64     `sqlite:"user_id" json:"user_id"`
 	PostID    int64     `sqlite:"post_id" json:"post_id"`
 	CreatedAt time.Time `sqlite:"created_at" json:"created_at"`
+	Author    string    `sqlite:"author" json:"author"`
 }
 
 type PostLike struct {
@@ -48,8 +57,8 @@ type Tag struct {
 }
 
 type PostTag struct {
-	PostID    int64     `sqlite:"post_id" json:"post_id"`
-	TagID     int64     `sqlite:"tag_id" json:"tag_id"`
+	PostID int64 `sqlite:"post_id" json:"post_id"`
+	TagID  int64 `sqlite:"tag_id" json:"tag_id"`
 }
 
 type Error struct {

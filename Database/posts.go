@@ -1,0 +1,51 @@
+package database
+
+import (
+	structs "forum/Structs"
+	"time"
+)
+
+func CreatePost(title, content string, userID int64) error {
+	_, err := DB.Exec(`
+        INSERT INTO posts (title, content, user_id, created_at)
+        VALUES (?, ?, ?, ?)
+    `, title, content, userID, time.Now())
+	return err
+}
+
+func GetAllPosts() ([]structs.Post, error) {
+	rows, err := DB.Query(`
+        SELECT p.id, p.title, p.content, p.user_id, p.created_at, u.username
+        FROM posts p JOIN users u ON p.user_id = u.id
+        ORDER BY p.created_at DESC
+    `)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var posts []structs.Post
+	for rows.Next() {
+		var p structs.Post
+		err := rows.Scan(&p.ID, &p.Title, &p.Content, &p.UserID, &p.CreatedAt, &p.Author)
+		if err != nil {
+			return nil, err
+		}
+		posts = append(posts, p)
+	}
+	return posts, nil
+}
+
+func GetPostByID(id int64) (*structs.Post, error) {
+	post := &structs.Post{}
+	var username string
+	err := DB.QueryRow(`
+        SELECT p.id, p.title, p.content, p.user_id, p.created_at, u.username
+        FROM posts p JOIN users u ON p.user_id = u.id
+        WHERE p.id == ?
+    `, id).Scan(&post.ID, &post.Title, &post.Content, &post.UserID, &post.CreatedAt, &username)
+	if err != nil {
+		return nil, err
+	}
+	post.Author = username
+	return post, nil
+}

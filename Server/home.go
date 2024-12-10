@@ -24,25 +24,33 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		title := r.FormValue("title")
 		content := r.FormValue("content")
-		if errCrePost := database.CreatePost(title, content, user.UserID); errCrePost != nil {
+		category := r.FormValue("category")
+		if errCrePost := database.CreatePost(title, content, category, user.UserID); errCrePost != nil {
 			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Creating post"})
 			return
 		}
 	}
-	posts, errLoadPost := database.GetAllPosts()
+	if user == nil {
+		user = &structs.Session{ID: 1, Username: "", UserID: 1, Statut: "Login"}
+	}
+	posts, errLoadPost := database.GetAllPosts(user.Statut)
 	if errLoadPost != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading posts"})
 		return
 	}
-	if user == nil {
-		user = &structs.Session{ID: 1, Username: "", UserID: 1, Statut: "Login"}
+	categorys, errLoadPost := database.GetAllCategorys()
+	if errLoadPost != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading posts"})
+		return
 	}
 	data := struct {
 		User  *structs.Session
 		Posts []structs.Post
+		Categorys []structs.Category
 	}{
 		User:  user,
 		Posts: posts,
+		Categorys: categorys,
 	}
 	tmpl.Execute(w, data)
 }

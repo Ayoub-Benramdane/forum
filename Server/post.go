@@ -32,13 +32,13 @@ func Post(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	comments, errLoadComment := database.GetAllComments(id_post)
+	if user == nil {
+		user = &structs.Session{ID: 1, Username: "", UserID: 1, Statut: "Login"}
+	}
+	comments, errLoadComment := database.GetAllComments(id_post, user.Statut)
 	if errLoadComment != nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Comment not found"})
 		return
-	}
-	if user == nil {
-		user = &structs.Session{ID: 1, Username: "", UserID: 1, Statut: "Login"}
 	}
 	data := struct {
 		User     *structs.Session

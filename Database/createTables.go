@@ -5,6 +5,7 @@ func CreateTables() error {
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE NOT NULL,
+            email TEXT UNIQUE NOT NULL,
             password TEXT NOT NULL
         )
     `)
@@ -55,8 +56,18 @@ func CreateTables() error {
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_id INTEGER NOT NULL,
 			post_id INTEGER NOT NULL,
-			like INT NOT NULL,
-			created_at DATETIME NOT NULL,
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            FOREIGN KEY (post_id) REFERENCES posts(id)
+		)
+    `)
+	if err != nil {
+		return err
+	}
+	_, err = DB.Exec(`
+        CREATE TABLE IF NOT EXISTS post_dislikes (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			user_id INTEGER NOT NULL,
+			post_id INTEGER NOT NULL,
             FOREIGN KEY (user_id) REFERENCES users(id),
             FOREIGN KEY (post_id) REFERENCES posts(id)
 		)
@@ -68,10 +79,10 @@ func CreateTables() error {
         CREATE TABLE IF NOT EXISTS comment_likes (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_id INTEGER NOT NULL,
+			post_id INTEGER NOT NULL,
 			comment_id INTEGER NOT NULL,
-			like INT NOT NULL,
-			created_at DATETIME NOT NULL,
             FOREIGN KEY (user_id) REFERENCES users(id),
+            FOREIGN KEY (post_id) REFERENCES posts(id),
             FOREIGN KEY (comment_id) REFERENCES comments(id)
 		)
     `)
@@ -79,21 +90,25 @@ func CreateTables() error {
 		return err
 	}
 	_, err = DB.Exec(`
-        CREATE TABLE IF NOT EXISTS tags (
+        CREATE TABLE IF NOT EXISTS comment_dislikes (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
-    		name TEXT NOT NULL UNIQUE
+			user_id INTEGER NOT NULL,
+			post_id INTEGER NOT NULL,
+			comment_id INTEGER NOT NULL,
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            FOREIGN KEY (post_id) REFERENCES posts(id),
+            FOREIGN KEY (comment_id) REFERENCES comments(id)
 		)
     `)
 	if err != nil {
 		return err
 	}
 	_, err = DB.Exec(`
-        CREATE TABLE IF NOT EXISTS post_tags (
+        CREATE TABLE IF NOT EXISTS post_category (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+    		name TEXT NOT NULL,
 			post_id INTEGER NOT NULL,
-			tag_id INTEGER NOT NULL,
-			PRIMARY KEY (post_id, tag_id),
-			FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
-			FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
+			FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 		)
     `)
 	return err

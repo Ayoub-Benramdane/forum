@@ -1,0 +1,6 @@
+/filter
+/profile
+delete post
+delete comment
+modifier post
+modifier comment

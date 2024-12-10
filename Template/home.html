@@ -110,18 +110,24 @@
             gap: 1rem;
         }
 
-        #H_P .post-actions button {
-            background-color: transparent;
+        #H_P .post-actions button,
+        #H_P .post-actions a {
+            background-color: #f0f2f5;
             border: none;
-            color: #666;
+            color: #1a73e8;
             cursor: pointer;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
         }
 
-        #H_P .post-actions button:hover {
-            color: #1a73e8;
+        #H_P .post-actions button:hover,
+        #H_P .post-actions a:hover {
+            color: #1557b0;
         }
     </style>
 </head>
@@ -137,11 +143,24 @@
     </nav>
 
     <div class="container">
+        <div class="new-post">
+            <h2>Choose a category</h2>
+            <form action="/filter" method="POST">
+                <select name="category" id="category" required>
+                    <option value="" disabled selected>Select a category</option>
+                    {{range .Categorys}}
+                    <option value="{{.Name}}">{{.Name}}</option>
+                    {{end}}
+                </select>
+                <button type="submit">Filter</button>
+            </form>
+        </div>
         {{if eq .User.Statut "Logout"}}
         <div class="new-post">
             <h2>Create a New Post</h2>
             <form action="/" method="POST">
                 <input type="text" name="title" class="post-title" placeholder="Title of Post" required>
+                <input type="text" name="category" class="post-title" placeholder="Tags of Post" required>
                 <textarea name="content" rows="4" placeholder="What's on your mind?" required></textarea>
                 <button type="submit">Post</button>
             </form>
@@ -151,16 +170,18 @@
         {{range .Posts}}
         <div class="post">
             <h3 class="post-title">{{.Title}}</h3>
-            <div class="post-content">
-                {{.Content}}
-            </div><br>
-            <div class="post-details">
-                Posted by {{.Author}} on {{.CreatedAt.Format "2006-01-02 15:04"}}
-            </div>
-            <div class="post-actions">
-                <button>Like</button>
+            <p class="post-content">{{.Content}}</p>
+            <p class="post-details">Posted by {{.Author}} on {{.CreatedAt.Format "2006-01-02 15:04"}}</p>
+            <p class="post-actions">
+                {{if eq .Statut "Logout"}}
+                {{.TotalLike}}<button id="like-button"><a href="/like/{{.ID}}">👍</a></button>
+                {{.TotalDislike}}<button id="like-button"><a href="/dislike/{{.ID}}">👎</a></button>
+                {{else}}
+                {{.TotalLike}}<button id="like-button">👍</button>
+                {{.TotalDislike}}<button id="like-button">👎</button>
+                {{end}}
                 <button><a href="/post/{{.ID}}">Comment</a></button>
-            </div>
+            </p>
         </div>
         {{end}}
     </div>

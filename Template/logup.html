@@ -113,14 +113,16 @@
                 <input type="text" id="username" name="username" required minlength="3" maxlength="20">
                 <div class="error-message" id="username-error"></div>
             </div>
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+                <div class="error-message" id="email-error"></div>
+            </div>
 
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" required minlength="8">
-                <div class="password-requirements">
-                    Password must be at least 8 characters long and include uppercase, lowercase, number, and special
-                    character.
-                </div>
                 <div class="error-message" id="password-error"></div>
             </div>
 
@@ -133,9 +135,7 @@
             <button type="submit">Sign Up</button>
         </form>
 
-        <div class="login-link">
-            Already have an account? <a href="/login">Log in here</a>
-        </div>
+        <p class="login-link">Already have an account? <a href="/login">Log in here</a></p>
     </div>
 
     <script>
@@ -149,6 +149,13 @@
             // Username validation
             if (username.length < 3) {
                 showError('username-error', 'Username must be at least 3 characters long');
+                isValid = false;
+            }
+
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email regex
+            if (!emailRegex.test(email)) {
+                showError('email-error', 'Please enter a valid email address');
                 isValid = false;
             }
 

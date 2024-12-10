@@ -2,8 +2,8 @@ package database
 
 import structs "forum/Structs"
 
-func CreateNewUser(username, hashedPassword string) error {
-	_, err := DB.Exec(`INSERT INTO users (username, password) VALUES (?, ?)`, username, hashedPassword)
+func CreateNewUser(username, email, hashedPassword string) error {
+	_, err := DB.Exec(`INSERT INTO users (username, email, password) VALUES (?, ?, ?)`, username, email, hashedPassword)
 	if err != nil {
 		return err
 	}
@@ -13,7 +13,7 @@ func CreateNewUser(username, hashedPassword string) error {
 
 func GetUserByUsername(username string) (*structs.User, error) {
 	var user structs.User
-	err := DB.QueryRow(`SELECT * FROM users WHERE username = ?`, username).Scan(&user.ID, &user.Username, &user.Password)
+	err := DB.QueryRow(`SELECT * FROM users WHERE username = ?`, username).Scan(&user.ID, &user.Username, &user.Email, &user.Password)
 	if err != nil {
 		return nil, err
 	}

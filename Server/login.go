@@ -5,6 +5,7 @@ import (
 	structs "forum/Structs"
 	"html/template"
 	"net/http"
+
 	"golang.org/x/crypto/bcrypt"
 )
 

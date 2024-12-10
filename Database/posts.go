@@ -5,15 +5,26 @@ import (
 	"time"
 )
 
-func CreatePost(title, content string, userID int64) error {
-	_, err := DB.Exec(`
+func CreatePost(title, content, category string, userID int64) error {
+	result, err := DB.Exec(`
         INSERT INTO posts (title, content, user_id, created_at)
         VALUES (?, ?, ?, ?)
     `, title, content, userID, time.Now())
+	if err != nil {
+		return err
+	}
+	postID, err := result.LastInsertId()
+    if err != nil {
+        return err
+    }
+	_, err = DB.Exec(`
+        INSERT INTO post_category (name, post_id)
+        VALUES (?, ?)
+    `, category, postID)
 	return err
 }
 
-func GetAllPosts() ([]structs.Post, error) {
+func GetAllPosts(statut string) ([]structs.Post, error) {
 	rows, err := DB.Query(`
         SELECT p.id, p.title, p.content, p.user_id, p.created_at, u.username
         FROM posts p JOIN users u ON p.user_id = u.id
@@ -30,6 +41,17 @@ func GetAllPosts() ([]structs.Post, error) {
 		if err != nil {
 			return nil, err
 		}
+		like, err := CountLikes(p.ID)
+		if err != nil {
+			return nil, err
+		}
+		dislike, err := CountDislikes(p.ID)
+		if err != nil {
+			return nil, err
+		}
+		p.TotalLike = like
+		p.TotalDislike = dislike
+		p.Statut = statut
 		posts = append(posts, p)
 	}
 	return posts, nil

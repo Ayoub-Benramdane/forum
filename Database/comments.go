@@ -13,7 +13,7 @@ func CreateComment(content string, userID, postID int64) error {
 	return err
 }
 
-func GetAllComments(PostID int64) ([]structs.Comment, error) {
+func GetAllComments(PostID int64, statut string) ([]structs.Comment, error) {
 	rows, err := DB.Query(`
         SELECT c.id, c.content, c.user_id, post_id, c.created_at, u.username
         FROM comments c JOIN users u ON c.user_id = u.id
@@ -31,6 +31,17 @@ func GetAllComments(PostID int64) ([]structs.Comment, error) {
 		if err != nil {
 			return nil, err
 		}
+		like, err := CountLikesComment(c.PostID, c.ID)
+		if err != nil {
+			return nil, err
+		}
+		dislike, err := CountDislikesComment(c.PostID, c.ID)
+		if err != nil {
+			return nil, err
+		}
+		c.TotalLike = like
+		c.TotalDislike = dislike
+		c.Statut = statut
 		comments = append(comments, c)
 	}
 	return comments, nil

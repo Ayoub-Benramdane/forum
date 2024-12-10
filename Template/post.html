@@ -111,6 +111,13 @@
         #D_P .new-comment button:hover {
             background-color: #1557b0;
         }
+
+        #D_P button {
+            background-color: transparent;
+            border: none;
+            color: #666;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -126,22 +133,28 @@
 
     <div class="container">
         <div class="post">
-            <h2 class="post-author"> {{.Post.Author}} </h2>
-            <h2 class="post-title">{{.Post.Title}}</h2>
-            <div class="post-content">
-                {{.Post.Content}}
-            </div>
-            <div class="post-details">
-                Posted on {{.Post.CreatedAt.Format "2006-01-02 15:04"}}
-            </div>
+            <h1 class="post-title">{{.Post.Title}}</h1>
+            <h3 class="post-author">Posted by {{.Post.Author}} </h3>
+            <p class="post-content">{{.Post.Content}}</p>
+            <p class="post-details">Posted on {{.Post.CreatedAt.Format "2006-01-02 15:04"}}</p>
         </div>
 
         <div class="comment-section">
             <h3>Comments</h3>
             {{range .Comments}}
             <div class="comment">
-                <strong>{{.Author}}:</strong> {{.Content}} <br>
+                <strong>{{.Author}}:</strong>
+                <p>{{.Content}}</p>
                 <em>Posted on {{.CreatedAt.Format "2006-01-02 15:04"}}</em>
+                <p class="post-actions">
+                    {{if eq .Statut "Logout"}}
+                    {{.TotalLike}}<button id="like-button"><a href="/post/like_comment/{{.PostID}}/{{.ID}}">👍</a></button>
+                    {{.TotalDislike}}<button id="like-button"><a href="/post/dislike_comment/{{.PostID}}/{{.ID}}">👎</a></button>
+                    {{else}}
+                    {{.TotalLike}}<button id="like-button">👍</button>
+                    {{.TotalDislike}}<button id="like-button">👎</button>
+                    {{end}}
+                </p>
             </div>
             {{else}}
             <p>No comments yet.</p>

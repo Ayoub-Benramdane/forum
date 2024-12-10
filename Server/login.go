@@ -31,7 +31,7 @@ func LogInGet(w http.ResponseWriter, r *http.Request) {
 	}
 	tmpl, tmplErr := template.ParseFiles("Template/login.html")
 	if tmplErr != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading userin page"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading login page"})
 		return
 	}
 	tmpl.Execute(w, nil)

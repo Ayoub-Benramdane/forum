@@ -9,6 +9,7 @@ type User struct {
 	Username string `sqlite:"username" json:"username"`
 	Email    string `sqlite:"email" json:"email"`
 	Password string `sqlite:"password" json:"-"`
+	CreatedAt    time.Time `sqlite:"created_at" json:"created_at"`
 }
 
 type Session struct {

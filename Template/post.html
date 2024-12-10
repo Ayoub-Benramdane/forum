@@ -22,17 +22,18 @@
             align-items: center;
         }
 
-        #D_P .navbar h1 {
-            color: #1a73e8;
-            margin: 0;
-        }
-
         #D_P .user-info button {
             color: #666;
             border: none;
             background-color: white;
             font-size: 15px;
             font-weight: bolder;
+        }
+
+        #D_P .navbar h1,
+        #D_P #user-name {
+            color: #1a73e8;
+            margin: 0;
         }
 
         #D_P .container {
@@ -125,8 +126,15 @@
     <nav class="navbar">
         <h1>Forum</h1>
         <div class="user-info">
-            <form action="/logout" method="POST" style="display: inline;">
-                <h1>{{.User.Username}} <br> <button type="submit">{{.User.Statut}}</button></h1>
+            {{if eq .User.Statut "Logout"}}
+            <form action="/profil" method="POST">
+                <button type="submit" id="user-name">
+                    <h1>{{.User.Username}}</h1>
+                </button>
+            </form>
+            {{end}}
+            <form action="/logout" method="POST">
+                <button type="submit">{{.User.Statut}}</button>
             </form>
         </div>
     </nav>

@@ -34,7 +34,7 @@ func LogUpGet(w http.ResponseWriter, r *http.Request) {
 	}
 	tmpl, tmplErr := template.ParseFiles("Template/logup.html")
 	if tmplErr != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading signup page"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading logup page"})
 		return
 	}
 	tmpl.Execute(w, nil)

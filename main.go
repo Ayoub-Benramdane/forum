@@ -5,15 +5,20 @@ import (
 	"forum/Server"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
-    if err := database.ConnectDatabase(); err != nil {
+	if len(os.Args) != 1 {
+		return
+	} else if err := database.ConnectDatabase(); err != nil {
         log.Fatalf("Failed to initialize database: %v", err)
     }
 	http.HandleFunc("/register", server.LogUp)
 	http.HandleFunc("/login", server.LogIn)
 	http.HandleFunc("/logout", server.LogOut)
+	http.HandleFunc("/profil", server.Profil)
+	http.HandleFunc("/edit", server.EditProfil)
 	http.HandleFunc("/", server.Home)
 	http.HandleFunc("/filter", server.Filter)
 	http.HandleFunc("/post/", server.Post)

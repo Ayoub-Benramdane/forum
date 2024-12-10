@@ -22,17 +22,18 @@
             align-items: center;
         }
 
-        #H_P .navbar h1 {
-            color: #1a73e8;
-            margin: 0;
-        }
-
         #H_P .user-info button {
             color: #666;
             border: none;
             background-color: white;
             font-size: 15px;
             font-weight: bolder;
+        }
+
+        #H_P .navbar h1,
+        #H_P #user-name {
+            color: #1a73e8;
+            margin: 0;
         }
 
         #H_P .container {
@@ -136,8 +137,13 @@
     <nav class="navbar">
         <h1>Forum</h1>
         <div class="user-info">
+            {{if eq .User.Statut "Logout"}}
+            <form action="/profil" method="POST">
+                <button type="submit" id="user-name"><h1>{{.User.Username}}</h1></button>
+            </form>
+            {{end}}
             <form action="/logout" method="POST">
-                <h1>{{.User.Username}} <br> <button type="submit">{{.User.Statut}}</button></h1>
+                <button type="submit">{{.User.Statut}}</button>
             </form>
         </div>
     </nav>
@@ -146,7 +152,7 @@
         <div class="new-post">
             <h2>Choose a category</h2>
             <form action="/filter" method="POST">
-                <select name="category" id="category" required>
+                <select name="category" id="category">
                     <option value="" disabled selected>Select a category</option>
                     {{range .Categorys}}
                     <option value="{{.Name}}">{{.Name}}</option>

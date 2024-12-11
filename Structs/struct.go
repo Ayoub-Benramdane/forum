@@ -46,7 +46,6 @@ type Comment struct {
 type Category struct {
 	ID   int64  `sqlite:"id" json:"id"`
 	Name string `sqlite:"name" json:"name"`
-	PostID int64 `sqlite:"post_id" json:"post_id"`
 }
 
 type Error struct {

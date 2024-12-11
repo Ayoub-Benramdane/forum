@@ -1,8 +1,10 @@
 package database
 
 import (
-	structs "forum/Structs"
+	"fmt"
 	"time"
+
+	structs "forum/Structs"
 )
 
 func CreatePost(title, content, category string, userID int64) error {
@@ -17,10 +19,16 @@ func CreatePost(title, content, category string, userID int64) error {
     if err != nil {
         return err
     }
+	var catID int64
+	err = DB.QueryRow(`SELECT id FROM categories WHERE name = ?`, category).Scan(&catID)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
 	_, err = DB.Exec(`
-        INSERT INTO post_category (name, post_id)
+        INSERT INTO post_category (category_id, post_id)
         VALUES (?, ?)
-    `, category, postID)
+    `, catID, postID)
 	return err
 }
 

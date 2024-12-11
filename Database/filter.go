@@ -1,9 +1,11 @@
 package database
 
-import structs "forum/Structs"
+import (
+	structs "forum/Structs"
+)
 
 func GetAllCategorys() ([]structs.Category, error) {
-	rows, err := DB.Query(`SELECT * FROM post_category`)
+	rows, err := DB.Query(`SELECT * FROM categories`)
 	if err != nil {
 		return nil, err
 	}
@@ -11,7 +13,7 @@ func GetAllCategorys() ([]structs.Category, error) {
 	var categorys []structs.Category
 	for rows.Next() {
 		var c structs.Category
-		err := rows.Scan(&c.ID, &c.Name, &c.PostID)
+		err := rows.Scan(&c.ID, &c.Name)
 		if err != nil {
 			return nil, err
 		}
@@ -23,9 +25,10 @@ func GetAllCategorys() ([]structs.Category, error) {
 func GetFilterPosts(statut, Category string) ([]structs.Post, error) {
 	rows, err := DB.Query(`
         SELECT p.id, p.title, p.content, p.user_id, p.created_at, u.username
-        FROM posts p JOIN post_category c ON p.id = c.post_id
+        FROM posts p JOIN post_category pc ON p.id = pc.post_id
 		JOIN users u ON p.user_id = u.id
-		WHERE c.name == ?
+		JOIN categories c ON c.id = pc.category_id
+		WHERE c.name = ?
         ORDER BY p.created_at DESC
     `, Category)
 	if err != nil {

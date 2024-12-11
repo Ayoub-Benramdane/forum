@@ -1,10 +1,11 @@
 package server
 
 import (
-	database "forum/Database"
-	structs "forum/Structs"
 	"html/template"
 	"net/http"
+
+	database "forum/Database"
+	structs "forum/Structs"
 )
 
 func Home(w http.ResponseWriter, r *http.Request) {
@@ -44,12 +45,12 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	data := struct {
-		User  *structs.Session
-		Posts []structs.Post
+		User      *structs.Session
+		Posts     []structs.Post
 		Categorys []structs.Category
 	}{
-		User:  user,
-		Posts: posts,
+		User:      user,
+		Posts:     posts,
 		Categorys: categorys,
 	}
 	tmpl.Execute(w, data)

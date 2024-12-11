@@ -1,10 +1,11 @@
 package server
 
 import (
-	database "forum/Database"
-	structs "forum/Structs"
 	"html/template"
 	"net/http"
+
+	database "forum/Database"
+	structs "forum/Structs"
 )
 
 func Filter(w http.ResponseWriter, r *http.Request) {
@@ -25,7 +26,8 @@ func Filter(w http.ResponseWriter, r *http.Request) {
 		user = &structs.Session{ID: 1, Username: "", UserID: 1, Statut: "Login"}
 	}
 	category := r.FormValue("category")
-	var posts []structs.Post; var errLoadPost error
+	var posts []structs.Post
+	var errLoadPost error
 	if category != "" {
 		posts, errLoadPost = database.GetFilterPosts(user.Statut, category)
 	} else {

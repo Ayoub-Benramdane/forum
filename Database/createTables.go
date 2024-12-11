@@ -105,11 +105,21 @@ func CreateTables() error {
 		return err
 	}
 	_, err = DB.Exec(`
+        CREATE TABLE IF NOT EXISTS categories (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+    		name TEXT NOT NULL
+		)
+    `)
+	if err != nil {
+		return err
+	}
+	_, err = DB.Exec(`
         CREATE TABLE IF NOT EXISTS post_category (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
-    		name TEXT NOT NULL,
+			category_id INTEGER NOT NULL,
 			post_id INTEGER NOT NULL,
-			FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+            FOREIGN KEY (category_id) REFERENCES categories(id),
+            FOREIGN KEY (post_id) REFERENCES posts(id)
 		)
     `)
 	return err

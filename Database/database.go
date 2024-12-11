@@ -23,7 +23,7 @@ func ConnectDatabase() error {
 }
 
 func CreateCategoryies() error {
-	if cat := CheckCategory(); cat != nil {
+	if cat := CheckCategory(); cat == nil {
 		categories := []string{"sport", "game"}
 		for _, category := range categories {
 			_, err := DB.Exec(`INSERT INTO categories (name) VALUES (?) `, category)

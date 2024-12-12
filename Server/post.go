@@ -1,11 +1,12 @@
 package server
 
 import (
-	database "forum/Database"
-	structs "forum/Structs"
 	"html/template"
 	"net/http"
 	"strconv"
+
+	database "forum/Database"
+	structs "forum/Structs"
 )
 
 func Post(w http.ResponseWriter, r *http.Request) {

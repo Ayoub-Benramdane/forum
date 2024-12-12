@@ -6,7 +6,7 @@ import (
 	structs "forum/Structs"
 )
 
-func CreatePost(title, content, category string, userID int64) error {
+func CreatePost(title, content string, categories []string, userID int64) error {
 	result, err := DB.Exec(`
         INSERT INTO posts (title, content, user_id, created_at)
         VALUES (?, ?, ?, ?)
@@ -19,14 +19,16 @@ func CreatePost(title, content, category string, userID int64) error {
 		return err
 	}
 	var catID int64
-	err = DB.QueryRow(`SELECT id FROM categories WHERE name = ?`, category).Scan(&catID)
-	if err != nil {
-		return err
-	}
-	_, err = DB.Exec(`
+	for _, category := range categories {
+		err = DB.QueryRow(`SELECT id FROM categories WHERE name = ?`, category).Scan(&catID)
+		if err != nil {
+			return err
+		}
+		_, err = DB.Exec(`
         INSERT INTO post_category (category_id, post_id)
         VALUES (?, ?)
     `, catID, postID)
+	}
 	return err
 }
 
@@ -84,6 +86,11 @@ func GetPostByID(id int64) (*structs.Post, error) {
 	if err != nil {
 		return nil, err
 	}
+	comments, err := CountComments(id)
+	if err != nil {
+		return nil, err
+	}
 	post.Author = username
+	post.TotalComments = comments
 	return post, nil
 }

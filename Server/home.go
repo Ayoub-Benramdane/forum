@@ -25,8 +25,9 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		title := r.FormValue("title")
 		content := r.FormValue("content")
-		category := r.FormValue("category")
-		if errCrePost := database.CreatePost(title, content, category, user.UserID); errCrePost != nil {
+		r.ParseForm()
+		categories := r.Form["category"]
+		if errCrePost := database.CreatePost(title, content, categories, user.UserID); errCrePost != nil {
 			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Creating post"})
 			return
 		}

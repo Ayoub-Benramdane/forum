@@ -1,124 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forum - Login</title>
+    <title>Login - Forum</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
     <style>
-        #S_I {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --text-default: 1rem;
+            --text-sm: 0.875rem;
+            --text-lg: 1.25rem;
+            --border-radius: 0.375rem;
+        }
+
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #f0f2f5;
         }
 
-        #S_I .login-container {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        .login-container {
             width: 100%;
             max-width: 400px;
+            padding: 2rem;
         }
 
-        #S_I h1 {
+        .login-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+
+        .login-title {
             text-align: center;
-            color: #1a73e8;
-            margin-bottom: 2rem;
-        }
-
-        #S_I .form-group {
+            font-size: 2rem;
             margin-bottom: 1.5rem;
+            color: var(--primary);
         }
 
-        #S_I label {
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
             display: block;
             margin-bottom: 0.5rem;
-            color: #333;
             font-weight: 500;
+            color: var(--gray-700);
         }
 
-        #S_I input {
+        .form-input {
             width: 100%;
             padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
-            box-sizing: border-box;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius);
+            background: white;
+            color: var(--gray-900);
+            font-size: var(--text-default);
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
-        #S_I input:focus {
+        .form-input:focus {
             outline: none;
-            border-color: #1a73e8;
-            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
-        #S_I button {
+        .btn {
+            display: inline-flex;
             width: 100%;
-            padding: 0.75rem;
-            background-color: #1a73e8;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 1rem;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-weight: 500;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: all 0.15s ease-in-out;
+            border: none;
         }
 
-        #S_I button:hover {
-            background-color: #1557b0;
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            margin-top: 1rem;
         }
 
-        #S_I .register-link {
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .login-footer {
             text-align: center;
-            margin-top: 1.5rem;
-            color: #666;
+            margin-top: 1rem;
+            color: var(--gray-500);
+            font-size: var(--text-sm);
         }
 
-        #S_I .register-link a {
-            color: #1a73e8;
+        .login-footer a {
+            color: var(--primary);
             text-decoration: none;
         }
 
-        #S_I .register-link a:hover {
+        .login-footer a:hover {
             text-decoration: underline;
-        }
-
-        #S_I .error-message {
-            color: #d93025;
-            font-size: 0.875rem;
-            margin-top: 0.5rem;
-            display: none;
         }
     </style>
 </head>
-
-<body id="S_I">
+<body>
     <div class="login-container">
-        <h1>LOGIN</h1>
-        <form action="/login" method="POST">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required>
-                <div class="error-message">Please enter a valid username</div>
+        <div class="login-card">
+            <h1 class="login-title">Forum Login</h1>
+            <form action="/login" method="POST">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        class="form-input" 
+                        placeholder="Enter your username" 
+                        required
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-input" 
+                        placeholder="Enter your password" 
+                        required
+                    >
+                </div>
+                <button type="submit" class="btn btn-primary">Log In</button>
+            </form>
+            <div class="login-footer">
+                Don't have an account? <a href="/register">Sign up</a>
             </div>
-
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
-                <div class="error-message">Please enter your password</div>
-            </div>
-
-            <button type="submit">Log In</button>
-        </form>
-
-        <p class="register-link">Don't have an account? <a href="/register">Register here</a></p>
+        </div>
     </div>
 </body>
-
 </html>

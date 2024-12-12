@@ -1,186 +1,285 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forum - Sign Up</title>
+    <title>Sign Up - Forum</title>
     <style>
-        #S_U {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --error-red: #ef4444;
+        }
+
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #f0f2f5;
         }
 
-        #S_U .signup-container {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        .signup-container {
             width: 100%;
             max-width: 400px;
+            padding: 2rem;
         }
 
-        #S_U h1 {
+        .card {
+            background: white;
+            border-radius: 0.375rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 2rem;
+        }
+
+        .logo {
             text-align: center;
-            color: #1a73e8;
-            margin-bottom: 2rem;
-        }
-
-        #S_U .form-group {
             margin-bottom: 1.5rem;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
         }
 
-        #S_U label {
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
             display: block;
             margin-bottom: 0.5rem;
-            color: #333;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 0.375rem;
+            background: white;
+            color: var(--gray-900);
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-input.error {
+            border-color: var(--error-red);
+        }
+
+        .error-message {
+            color: var(--error-red);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .btn {
+            width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease-in-out;
+            border: none;
+            margin-top: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1rem;
+            color: var(--gray-500);
+        }
+
+        .login-link a {
+            color: var(--primary);
+            text-decoration: none;
             font-weight: 500;
         }
 
-        #S_U input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
-            box-sizing: border-box;
-        }
-
-        #S_U input:focus {
-            outline: none;
-            border-color: #1a73e8;
-            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
-        }
-
-        #S_U button {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: #1a73e8;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        #S_U button:hover {
-            background-color: #1557b0;
-        }
-
-        #S_U .login-link {
-            text-align: center;
-            margin-top: 1.5rem;
-            color: #666;
-        }
-
-        #S_U .login-link a {
-            color: #1a73e8;
-            text-decoration: none;
-        }
-
-        #S_U .login-link a:hover {
+        .login-link a:hover {
             text-decoration: underline;
         }
 
-        #S_U .error-message {
-            color: #d93025;
-            font-size: 0.875rem;
+        .password-requirements {
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: 0.375rem;
+            padding: 0.75rem;
             margin-top: 0.5rem;
-            display: none;
+            font-size: 0.875rem;
+            color: var(--gray-700);
         }
 
-        #S_U .password-requirements {
-            font-size: 0.875rem;
-            color: #666;
-            margin-top: 0.5rem;
+        .password-requirements ul {
+            margin-left: 1.25rem;
+        }
+
+        @media (max-width: 480px) {
+            .signup-container {
+                padding: 1rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
         }
     </style>
 </head>
-
-<body id="S_U">
+<body>
     <div class="signup-container">
-        <h1>Create Account</h1>
-        <form action="/register" method="POST" onsubmit="return validateForm()">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required minlength="3" maxlength="20">
-                <div class="error-message" id="username-error"></div>
-            </div>
-            
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" required>
-                <div class="error-message" id="email-error"></div>
-            </div>
+        <div class="card">
+            <div class="logo">Forum</div>
+            <form action="/signup" method="POST" id="signupForm">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        class="form-input" 
+                        required 
+                        minlength="3" 
+                        maxlength="20"
+                        pattern="^[a-zA-Z0-9_]+$"
+                        title="Username must be 3-20 characters, only letters, numbers, and underscores"
+                    >
+                    <div class="error-message" id="usernameError"></div>
+                </div>
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required minlength="8">
-                <div class="error-message" id="password-error"></div>
+                <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-input" 
+                        required
+                    >
+                    <div class="error-message" id="emailError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-input" 
+                        required 
+                        minlength="8"
+                    >
+                    <div class="password-requirements">
+                        Password must:
+                        <ul>
+                            <li>Be at least 8 characters long</li>
+                            <li>Contain at least one uppercase letter</li>
+                            <li>Contain at least one number</li>
+                            <li>Contain at least one special character</li>
+                        </ul>
+                    </div>
+                    <div class="error-message" id="passwordError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <input 
+                        type="password" 
+                        id="confirmPassword" 
+                        name="confirmPassword" 
+                        class="form-input" 
+                        required
+                    >
+                    <div class="error-message" id="confirmPasswordError"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Create Account</button>
+            </form>
+
+            <div class="login-link">
+                Already have an account? <a href="/login">Log in</a>
             </div>
-
-            <div class="form-group">
-                <label for="confirm-password">Confirm Password</label>
-                <input type="password" id="confirm-password" name="confirm-password" required>
-                <div class="error-message" id="confirm-password-error"></div>
-            </div>
-
-            <button type="submit">Sign Up</button>
-        </form>
-
-        <p class="login-link">Already have an account? <a href="/login">Log in here</a></p>
+        </div>
     </div>
 
     <script>
-        function validateForm() {
+        document.getElementById('signupForm').addEventListener('submit', function(event) {
             let isValid = true;
-            const username = document.getElementById('username').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            // Reset previous error messages
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+            document.querySelectorAll('.form-input').forEach(el => el.classList.remove('error'));
 
             // Username validation
-            if (username.length < 3) {
-                showError('username-error', 'Username must be at least 3 characters long');
+            const username = document.getElementById('username');
+            if (username.value.length < 3 || username.value.length > 20 || !/^[a-zA-Z0-9_]+$/.test(username.value)) {
+                document.getElementById('usernameError').textContent = 'Invalid username format';
+                username.classList.add('error');
                 isValid = false;
             }
 
             // Email validation
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email regex
-            if (!emailRegex.test(email)) {
-                showError('email-error', 'Please enter a valid email address');
+            const email = document.getElementById('email');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email.value)) {
+                document.getElementById('emailError').textContent = 'Invalid email address';
+                email.classList.add('error');
                 isValid = false;
             }
 
             // Password validation
-            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-            if (!passwordRegex.test(password)) {
-                showError('password-error', 'Password must meet all requirements');
+            const password = document.getElementById('password');
+            const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+            if (password.value.length < 8 || !passwordRegex.test(password.value)) {
+                document.getElementById('passwordError').textContent = 'Password does not meet requirements';
+                password.classList.add('error');
                 isValid = false;
             }
 
             // Confirm password validation
-            if (password !== confirmPassword) {
-                showError('confirm-password-error', 'Passwords do not match');
+            const confirmPassword = document.getElementById('confirmPassword');
+            if (password.value !== confirmPassword.value) {
+                document.getElementById('confirmPasswordError').textContent = 'Passwords do not match';
+                confirmPassword.classList.add('error');
                 isValid = false;
             }
 
-            return isValid;
-        }
-
-        function showError(elementId, message) {
-            const errorElement = document.getElementById(elementId);
-            errorElement.textContent = message;
-            errorElement.style.display = 'block';
-        }
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
     </script>
 </body>
-
 </html>

@@ -40,8 +40,8 @@ type Comment struct {
 	PostID       int64     `sqlite:"post_id" json:"post_id"`
 	CreatedAt    time.Time `sqlite:"created_at" json:"created_at"`
 	Author       string    `sqlite:"author" json:"author"`
-	TotalLike    int64     `sqlite:"total_like" json:"total_like"`
-	TotalDislike int64     `sqlite:"total_dislike" json:"total_dislike"`
+	TotalLikes    int64     `sqlite:"total_like" json:"total_like"`
+	TotalDislikes int64     `sqlite:"total_dislike" json:"total_dislike"`
 	Status       string    `sqlite:"status" json:"status"`
 }
 

@@ -1,7 +1,6 @@
 package database
 
 import (
-	"fmt"
 	"time"
 
 	structs "forum/Structs"
@@ -16,13 +15,12 @@ func CreatePost(title, content, category string, userID int64) error {
 		return err
 	}
 	postID, err := result.LastInsertId()
-    if err != nil {
-        return err
-    }
+	if err != nil {
+		return err
+	}
 	var catID int64
 	err = DB.QueryRow(`SELECT id FROM categories WHERE name = ?`, category).Scan(&catID)
 	if err != nil {
-		fmt.Println(err)
 		return err
 	}
 	_, err = DB.Exec(`
@@ -32,7 +30,7 @@ func CreatePost(title, content, category string, userID int64) error {
 	return err
 }
 
-func GetAllPosts(statut string) ([]structs.Post, error) {
+func GetAllPosts(status string) ([]structs.Post, error) {
 	rows, err := DB.Query(`
         SELECT p.id, p.title, p.content, p.user_id, p.created_at, u.username
         FROM posts p JOIN users u ON p.user_id = u.id
@@ -57,9 +55,19 @@ func GetAllPosts(statut string) ([]structs.Post, error) {
 		if err != nil {
 			return nil, err
 		}
-		p.TotalLike = like
-		p.TotalDislike = dislike
-		p.Statut = statut
+		comment, err := CountComments(p.ID)
+		if err != nil {
+			return nil, err
+		}
+		categories, err := GetCategories(p.ID)
+		if err != nil {
+			return nil, err
+		}
+		p.TotalLikes = like
+		p.TotalDislikes = dislike
+		p.TotalComments = comment
+		p.Categories = categories
+		p.Status = status
 		posts = append(posts, p)
 	}
 	return posts, nil

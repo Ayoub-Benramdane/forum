@@ -32,9 +32,9 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if user == nil {
-		user = &structs.Session{ID: 1, Username: "", UserID: 1, Statut: "Login"}
+		user = &structs.Session{ID: 1, Username: "", UserID: 1, Status: "Login"}
 	}
-	posts, errLoadPost := database.GetAllPosts(user.Statut)
+	posts, errLoadPost := database.GetAllPosts(user.Status)
 	if errLoadPost != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading posts"})
 		return

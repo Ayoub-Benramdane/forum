@@ -4,198 +4,410 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forum - Home</title>
+    <title>Forum</title>
     <style>
-        #H_P {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        /* Reset and Base Styles */
+        * {
             margin: 0;
             padding: 0;
-            background-color: #f0f2f5;
+            box-sizing: border-box;
         }
 
-        #H_P .navbar {
-            background-color: white;
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.5;
+        }
+
+        /* Layout */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        #H_P .user-info button {
-            color: #666;
-            border: none;
-            background-color: white;
-            font-size: 15px;
-            font-weight: bolder;
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
         }
 
-        #H_P .navbar h1,
-        #H_P #user-name {
-            color: #1a73e8;
-            margin: 0;
-        }
-
-        #H_P .container {
+        .container {
             max-width: 1200px;
             margin: 2rem auto;
             padding: 0 1rem;
         }
 
-        #H_P .new-post {
-            background-color: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-        }
-
-        #H_P .new-post h2 {
-            color: #333;
-            margin-top: 0;
-        }
-
-        #H_P .new-post textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            box-sizing: border-box;
-            resize: vertical;
-        }
-
-        #H_P .new-post button {
-            background-color: #1a73e8;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-
-        #H_P .new-post button:hover {
-            background-color: #1557b0;
-        }
-
-        #H_P .post {
-            background-color: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1.5rem;
-        }
-
-        #H_P .post-title {
-            color: #333;
-            margin: 0 0 0.5rem 0;
-            font-size: 1.25rem;
-        }
-
-        #H_P .post-details {
-            color: #666;
-            font-size: 0.875rem;
-            margin-bottom: 1rem;
-        }
-
-        #H_P .post-content {
-            color: #333;
-            line-height: 1.5;
-        }
-
-        #H_P .post-actions {
-            margin-top: 1rem;
+        /* User Menu */
+        .user-menu {
             display: flex;
+            align-items: center;
             gap: 1rem;
         }
 
-        #H_P .post-actions button,
-        #H_P .post-actions a {
-            background-color: #f0f2f5;
-            border: none;
-            color: #1a73e8;
-            cursor: pointer;
-            font-size: 0.9rem;
+        .user-button {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            text-decoration: none;
-            padding: 0.5rem;
-            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            border: none;
+            background: none;
+            color: var(--gray-700);
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 0.375rem;
         }
 
-        #H_P .post-actions button:hover,
-        #H_P .post-actions a:hover {
-            color: #1557b0;
+        .user-button:hover {
+            background: var(--gray-100);
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 0.375rem;
+            background: white;
+            color: var(--gray-900);
+            font-size: 1rem;
+            transition: border-color 0.15s ease-in-out;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease-in-out;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        /* Posts */
+        .post {
+            margin-bottom: 1.5rem;
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .post-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .post-meta {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+        }
+
+        .post-content {
+            color: var(--gray-700);
+            margin-bottom: 1rem;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .post-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border: none;
+            background: none;
+            color: var(--gray-500);
+            font-size: 0.875rem;
+            cursor: pointer;
+            border-radius: 0.375rem;
+        }
+
+        .post-action-btn:hover {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        /* Categories */
+        .category-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            background: var(--gray-100);
+            color: var(--gray-700);
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+        }
+
+        /* Comments */
+        .comment {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .comment:last-child {
+            border-bottom: none;
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .comment-author {
+            font-weight: 500;
+            color: var(--gray-900);
+        }
+
+        .comment-meta {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .post-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .post-actions {
+                flex-wrap: wrap;
+            }
         }
     </style>
 </head>
 
-<body id="H_P">
+<body>
     <nav class="navbar">
-        <h1>Forum</h1>
-        <div class="user-info">
-            {{if eq .User.Statut "Logout"}}
-            <form action="/profil" method="POST">
-                <button type="submit" id="user-name"><h1>{{.User.Username}}</h1></button>
-            </form>
-            {{end}}
-            <form action="/logout" method="POST">
-                <button type="submit">{{.User.Statut}}</button>
-            </form>
+        <div class="navbar-content">
+            <a href="/" class="logo">Forum</a>
+            <div class="user-menu">
+                {{if eq .User.Status "Logout"}}
+                <form action="/profil" method="POST">
+                    <button class="user-button">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        <span>{{.User.Username}}</span>
+                    </button>
+                </form>
+                {{end}}
+                <form action="/logout" method="POST">
+                    <button class="user-button">{{.User.Status}}</button>
+                </form>
+            </div>
         </div>
     </nav>
 
     <div class="container">
-        <div class="new-post">
-            <h2>Choose a category</h2>
-            <form action="/filter" method="POST">
-                <select name="category" id="category">
-                    <option value="" disabled selected>Select a category</option>
-                    {{range .Categorys}}
-                    <option value="{{.Name}}">{{.Name}}</option>
-                    {{end}}
-                </select>
-                <button type="submit">Filter</button>
-            </form>
-        </div>
-        {{if eq .User.Statut "Logout"}}
-        <div class="new-post">
-            <h2>Create a New Post</h2>
-            <form action="/" method="POST">
-                <input type="text" name="title" class="post-title" placeholder="Title of Post" required>
-                <select name="category" id="category">
-                    <option value="" disabled selected>Select a category</option>
-                    {{range .Categorys}}
-                    <option value="{{.Name}}">{{.Name}}</option>
-                    {{end}}
-                </select>
-                <textarea name="content" rows="4" placeholder="What's on your mind?" required></textarea>
-                <button type="submit">Post</button>
+        {{if eq .User.Status "Logout"}}
+        <div class="card">
+            <form action="/" method="POST" id="newPostForm">
+                <div class="form-group">
+                    <label class="form-label">Title</label>
+                    <input type="text" name="title" class="form-input" placeholder="Enter post title" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Categories</label>
+                    <select name="category" class="form-select" multiple required>
+                        {{range .Categorys}}
+                        <option value="{{.Name}}">{{.Name}}</option>
+                        {{end}}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Content</label>
+                    <textarea name="content" class="form-textarea" placeholder="What's on your mind?"
+                        required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Post</button>
             </form>
         </div>
         {{end}}
 
         {{range .Posts}}
-        <div class="post">
-            <h3 class="post-title">{{.Title}}</h3>
-            <p class="post-content">{{.Content}}</p>
-            <p class="post-details">Posted by {{.Author}} on {{.CreatedAt.Format "2006-01-02 15:04"}}</p>
-            <p class="post-actions">
-                {{if eq .Statut "Logout"}}
-                {{.TotalLike}}<button id="like-button"><a href="/like/{{.ID}}">👍</a></button>
-                {{.TotalDislike}}<button id="like-button"><a href="/dislike/{{.ID}}">👎</a></button>
+        <div class="card post">
+            <div class="post-header">
+                <div>
+                    <h2 class="post-title">{{.Title}}</h2>
+                    <div class="post-meta">
+                        Posted by <span class="post-author">{{.Author}}</span> • on {{.CreatedAt.Format "2006-01-02 15:04"}}
+                    </div>
+                    <div class="category-tags">
+                        {{range .Categories}}
+                        <span class="category-tag">{{.}}</span>
+                        {{end}}
+                    </div>
+                </div>
+            </div>
+            <div class="post-content">{{.Content}}</div>
+            <div class="post-actions">
+                {{if eq .Status "Logout"}}
+                <form action="/like/{{.ID}}" method="GET">
+                    <button type="submit" class="post-action-btn">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                        </svg>
+                        <span>{{.TotalLikes}}</span>
+                    </button>
+                </form>
+                <form action="/dislike/{{.ID}}" method="GET">
+                    <button type="submit" class="post-action-btn">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018c.163 0 .326.02.485.06L17 4m-7 10v2a2 2 0 002 2h.095c.5 0 .905-.405.905-.905 0-.714.211-1.412.608-2.006L17 13V4m-7 10h2" />
+                        </svg>
+                        <span>{{.TotalDislikes}}</span>
+                    </button>
+                </form>
                 {{else}}
-                {{.TotalLike}}<button id="like-button">👍</button>
-                {{.TotalDislike}}<button id="like-button">👎</button>
+                <button class="post-action-btn">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                    </svg>
+                    <span>{{.TotalLikes}}</span>
+                </button>
+                <button class="post-action-btn">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018c.163 0 .326.02.485.06L17 4m-7 10v2a2 2 0 002 2h.095c.5 0 .905-.405.905-.905 0-.714.211-1.412.608-2.006L17 13V4m-7 10h2" />
+                    </svg>
+                    <span>{{.TotalDislikes}}</span>
+                </button>
                 {{end}}
-                <button><a href="/post/{{.ID}}">Comment</a></button>
-            </p>
+                <form action="/post/{{.ID}}" method="GET">
+                    <button type="submit" class="post-action-btn">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        <span>{{.TotalComments}}</span>
+                    </button>
+                </form>
+            </div>
         </div>
         {{end}}
     </div>
+    <!-- 
+    <script>
+        // Toggle multiple select visibility
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('newPostForm');
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                // Handle form submission
+                console.log('Form submitted');
+            });
+
+            // Add interaction effects for buttons
+            const actionButtons = document.querySelectorAll('.post-action-btn');
+            actionButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    // Add click animation
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 100);
+                });
+            });
+        });
+    </script> -->
 </body>
 
 </html>

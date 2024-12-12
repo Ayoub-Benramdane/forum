@@ -23,15 +23,15 @@ func Filter(w http.ResponseWriter, r *http.Request) {
 	}
 	user := database.GetUserConnected()
 	if user == nil {
-		user = &structs.Session{ID: 1, Username: "", UserID: 1, Statut: "Login"}
+		user = &structs.Session{ID: 1, Username: "", UserID: 1, Status: "Login"}
 	}
 	category := r.FormValue("category")
 	var posts []structs.Post
 	var errLoadPost error
 	if category != "" {
-		posts, errLoadPost = database.GetFilterPosts(user.Statut, category)
+		posts, errLoadPost = database.GetFilterPosts(user.Status, category)
 	} else {
-		posts, errLoadPost = database.GetAllPosts(user.Statut)
+		posts, errLoadPost = database.GetAllPosts(user.Status)
 	}
 	if errLoadPost != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading posts"})

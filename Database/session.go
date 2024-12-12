@@ -14,7 +14,7 @@ func CreateSession(username string, id int64) error {
 
 func GetUserConnected() *structs.Session {
 	var session structs.Session
-	err := DB.QueryRow(`SELECT * FROM session`).Scan(&session.ID, &session.Username, &session.UserID, &session.Statut)
+	err := DB.QueryRow(`SELECT * FROM session`).Scan(&session.ID, &session.Username, &session.UserID, &session.Status)
 	if err != nil {
 		return nil
 	}

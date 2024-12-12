@@ -126,7 +126,7 @@
     <nav class="navbar">
         <h1>Forum</h1>
         <div class="user-info">
-            {{if eq .User.Statut "Logout"}}
+            {{if eq .User.Status "Logout"}}
             <form action="/profil" method="POST">
                 <button type="submit" id="user-name">
                     <h1>{{.User.Username}}</h1>
@@ -134,7 +134,7 @@
             </form>
             {{end}}
             <form action="/logout" method="POST">
-                <button type="submit">{{.User.Statut}}</button>
+                <button type="submit">{{.User.Status}}</button>
             </form>
         </div>
     </nav>
@@ -156,11 +156,11 @@
                 <em>Posted on {{.CreatedAt.Format "2006-01-02 15:04"}}</em>
                 <p class="post-actions">
                     {{if eq .Statut "Logout"}}
-                    {{.TotalLike}}<button id="like-button"><a href="/post/like_comment/{{.PostID}}/{{.ID}}">👍</a></button>
-                    {{.TotalDislike}}<button id="like-button"><a href="/post/dislike_comment/{{.PostID}}/{{.ID}}">👎</a></button>
+                    {{.TotalLikes}}<button id="like-button"><a href="/post/like_comment/{{.PostID}}/{{.ID}}">👍</a></button>
+                    {{.TotalDislikes}}<button id="like-button"><a href="/post/dislike_comment/{{.PostID}}/{{.ID}}">👎</a></button>
                     {{else}}
-                    {{.TotalLike}}<button id="like-button">👍</button>
-                    {{.TotalDislike}}<button id="like-button">👎</button>
+                    {{.TotalLikes}}<button id="like-button">👍</button>
+                    {{.TotalDislikes}}<button id="like-button">👎</button>
                     {{end}}
                 </p>
             </div>
@@ -168,7 +168,7 @@
             <p>No comments yet.</p>
             {{end}}
         </div>
-        {{if eq .User.Statut "Logout"}}
+        {{if eq .User.Status "Logout"}}
         <div class="new-comment">
             <h3>Add a Comment</h3>
             <form action="/post/{{.Post.ID}}" method="POST">

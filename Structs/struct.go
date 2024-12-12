@@ -5,30 +5,32 @@ import (
 )
 
 type User struct {
-	ID       int64  `sqlite:"id" json:"id"`
-	Username string `sqlite:"username" json:"username"`
-	Email    string `sqlite:"email" json:"email"`
-	Password string `sqlite:"password" json:"-"`
-	CreatedAt    time.Time `sqlite:"created_at" json:"created_at"`
+	ID        int64     `sqlite:"id" json:"id"`
+	Username  string    `sqlite:"username" json:"username"`
+	Email     string    `sqlite:"email" json:"email"`
+	Password  string    `sqlite:"password" json:"-"`
+	CreatedAt time.Time `sqlite:"created_at" json:"created_at"`
 }
 
 type Session struct {
 	ID       int64  `sqlite:"id" json:"id"`
 	Username string `sqlite:"username" json:"username"`
 	UserID   int64  `sqlite:"user_id" json:"user_id"`
-	Statut   string `sqlite:"statut" json:"statut"`
+	Status   string `sqlite:"status" json:"status"`
 }
 
 type Post struct {
-	ID           int64     `sqlite:"id" json:"id"`
-	Title        string    `sqlite:"title" json:"title"`
-	Content      string    `sqlite:"content" json:"content"`
-	UserID       int64     `sqlite:"user_id" json:"user_id"`
-	CreatedAt    time.Time `sqlite:"created_at" json:"created_at"`
-	Author       string    `sqlite:"author" json:"author"`
-	TotalLike    int64     `sqlite:"total_like" json:"total_like"`
-	TotalDislike int64     `sqlite:"total_dislike" json:"total_dislike"`
-	Statut       string    `sqlite:"statut" json:"statut"`
+	ID            int64     `sqlite:"id" json:"id"`
+	Title         string    `sqlite:"title" json:"title"`
+	Content       string    `sqlite:"content" json:"content"`
+	UserID        int64     `sqlite:"user_id" json:"user_id"`
+	CreatedAt     time.Time `sqlite:"created_at" json:"created_at"`
+	Author        string    `sqlite:"author" json:"author"`
+	TotalLikes    int64     `sqlite:"total_likes" json:"total_likes"`
+	TotalDislikes int64     `sqlite:"total_dislikes" json:"total_dislikes"`
+	TotalComments int64     `sqlite:"total_comments" json:"total_comments"`
+	Categories    []string  `sqlite:"categories" json:"categories"`
+	Status        string    `sqlite:"status" json:"status"`
 }
 
 type Comment struct {
@@ -40,7 +42,7 @@ type Comment struct {
 	Author       string    `sqlite:"author" json:"author"`
 	TotalLike    int64     `sqlite:"total_like" json:"total_like"`
 	TotalDislike int64     `sqlite:"total_dislike" json:"total_dislike"`
-	Statut       string    `sqlite:"statut" json:"statut"`
+	Status       string    `sqlite:"status" json:"status"`
 }
 
 type Category struct {

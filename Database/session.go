@@ -1,7 +1,7 @@
 package database
 
 import (
-	structs "forum/Structs"
+	structs "forum/Data"
 )
 
 func CreateSession(username string, id int64) error {

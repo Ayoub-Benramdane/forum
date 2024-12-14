@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	database "forum/Database"
-	structs "forum/Structs"
+	structs "forum/Data"
 )
 
 func Home(w http.ResponseWriter, r *http.Request) {
@@ -45,7 +45,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	}
 	categories, errLoadPost := database.GetAllCategorys()
 	if errLoadPost != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading posts"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading categories"})
 		return
 	}
 	data := struct {

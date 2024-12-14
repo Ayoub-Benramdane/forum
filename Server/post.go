@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	database "forum/Database"
-	structs "forum/Structs"
+	structs "forum/Data"
 )
 
 func Post(w http.ResponseWriter, r *http.Request) {
@@ -31,14 +31,14 @@ func Post(w http.ResponseWriter, r *http.Request) {
 	}
 	if r.Method == http.MethodPost {
 		content := r.FormValue("content")
-		if errCrePost := database.CreateComment(content, user.ID, id_post); errCrePost != nil {
+		if errCrePost := database.CreateComment(content, user.UserID, id_post); errCrePost != nil {
 			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Creating Comment"})
 			return
 		}
 	}
 	comments, errLoadComment := database.GetAllComments(id_post, user.Status)
 	if errLoadComment != nil {
-		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Comment not found"})
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Comments not found"})
 		return
 	}
 	data := struct {

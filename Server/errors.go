@@ -1,7 +1,7 @@
 package server
 
 import (
-	structs "forum/Structs"
+	structs "forum/Data"
 	"html/template"
 	"net/http"
 )

@@ -1,7 +1,7 @@
 package database
 
 import (
-	structs "forum/Structs"
+	structs "forum/Data"
 	"time"
 )
 
@@ -11,7 +11,7 @@ func CreateComment(content string, userID, postID int64) error {
 }
 
 func GetAllComments(PostID int64, status string) ([]structs.Comment, error) {
-	rows, err := DB.Query("SELECT c.id c.content, c.created_at, u.username FROM comments c JOIN users u ON c.user_id = u.id WHERE c.post_id = ? ORDER BY c.created_at DESC", PostID)
+	rows, err := DB.Query("SELECT c.id, c.content, c.created_at, u.username FROM comments c JOIN users u ON c.user_id = u.id WHERE c.post_id = ? ORDER BY c.created_at DESC", PostID)
 	if err != nil {
 		return nil, err
 	}

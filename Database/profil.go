@@ -1,7 +1,7 @@
 package database
 
 import (
-	structs "forum/Structs"
+	structs "forum/Data"
 )
 
 func GetInfoUser(UserID int64) (*structs.User, error) {
@@ -75,7 +75,10 @@ func LastPost(UserID int64) ([]structs.Post, error) {
 		}
 		posts = append(posts, post)
 	}
-	return posts[len(posts)-1:], nil
+	if posts != nil {
+		return posts[:1], nil
+	}
+	return nil, nil
 }
 
 func UpdateInfo(UserID int64, username, email string) error {

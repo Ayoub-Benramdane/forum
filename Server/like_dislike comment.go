@@ -3,7 +3,7 @@ package server
 import (
 	"fmt"
 	database "forum/Database"
-	structs "forum/Structs"
+	structs "forum/Data"
 	"net/http"
 	"strconv"
 	"strings"
@@ -31,6 +31,7 @@ func LikeComment(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Like"})
 		return
 	}
+	fmt.Println(id_post)
 	http.Redirect(w, r, fmt.Sprintf("/post/%d", id_post), http.StatusSeeOther)
 }
 

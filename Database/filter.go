@@ -2,7 +2,7 @@ package database
 
 import (
 	"database/sql"
-	structs "forum/Structs"
+	structs "forum/Data"
 )
 
 func GetFilterPosts(user *structs.Session, categories []string) ([]structs.Post, error) {

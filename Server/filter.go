@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	database "forum/Database"
-	structs "forum/Structs"
+	structs "forum/Data"
 )
 
 func Filter(w http.ResponseWriter, r *http.Request) {

@@ -2,7 +2,7 @@ package server
 
 import (
 	database "forum/Database"
-	structs "forum/Structs"
+	structs "forum/Data"
 	"html/template"
 	"net/http"
 

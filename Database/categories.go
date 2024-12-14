@@ -1,6 +1,6 @@
 package database
 
-import structs "forum/Structs"
+import structs "forum/Data"
 
 func GetAllCategorys() ([]structs.Category, error) {
 	rows, err := DB.Query("SELECT name FROM categories")

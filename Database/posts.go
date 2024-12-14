@@ -3,7 +3,7 @@ package database
 import (
 	"time"
 
-	structs "forum/Structs"
+	structs "forum/Data"
 )
 
 func CreatePost(title, content string, categories []string, userID int64) error {

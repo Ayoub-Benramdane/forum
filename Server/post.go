@@ -16,6 +16,9 @@ func Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	user := database.GetUserConnected()
+	if user == nil {
+		user = &structs.Session{Status: "Disconnected"}
+	}
 	post, errLoadPost := database.GetPostByID(id_post)
 	if errLoadPost != nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Post not found"})
@@ -23,7 +26,7 @@ func Post(w http.ResponseWriter, r *http.Request) {
 	}
 	tmpl, err := template.ParseFiles("Template/post.html")
 	if err != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading post page"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load post page template"})
 		return
 	}
 	if r.Method == http.MethodPost {
@@ -32,9 +35,6 @@ func Post(w http.ResponseWriter, r *http.Request) {
 			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Creating Comment"})
 			return
 		}
-	}
-	if user == nil {
-		user = &structs.Session{ID: 1, Username: "", UserID: 1, Status: "Login"}
 	}
 	comments, errLoadComment := database.GetAllComments(id_post, user.Status)
 	if errLoadComment != nil {

@@ -2,4 +2,3 @@ delete post
 delete comment
 modifier post
 modifier comment
-filter liste double

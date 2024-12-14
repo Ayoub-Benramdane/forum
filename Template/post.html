@@ -303,8 +303,8 @@
         <div class="navbar-content">
             <a href="/" class="logo">Forum</a>
             <div class="user-menu">
-                {{if eq .User.Status "Logout"}}
-                <form action="/profile" method="POST">
+                {{if eq .User.Status "Connected"}}
+                <form action="/profil" method="POST">
                     <button type="submit" class="user-button">
                         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -315,7 +315,7 @@
                 </form>
                 {{end}}
                 <form action="/logout" method="POST">
-                    <button type="submit" class="user-button">{{.User.Status}}</button>
+                    <button type="submit" class="user-button">{{if eq .User.Status "Connected"}}Logout{{else}}Login{{end}}</button>
                 </form>
             </div>
         </div>
@@ -340,7 +340,7 @@
                 {{.Post.Content}}
             </div>
             <div class="post-actions">
-                {{if eq .User.Status "Logout"}}
+                {{if eq .User.Status "Connected"}}
                 <form action="/like/{{.Post.ID}}" method="POST" class="post-action-btn">
                     <button class="post-action-btn" type="submit">
                         <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -394,8 +394,8 @@
                     {{.Content}}
                 </div>
                 <p class="post-actions">
-                    {{if eq .Status "Logout"}}
-                    <form action="/post/like_comment/{{.PostID}}/{{.ID}}" method="GET" class="post-action-btn">
+                    {{if eq .Status "Connected"}}
+                    <form action="/post/like_comment/{{.PostID}}/{{.ID}}" method="POST" class="post-action-btn">
                         <button class="post-action-btn" type="submit">
                             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -404,7 +404,7 @@
                             <span>{{.TotalLikes}}</span>
                         </button>
                     </form>
-                    <form action="/post/dislike_comment/{{.PostID}}/{{.ID}}" method="GET" class="post-action-btn">
+                    <form action="/post/dislike_comment/{{.PostID}}/{{.ID}}" method="POST" class="post-action-btn">
                         <button class="post-action-btn" type="submit">
                             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -437,7 +437,7 @@
         </div>
 
         <!-- Comment Form -->
-        {{if eq .User.Status "Logout"}}
+        {{if eq .User.Status "Connected"}}
         <div class="card comment-form">
             <form action="/post/{{.Post.ID}}" method="POST">
                 <div class="form-group">

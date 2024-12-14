@@ -21,7 +21,7 @@ func Profil(w http.ResponseWriter, r *http.Request) {
 	}
 	tmpl, tmplErr := template.ParseFiles("Template/profil.html")
 	if tmplErr != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading profil page"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load profil page template"})
 		return
 	}
 	info, errLoadInfo := database.GetInfoUser(user.UserID)
@@ -33,7 +33,8 @@ func Profil(w http.ResponseWriter, r *http.Request) {
 }
 
 func EditProfil(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/edit" {
+	user := database.GetUserConnected()
+	if r.URL.Path != "/edit" || user == nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found"})
 		return
 	}
@@ -49,10 +50,6 @@ func EditProfil(w http.ResponseWriter, r *http.Request) {
 }
 
 func EditProfilGet(w http.ResponseWriter, r *http.Request) {
-	if user := database.GetUserConnected(); user == nil {
-		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found"})
-		return
-	}
 	tmpl, tmplErr := template.ParseFiles("Template/edit.html")
 	if tmplErr != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading profil edit page"})
@@ -73,7 +70,7 @@ func EditProfilPost(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 	password2 := r.FormValue("confirm-password")
 	if password == "" && password2 == "" {
-		password = "Aa1@111110"
+		password = "Aa@11111"
 	} else if password != password2 {
 		Errors(w, structs.Error{Code: http.StatusConflict, Message: "Password not matched"})
 		return

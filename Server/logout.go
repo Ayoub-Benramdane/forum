@@ -11,6 +11,9 @@ func LogOut(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed"})
 		return
 	}
-	database.DeleteSession()
+	if database.DeleteSession() != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Ending Session"})
+		return
+	}
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }

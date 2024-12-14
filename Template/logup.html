@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -158,49 +159,29 @@
         }
     </style>
 </head>
+
 <body>
     <div class="signup-container">
         <div class="card">
             <div class="logo">Forum</div>
-            <form action="/signup" method="POST" id="signupForm">
+            <form action="/register" method="POST" id="signupForm">
                 <div class="form-group">
                     <label for="username" class="form-label">Username</label>
-                    <input 
-                        type="text" 
-                        id="username" 
-                        name="username" 
-                        class="form-input" 
-                        required 
-                        minlength="3" 
-                        maxlength="20"
-                        pattern="^[a-zA-Z0-9_]+$"
-                        title="Username must be 3-20 characters, only letters, numbers, and underscores"
-                    >
+                    <input type="text" id="username" name="username" class="form-input" required minlength="3"
+                        maxlength="20" pattern="^[a-zA-Z0-9_]+$"
+                        title="Username must be 3-20 characters, only letters, numbers, and underscores">
                     <div class="error-message" id="usernameError"></div>
                 </div>
 
                 <div class="form-group">
                     <label for="email" class="form-label">Email</label>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        name="email" 
-                        class="form-input" 
-                        required
-                    >
+                    <input type="email" id="email" name="email" class="form-input" required>
                     <div class="error-message" id="emailError"></div>
                 </div>
 
                 <div class="form-group">
                     <label for="password" class="form-label">Password</label>
-                    <input 
-                        type="password" 
-                        id="password" 
-                        name="password" 
-                        class="form-input" 
-                        required 
-                        minlength="8"
-                    >
+                    <input type="password" id="password" name="password" class="form-input" required minlength="8">
                     <div class="password-requirements">
                         Password must:
                         <ul>
@@ -215,13 +196,7 @@
 
                 <div class="form-group">
                     <label for="confirmPassword" class="form-label">Confirm Password</label>
-                    <input 
-                        type="password" 
-                        id="confirmPassword" 
-                        name="confirmPassword" 
-                        class="form-input" 
-                        required
-                    >
+                    <input type="password" id="confirmPassword" name="confirm-password" class="form-input" required>
                     <div class="error-message" id="confirmPasswordError"></div>
                 </div>
 
@@ -235,9 +210,9 @@
     </div>
 
     <script>
-        document.getElementById('signupForm').addEventListener('submit', function(event) {
+        document.getElementById('signupForm').addEventListener('submit', function (event) {
             let isValid = true;
-            
+
             // Reset previous error messages
             document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
             document.querySelectorAll('.form-input').forEach(el => el.classList.remove('error'));
@@ -282,4 +257,5 @@
         });
     </script>
 </body>
+
 </html>

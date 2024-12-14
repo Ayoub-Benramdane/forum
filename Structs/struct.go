@@ -5,11 +5,15 @@ import (
 )
 
 type User struct {
-	ID        int64     `sqlite:"id" json:"id"`
-	Username  string    `sqlite:"username" json:"username"`
-	Email     string    `sqlite:"email" json:"email"`
-	Password  string    `sqlite:"password" json:"-"`
-	CreatedAt time.Time `sqlite:"created_at" json:"created_at"`
+	ID             int64     `sqlite:"id" json:"id"`
+	Username       string    `sqlite:"username" json:"username"`
+	Email          string    `sqlite:"email" json:"email"`
+	Password       string    `sqlite:"password" json:"-"`
+	CreatedAt      time.Time `sqlite:"created_at" json:"created_at"`
+	Posts          int64     `sqlite:"posts" json:"posts"`
+	Comments       int64     `sqlite:"comments" json:"comments"`
+	Likes          int64     `sqlite:"likes" json:"likes"`
+	RecentActivity []Post    `sqlite:"recent_activity" json:"recent_activity"`
 }
 
 type Session struct {
@@ -34,15 +38,15 @@ type Post struct {
 }
 
 type Comment struct {
-	ID           int64     `sqlite:"id" json:"id"`
-	Content      string    `sqlite:"content" json:"content"`
-	UserID       int64     `sqlite:"user_id" json:"user_id"`
-	PostID       int64     `sqlite:"post_id" json:"post_id"`
-	CreatedAt    time.Time `sqlite:"created_at" json:"created_at"`
-	Author       string    `sqlite:"author" json:"author"`
-	TotalLikes    int64     `sqlite:"total_like" json:"total_like"`
-	TotalDislikes int64     `sqlite:"total_dislike" json:"total_dislike"`
-	Status       string    `sqlite:"status" json:"status"`
+	ID            int64     `sqlite:"id" json:"id"`
+	Content       string    `sqlite:"content" json:"content"`
+	UserID        int64     `sqlite:"user_id" json:"user_id"`
+	PostID        int64     `sqlite:"post_id" json:"post_id"`
+	CreatedAt     time.Time `sqlite:"created_at" json:"created_at"`
+	Author        string    `sqlite:"author" json:"author"`
+	TotalLikes    int64     `sqlite:"total_likes" json:"total_likes"`
+	TotalDislikes int64     `sqlite:"total_dislikes" json:"total_dislikes"`
+	Status        string    `sqlite:"status" json:"status"`
 }
 
 type Category struct {

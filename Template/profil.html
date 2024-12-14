@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -219,6 +220,7 @@
         }
     </style>
 </head>
+
 <body>
     <nav class="navbar">
         <div class="navbar-content">
@@ -233,68 +235,51 @@
 
     <div class="container">
         <div class="card">
+            <h1 class="profile-name">User Profil: {{.Username}}</h1>
+            <form action="/edit" method="GET">
+                <div class="form-group">
+                    <p>Email: {{.Email}}</p>
+                    <p>Joined on: {{.CreatedAt.Format "January 2, 2006 at 3:04 PM"}}</p>
+                </div>
+                <button type="submit" class="btn btn-primary">Edit Profile</button>
+            </form>
+        </div>
+        <div class="card">
+            <h1 class="profile-name">User Activity:</h1>
             <div class="profile-header">
-                <img src="/api/placeholder/120/120" alt="Profile Picture" class="profile-avatar">
                 <div class="profile-info">
-                    <h1 class="profile-name">{{.Username}}</h1>
-                    <!-- <p class="profile-username">@{{.User.Username}}</p> -->
                     <div class="profile-stats">
                         <div class="stat-item">
-                            <!-- <span class="stat-value">{{.User.PostCount}}</span> -->
+                            <span class="stat-value">{{.Posts}}</span>
                             <span class="stat-label">Posts</span>
                         </div>
                         <div class="stat-item">
-                            <!-- <span class="stat-value">{{.User.CommentCount}}</span> -->
+                            <span class="stat-value">{{.Comments}}</span>
                             <span class="stat-label">Comments</span>
                         </div>
                         <div class="stat-item">
-                            <!-- <span class="stat-value">{{.User.LikesReceived}}</span> -->
+                            <span class="stat-value">{{.Likes}}</span>
                             <span class="stat-label">Likes</span>
                         </div>
                     </div>
-                    <div class="profile-actions">
-                        <button class="btn btn-primary">Edit Profile</button>
-                    </div>
                 </div>
             </div>
-        </div>
-
-        <div class="card">
-            <div class="profile-tabs">
-                <div class="tab active">Recent Activity</div>
-                <div class="tab">Posts</div>
-                <div class="tab">Comments</div>
-            </div>
-
-            <!-- <div class="recent-activity">
+            <h1 class="profile-name">Recent Activity:</h1>
+            <div class="recent-activity">
                 {{range .RecentActivity}}
                 <div class="activity-item">
                     <div class="activity-header">
-                        <span class="activity-title">{{.Title}}</span>
-                        <span class="activity-date">{{.Date.Format "January 2, 2006"}}</span>
+                        <span class="activity-title">Title: {{.Title}}</span>
+                        <span class="activity-date">{{.CreatedAt.Format "January 2, 2006"}}</span>
                     </div>
-                    <p>{{.Description}}</p>
+                    <p>{{.Content}}</p>
                 </div>
                 {{else}}
                 <p>No recent activity.</p>
                 {{end}}
-            </div> -->
-        </div>
-
-        <div class="card">
-            <h2>Account Settings</h2>
-            <form action="/profile/update" method="POST">
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" value="{{.Email}}" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="bio">Bio</label>
-                    <!-- <textarea id="bio" name="bio" class="form-control">{{.Bio}}</textarea> -->
-                </div>
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-            </form>
+            </div>
         </div>
     </div>
 </body>
+
 </html>

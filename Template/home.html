@@ -266,6 +266,56 @@
                 flex-wrap: wrap;
             }
         }
+
+        .filters {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .filters-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 1rem;
+        }
+
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .filter-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--gray-100);
+            color: var(--gray-700);
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.15s ease-in-out;
+        }
+
+        .filter-tag:hover {
+            background: var(--gray-200);
+        }
+
+        .filter-tag.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .filter-tag input[type="checkbox"] {
+            display: none;
+        }
     </style>
 </head>
 
@@ -274,7 +324,7 @@
         <div class="navbar-content">
             <a href="/" class="logo">Forum</a>
             <div class="user-menu">
-                {{if eq .User.Status "Logout"}}
+                {{if eq .User.Status "Connected"}}
                 <form action="/profil" method="POST">
                     <button class="user-button">
                         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -286,14 +336,33 @@
                 </form>
                 {{end}}
                 <form action="/logout" method="POST">
-                    <button class="user-button">{{.User.Status}}</button>
+                    <button class="user-button">{{if eq .User.Status "Connected"}}Logout{{else}}Login{{end}}</button>
                 </form>
             </div>
         </div>
     </nav>
 
     <div class="container">
-        {{if eq .User.Status "Logout"}}
+        <div class="filters">
+            <h3 class="filters-title">Filter by Categories</h3>
+            <form action="/filter" method="POST" id="filterForm">
+                <div class="filter-tags">
+                    <select name="category" class="form-select" multiple required>
+                        {{if eq .User.Status "Connected"}}
+                        <option value="All">All Posts</option>
+                        <option value="MyPosts">My Posts</option>
+                        <option value="MyLikes">My Likes</option>
+                        {{end}}
+                        {{range .Categories}}
+                        <option value="{{.Name}}">{{.Name}}</option>
+                        {{end}}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Apply Filters</button>
+            </form>
+        </div>
+
+        {{if eq .User.Status "Connected"}}
         <div class="card">
             <form action="/" method="POST" id="newPostForm">
                 <div class="form-group">
@@ -303,7 +372,7 @@
                 <div class="form-group">
                     <label class="form-label">Categories</label>
                     <select name="category" class="form-select" multiple required>
-                        {{range .Categorys}}
+                        {{range .Categories}}
                         <option value="{{.Name}}">{{.Name}}</option>
                         {{end}}
                     </select>
@@ -335,7 +404,7 @@
             </div>
             <div class="post-content">{{.Content}}</div>
             <div class="post-actions">
-                {{if eq .Status "Logout"}}
+                {{if eq .Status "Connected"}}
                 <form action="/like/{{.ID}}" method="GET">
                     <button type="submit" class="post-action-btn">
                         <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -383,31 +452,6 @@
         </div>
         {{end}}
     </div>
-    <!-- 
-    <script>
-        // Toggle multiple select visibility
-        document.addEventListener('DOMContentLoaded', function () {
-            const form = document.getElementById('newPostForm');
-
-            form.addEventListener('submit', function (e) {
-                e.preventDefault();
-                // Handle form submission
-                console.log('Form submitted');
-            });
-
-            // Add interaction effects for buttons
-            const actionButtons = document.querySelectorAll('.post-action-btn');
-            actionButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    // Add click animation
-                    this.style.transform = 'scale(0.95)';
-                    setTimeout(() => {
-                        this.style.transform = 'scale(1)';
-                    }, 100);
-                });
-            });
-        });
-    </script> -->
 </body>
 
 </html>

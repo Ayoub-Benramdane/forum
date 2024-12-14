@@ -18,38 +18,36 @@ func Filter(w http.ResponseWriter, r *http.Request) {
 	}
 	tmpl, tmplErr := template.ParseFiles("Template/home.html")
 	if tmplErr != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading home page"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load home page template"})
 		return
 	}
 	user := database.GetUserConnected()
 	if user == nil {
-		user = &structs.Session{ID: 1, Username: "", UserID: 1, Status: "Login"}
+		user = &structs.Session{Status: "Disconnected"}
 	}
-	category := r.FormValue("category")
-	var posts []structs.Post
-	var errLoadPost error
-	if category != "" {
-		posts, errLoadPost = database.GetFilterPosts(user.Status, category)
-	} else {
-		posts, errLoadPost = database.GetAllPosts(user.Status)
+	if err := r.ParseForm(); err != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error parsing form"})
+		return
 	}
+	categorie := r.Form["category"]
+	posts, errLoadPost := database.GetFilterPosts(user, categorie)
 	if errLoadPost != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading posts"})
 		return
 	}
-	categorys, errLoadPost := database.GetAllCategorys()
-	if errLoadPost != nil {
+	categories, errLoadCategory := database.GetAllCategorys()
+	if errLoadCategory != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading posts"})
 		return
 	}
 	data := struct {
-		User      *structs.Session
-		Posts     []structs.Post
-		Categorys []structs.Category
+		User       *structs.Session
+		Posts      []structs.Post
+		Categories []structs.Category
 	}{
-		User:      user,
-		Posts:     posts,
-		Categorys: categorys,
+		User:       user,
+		Posts:      posts,
+		Categories: categories,
 	}
 	tmpl.Execute(w, data)
 }

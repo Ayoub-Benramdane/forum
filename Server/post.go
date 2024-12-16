@@ -1,12 +1,13 @@
 package server
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
 
-	database "forum/Database"
 	structs "forum/Data"
+	database "forum/Database"
 )
 
 func Post(w http.ResponseWriter, r *http.Request) {
@@ -50,5 +51,6 @@ func Post(w http.ResponseWriter, r *http.Request) {
 		Post:     post,
 		Comments: comments,
 	}
+	fmt.Println(comments)
 	tmpl.Execute(w, data)
 }

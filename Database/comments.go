@@ -1,8 +1,9 @@
 package database
 
 import (
-	structs "forum/Data"
 	"time"
+
+	structs "forum/Data"
 )
 
 func CreateComment(content string, userID, postID int64) error {
@@ -31,6 +32,7 @@ func GetAllComments(PostID int64, status string) ([]structs.Comment, error) {
 		if err != nil {
 			return nil, err
 		}
+		comment.PostID = PostID
 		comment.TotalLikes = likes
 		comment.TotalDislikes = dislikes
 		comment.Status = status

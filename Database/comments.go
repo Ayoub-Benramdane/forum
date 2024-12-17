@@ -12,7 +12,7 @@ func CreateComment(content string, userID, postID int64) error {
 }
 
 func GetAllComments(PostID int64, status string) ([]structs.Comment, error) {
-	rows, err := DB.Query("SELECT c.id, c.content, c.created_at, u.username FROM comments c JOIN users u ON c.user_id = u.id WHERE c.post_id = ? ORDER BY c.created_at DESC", PostID)
+	rows, err := DB.Query("SELECT c.id, c.user_id, c.content, c.created_at, u.username FROM comments c JOIN users u ON c.user_id = u.id WHERE c.post_id = ? ORDER BY c.created_at DESC", PostID)
 	if err != nil {
 		return nil, err
 	}
@@ -20,7 +20,7 @@ func GetAllComments(PostID int64, status string) ([]structs.Comment, error) {
 	var comments []structs.Comment
 	for rows.Next() {
 		var comment structs.Comment
-		err := rows.Scan(&comment.ID, &comment.Content, &comment.CreatedAt, &comment.Author)
+		err := rows.Scan(&comment.ID, &comment.UserID, &comment.Content, &comment.CreatedAt, &comment.Author)
 		if err != nil {
 			return nil, err
 		}

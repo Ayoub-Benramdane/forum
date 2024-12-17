@@ -19,7 +19,7 @@ func CreateTables() error {
             username TEXT NOT NULL,
             user_id INTEGER NOT NULL,
             statut TEXT NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES users(id)
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         )
     `)
 	if err != nil {
@@ -32,7 +32,7 @@ func CreateTables() error {
             content TEXT NOT NULL,
             user_id INTEGER NOT NULL,
             created_at DATETIME NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES users(id)
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         )
     `)
 	if err != nil {
@@ -45,8 +45,8 @@ func CreateTables() error {
             user_id INTEGER NOT NULL,
             post_id INTEGER NOT NULL,
             created_at DATETIME NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES users(id),
-            FOREIGN KEY (post_id) REFERENCES posts(id)
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
         )
     `)
 	if err != nil {
@@ -57,8 +57,8 @@ func CreateTables() error {
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_id INTEGER NOT NULL,
 			post_id INTEGER NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES users(id),
-            FOREIGN KEY (post_id) REFERENCES posts(id)
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 		)
     `)
 	if err != nil {
@@ -69,8 +69,8 @@ func CreateTables() error {
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_id INTEGER NOT NULL,
 			post_id INTEGER NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES users(id),
-            FOREIGN KEY (post_id) REFERENCES posts(id)
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 		)
     `)
 	if err != nil {
@@ -82,9 +82,9 @@ func CreateTables() error {
 			user_id INTEGER NOT NULL,
 			post_id INTEGER NOT NULL,
 			comment_id INTEGER NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES users(id),
-            FOREIGN KEY (post_id) REFERENCES posts(id),
-            FOREIGN KEY (comment_id) REFERENCES comments(id)
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+            FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE
 		)
     `)
 	if err != nil {
@@ -96,9 +96,9 @@ func CreateTables() error {
 			user_id INTEGER NOT NULL,
 			post_id INTEGER NOT NULL,
 			comment_id INTEGER NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES users(id),
-            FOREIGN KEY (post_id) REFERENCES posts(id),
-            FOREIGN KEY (comment_id) REFERENCES comments(id)
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+            FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE
 		)
     `)
 	if err != nil {
@@ -118,8 +118,8 @@ func CreateTables() error {
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			category_id INTEGER NOT NULL,
 			post_id INTEGER NOT NULL,
-            FOREIGN KEY (category_id) REFERENCES categories(id),
-            FOREIGN KEY (post_id) REFERENCES posts(id)
+            FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE,
+            FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 		)
     `)
 	return err

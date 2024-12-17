@@ -13,6 +13,10 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid post ID"})
 		return
 	}
+	if r.Method != http.MethodPost && r.Method != http.MethodGet {
+		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed"})
+		return
+	}
 	user := database.GetUserConnected()
 	if !database.CheckLike(user.UserID, id_post) {
 		if err := database.AddLike(user.UserID, id_post); err != nil {
@@ -30,6 +34,10 @@ func DislikePost(w http.ResponseWriter, r *http.Request) {
 	id_post, err := strconv.ParseInt(r.URL.Path[len("/dislike/"):], 10, 64)
 	if err != nil {
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid post ID"})
+		return
+	}
+	if r.Method != http.MethodPost && r.Method != http.MethodGet {
+		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed"})
 		return
 	}
 	user := database.GetUserConnected()

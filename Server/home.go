@@ -3,9 +3,10 @@ package server
 import (
 	"html/template"
 	"net/http"
+	"strings"
 
-	database "forum/Database"
 	structs "forum/Data"
+	database "forum/Database"
 )
 
 func Home(w http.ResponseWriter, r *http.Request) {
@@ -26,8 +27,12 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		user = &structs.Session{Status: "Disconnected"}
 	}
 	if r.Method == http.MethodPost {
-		title := r.FormValue("title")
-		content := r.FormValue("content")
+		title := strings.TrimSpace(r.FormValue("title"))
+		content := strings.TrimSpace(r.FormValue("content"))
+		if title == "" || content == "" {
+			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Check your input"})
+			return
+		}
 		if err := r.ParseForm(); err != nil {
 			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error parsing form"})
 			return

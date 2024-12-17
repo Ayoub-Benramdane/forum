@@ -22,8 +22,11 @@ func CreatePost(title, content string, categories []string, userID int64) error 
 			return err
 		}
 		_, err = DB.Exec("INSERT INTO post_category (category_id, post_id) VALUES (?, ?)", catID, postID)
+		if err != nil {
+			return err
+		}
 	}
-	return err
+	return nil
 }
 
 func GetAllPosts(status string) ([]structs.Post, error) {
@@ -67,8 +70,8 @@ func GetAllPosts(status string) ([]structs.Post, error) {
 
 func GetPostByID(id int64) (*structs.Post, error) {
 	post := &structs.Post{}
-	err := DB.QueryRow("SELECT p.id, p.title, p.content, p.created_at, u.username FROM posts p JOIN users u ON p.user_id = u.id WHERE p.id == ?",
-	id).Scan(&post.ID, &post.Title, &post.Content, &post.CreatedAt, &post.Author)
+	err := DB.QueryRow("SELECT p.id, p.title, p.user_id, p.content, p.created_at, u.username FROM posts p JOIN users u ON p.user_id = u.id WHERE p.id == ?",
+	id).Scan(&post.ID, &post.Title, &post.UserID, &post.Content, &post.CreatedAt, &post.Author)
 	if err != nil {
 		return nil, err
 	}

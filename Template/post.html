@@ -295,6 +295,71 @@
                 flex-wrap: wrap;
             }
         }
+
+        /* Admin action buttons container */
+        .post-admin-actions,
+        .comment-admin-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-left: auto;
+        }
+
+        /* Base button styles */
+        .edit-btn,
+        .danger-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            font-size: var(--text-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease-in-out;
+            border: 1px solid transparent;
+        }
+
+        /* Modify button styles */
+        .edit-btn {
+            background-color: var(--gray-100);
+            color: var(--gray-700);
+            border-color: var(--gray-200);
+        }
+
+        .edit-btn:hover {
+            background-color: var(--gray-200);
+            color: var(--gray-900);
+        }
+
+        /* Delete button styles */
+        .danger-btn {
+            background-color: #fee2e2;
+            color: #dc2626;
+            border-color: #fecaca;
+        }
+
+        .danger-btn:hover {
+            background-color: #fecaca;
+            color: #b91c1c;
+        }
+
+        /* Focus states */
+        .edit-btn:focus,
+        .danger-btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--gray-50), 0 0 0 4px var(--gray-200);
+        }
+
+        .danger-btn:focus {
+            box-shadow: 0 0 0 2px var(--gray-50), 0 0 0 4px #fecaca;
+        }
+
+        /* Disabled states */
+        .edit-btn:disabled,
+        .danger-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 
@@ -315,7 +380,8 @@
                 </form>
                 {{end}}
                 <form action="/logout" method="POST">
-                    <button type="submit" class="user-button">{{if eq .User.Status "Connected"}}Logout{{else}}Login{{end}}</button>
+                    <button type="submit" class="user-button">{{if eq .User.Status
+                        "Connected"}}Logout{{else}}Login{{end}}</button>
                 </form>
             </div>
         </div>
@@ -359,6 +425,21 @@
                         <span>{{.Post.TotalDislikes}}</span>
                     </button>
                 </form>
+                {{if eq .User.UserID .Post.UserID}}
+                <div class="post-admin-actions">
+                    <form action="/post/edit/{{.Post.ID}}" method="GET">
+                        <button type="submit" class="edit-btn">
+                            Modify
+                        </button>
+                    </form>
+                    <form action="/post/delete/{{.Post.ID}}" method="POST"
+                        onsubmit="return confirm('Are you sure you want to delete this post?');">
+                        <button type="submit" class="danger-btn">
+                            Delete
+                        </button>
+                    </form>
+                </div>
+                {{end}}
                 {{else}}
                 <button class="post-action-btn" disabled>
                     <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -378,64 +459,6 @@
             </div>
         </div>
 
-        <!-- Comments Section -->
-        <div class="comments-section card">
-            <div class="comments-header">
-                <h2 class="comments-title">Comments ({{.Post.TotalComments}})</h2>
-            </div>
-
-            {{range .Comments}}
-            <div class="comment">
-                <div class="comment-header">
-                    <span class="comment-author">{{.Author}}</span>
-                    <span class="comment-date">{{.CreatedAt.Format "January 2, 2006 at 3:04 PM"}}</span>
-                </div>
-                <div class="comment-content">
-                    {{.Content}}
-                </div>
-                <p class="post-actions">
-                    {{if eq .Status "Connected"}}
-                    <form action="/post/like_comment/{{.PostID}}/{{.ID}}" method="POST" class="post-action-btn">
-                        <button class="post-action-btn" type="submit">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
-                            </svg>
-                            <span>{{.TotalLikes}}</span>
-                        </button>
-                    </form>
-                    <form action="/post/dislike_comment/{{.PostID}}/{{.ID}}" method="POST" class="post-action-btn">
-                        <button class="post-action-btn" type="submit">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018c.163 0 .326.02.485.06L17 4m-7 10v2a2 2 0 002 2h.095c.5 0 .905-.405.905-.905 0-.714.211-1.412.608-2.006L17 13V4m-7 10h2" />
-                            </svg>
-                            <span>{{.TotalDislikes}}</span>
-                        </button>
-                    </form>
-                    {{else}}
-                    <button class="post-action-btn" disabled>
-                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
-                        </svg>
-                        <span>{{.TotalLikes}}</span>
-                    </button>
-                    <button class="post-action-btn" disabled>
-                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018c.163 0 .326.02.485.06L17 4m-7 10v2a2 2 0 002 2h.095c.5 0 .905-.405.905-.905 0-.714.211-1.412.608-2.006L17 13V4m-7 10h2" />
-                        </svg>
-                        <span>{{.TotalDislikes}}</span>
-                    </button>
-                    {{end}}
-                </p>
-            </div>
-            {{else}}
-            <p>No comments yet.</p>
-            {{end}}
-        </div>
-
         <!-- Comment Form -->
         {{if eq .User.Status "Connected"}}
         <div class="card comment-form">
@@ -453,6 +476,79 @@
             <p>Please log in to add a comment.</p>
         </div>
         {{end}}
+
+        <!-- Comments Section -->
+        <div class="comments-section card">
+            <div class="comments-header">
+                <h2 class="comments-title">Comments ({{.Post.TotalComments}})</h2>
+            </div>
+
+            {{range .Comments}}
+            <div class="comment">
+                <div class="comment-header">
+                    <span class="comment-author">{{.Author}}</span>
+                    <span class="comment-date">{{.CreatedAt.Format "January 2, 2006 at 3:04 PM"}}</span>
+                </div>
+                <div class="comment-content">
+                    {{.Content}}
+                </div>
+                <p class="post-actions">
+                    {{if eq .Status "Connected"}}
+                <form action="/post/like_comment/{{.PostID}}/{{.ID}}" method="GET">
+                    <button type="submit" class="post-action-btn">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                        </svg>
+                        <span>{{.TotalLikes}}</span>
+                    </button>
+                </form>
+                <form action="/post/like_comment/{{.PostID}}/{{.ID}}" method="GET">
+                    <button type="submit" class="post-action-btn">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018c.163 0 .326.02.485.06L17 4m-7 10v2a2 2 0 002 2h.095c.5 0 .905-.405.905-.905 0-.714.211-1.412.608-2.006L17 13V4m-7 10h2" />
+                        </svg>
+                        <span>{{.TotalDislikes}}</span>
+                    </button>
+                </form>
+                {{if eq $.User.UserID .UserID}}
+                <div class="comment-admin-actions">
+                    <form action="/post/edit_comment/{{.PostID}}/{{.ID}}" method="GET">
+                        <button type="submit" class="edit-btn">
+                            Modify
+                        </button>
+                    </form>
+                    <form action="/post/delete_comment/{{.PostID}}/{{.ID}}" method="POST"
+                        onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                        <button type="submit" class="danger-btn">
+                            Delete
+                        </button>
+                    </form>
+                </div>
+                {{end}}
+                {{else}}
+                <button class="post-action-btn" disabled>
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                    </svg>
+                    <span>{{.TotalLikes}}</span>
+                </button>
+                <button class="post-action-btn" disabled>
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018c.163 0 .326.02.485.06L17 4m-7 10v2a2 2 0 002 2h.095c.5 0 .905-.405.905-.905 0-.714.211-1.412.608-2.006L17 13V4m-7 10h2" />
+                    </svg>
+                    <span>{{.TotalDislikes}}</span>
+                </button>
+                {{end}}
+                </p>
+            </div>
+            {{else}}
+            <p>No comments yet.</p>
+            {{end}}
+        </div>
     </div>
 </body>
 

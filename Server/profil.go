@@ -34,7 +34,7 @@ func Profil(w http.ResponseWriter, r *http.Request) {
 
 func EditProfil(w http.ResponseWriter, r *http.Request) {
 	user := database.GetUserConnected()
-	if r.URL.Path != "/edit" || user == nil {
+	if r.URL.Path != "/editProfil" || user == nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found"})
 		return
 	}
@@ -50,7 +50,7 @@ func EditProfil(w http.ResponseWriter, r *http.Request) {
 }
 
 func EditProfilGet(w http.ResponseWriter, r *http.Request) {
-	tmpl, tmplErr := template.ParseFiles("Template/edit.html")
+	tmpl, tmplErr := template.ParseFiles("Template/editProfil.html")
 	if tmplErr != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading profil edit page"})
 		return

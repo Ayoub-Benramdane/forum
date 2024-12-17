@@ -1,16 +1,20 @@
 package server
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
+	"strings"
 
 	structs "forum/Data"
 	database "forum/Database"
 )
 
 func Post(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost && r.Method != http.MethodGet {
+		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed"})
+		return
+	}
 	id_post, err := strconv.ParseInt(r.URL.Path[len("/post/"):], 10, 64)
 	if err != nil {
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid post ID"})
@@ -31,7 +35,11 @@ func Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if r.Method == http.MethodPost {
-		content := r.FormValue("content")
+		content := strings.TrimSpace(r.FormValue("content"))
+		if content == "" {
+			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Check your input"})
+			return
+		}
 		if errCrePost := database.CreateComment(content, user.UserID, id_post); errCrePost != nil {
 			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Creating Comment"})
 			return
@@ -51,6 +59,5 @@ func Post(w http.ResponseWriter, r *http.Request) {
 		Post:     post,
 		Comments: comments,
 	}
-	fmt.Println(comments)
 	tmpl.Execute(w, data)
 }

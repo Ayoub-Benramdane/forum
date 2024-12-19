@@ -2,6 +2,13 @@ package database
 
 func CreateTables() error {
 	_, err := DB.Exec(`
+        PRAGMA foreign_keys = ON
+    `)
+	if err != nil {
+		return err
+	}
+
+	_, err = DB.Exec(`
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE NOT NULL,

@@ -11,7 +11,7 @@ func UpdatePost(title, content string, categories []string, PostID int64) error 
 		return err
 	}
 	if categories != nil {
-		_, err = DB.Exec("DELETE FROM post_categories WHERE post_id = ?", PostID)
+		_, err = DB.Exec("DELETE FROM post_category WHERE post_id = ?", PostID)
 		if err != nil {
 			return err
 		}

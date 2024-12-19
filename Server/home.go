@@ -53,6 +53,10 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading categories"})
 		return
 	}
+	totalPosts := len(posts)
+	for i := range posts {
+		posts[i].TotalPosts = int64(totalPosts)
+	}
 	data := struct {
 		User       *structs.Session
 		Posts      []structs.Post

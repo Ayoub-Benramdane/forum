@@ -32,7 +32,7 @@ func LogUpGet(w http.ResponseWriter, r *http.Request) {
 	if user := database.GetUserConnected(); user != nil {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
-	tmpl, tmplErr := template.ParseFiles("Template/logup.html")
+	tmpl, tmplErr := template.ParseFiles("Template/html/register.html")
 	if tmplErr != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load logup page template"})
 		return

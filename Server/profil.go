@@ -19,7 +19,7 @@ func Profil(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed"})
 		return
 	}
-	tmpl, tmplErr := template.ParseFiles("Template/profil.html")
+	tmpl, tmplErr := template.ParseFiles("Template/html/profil.html")
 	if tmplErr != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load profil page template"})
 		return
@@ -50,7 +50,7 @@ func EditProfil(w http.ResponseWriter, r *http.Request) {
 }
 
 func EditProfilGet(w http.ResponseWriter, r *http.Request) {
-	tmpl, tmplErr := template.ParseFiles("Template/editProfil.html")
+	tmpl, tmplErr := template.ParseFiles("Template/html/editProfil.html")
 	if tmplErr != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading profil edit page"})
 		return

@@ -60,52 +60,30 @@ func CreateTables() error {
 		return err
 	}
 	_, err = DB.Exec(`
-        CREATE TABLE IF NOT EXISTS post_likes (
+        CREATE TABLE IF NOT EXISTS post_reactions (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_id INTEGER NOT NULL,
 			post_id INTEGER NOT NULL,
+			type TEXT NOT NULL,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-            FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+            FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+			UNIQUE (user_id, post_id)
 		)
     `)
 	if err != nil {
 		return err
 	}
 	_, err = DB.Exec(`
-        CREATE TABLE IF NOT EXISTS post_dislikes (
-			id INTEGER PRIMARY KEY AUTOINCREMENT,
-			user_id INTEGER NOT NULL,
-			post_id INTEGER NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-            FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
-		)
-    `)
-	if err != nil {
-		return err
-	}
-	_, err = DB.Exec(`
-        CREATE TABLE IF NOT EXISTS comment_likes (
+        CREATE TABLE IF NOT EXISTS comment_reactions (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_id INTEGER NOT NULL,
 			post_id INTEGER NOT NULL,
 			comment_id INTEGER NOT NULL,
+			type TEXT NOT NULL,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
             FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
             FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE
-		)
-    `)
-	if err != nil {
-		return err
-	}
-	_, err = DB.Exec(`
-        CREATE TABLE IF NOT EXISTS comment_dislikes (
-			id INTEGER PRIMARY KEY AUTOINCREMENT,
-			user_id INTEGER NOT NULL,
-			post_id INTEGER NOT NULL,
-			comment_id INTEGER NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-            FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
-            FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE
+			UNIQUE (user_id, comment_id)
 		)
     `)
 	if err != nil {
@@ -126,7 +104,8 @@ func CreateTables() error {
 			category_id INTEGER NOT NULL,
 			post_id INTEGER NOT NULL,
             FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE,
-            FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+            FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+			UNIQUE (category_id, post_id)
 		)
     `)
 	return err

@@ -1,6 +1,7 @@
 package database
 
 import (
+	"fmt"
 	structs "forum/Data"
 )
 
@@ -8,27 +9,33 @@ func GetInfoUser(UserID int64) (*structs.User, error) {
 	var user structs.User
 	err := DB.QueryRow("SELECT * FROM users WHERE id = ?", UserID).Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.CreatedAt)
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 	posts, err := CountPostsUser(UserID)
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 	comments, err := CountCommentsUser(UserID)
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
-	likes, err := CountLikesUser(UserID)
+	likes, dislikes, err := CountLikesUser(UserID)
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 	lastpost, err := LastPost(UserID)
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 	user.Posts = posts
 	user.Comments = comments
 	user.Likes = likes
+	user.Dislikes = dislikes
 	user.RecentActivity = lastpost
 	return &user, nil
 }
@@ -51,16 +58,20 @@ func CountCommentsUser(UserID int64) (int64, error) {
 	return comments, nil
 }
 
-func CountLikesUser(UserID int64) (int64, error) {
-	var likes int64
-	err := DB.QueryRow("SELECT COUNT(*) FROM post_likes WHERE user_id = ?", UserID).Scan(&likes)
+func CountLikesUser(UserID int64) (int64, int64, error) {
+	var likes, dislikes int64
+	err := DB.QueryRow("SELECT COUNT(*) FROM post_reactions WHERE user_id = ? AND type = ?", UserID, "like").Scan(&likes)
 	if err != nil {
-		return 0, err
+		return 0, 0, err
 	}
-	return likes, nil
+	err = DB.QueryRow("SELECT COUNT(*) FROM post_reactions WHERE user_id = ? AND type = ?", UserID, "dislike").Scan(&dislikes)
+	if err != nil {
+		return 0, 0, err
+	}
+	return likes, dislikes, nil
 }
 
-func LastPost(UserID int64) ([]structs.Post, error) {
+func LastPost(UserID int64) (*structs.Post, error) {
 	rows, err := DB.Query("SELECT title, content, created_at FROM posts WHERE user_id = ? ORDER BY created_at DESC", UserID)
 	if err != nil {
 		return nil, err
@@ -76,9 +87,9 @@ func LastPost(UserID int64) ([]structs.Post, error) {
 		posts = append(posts, post)
 	}
 	if posts != nil {
-		return posts[:1], nil
+		return &posts[0], nil
 	}
-	return nil, nil
+	return nil, err
 }
 
 func UpdateInfo(UserID int64, username, email string) error {

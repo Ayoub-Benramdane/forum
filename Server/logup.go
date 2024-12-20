@@ -60,7 +60,7 @@ func LogUpPost(w http.ResponseWriter, r *http.Request) {
 	}
 	if errCreate := database.CreateNewUser(username, email, string(hashedPassword)); errCreate != nil {
 		if strings.Contains(errCreate.Error(), "UNIQUE constraint failed") {
-			Errors(w, structs.Error{Code: http.StatusConflict, Message: "Username already taken"})
+			Errors(w, structs.Error{Code: http.StatusConflict, Message: "Username or email already taken"})
 			return
 		}
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error creating user"})

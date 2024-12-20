@@ -13,7 +13,8 @@ type User struct {
 	Posts          int64     `sqlite:"posts" json:"posts"`
 	Comments       int64     `sqlite:"comments" json:"comments"`
 	Likes          int64     `sqlite:"likes" json:"likes"`
-	RecentActivity []Post    `sqlite:"recent_activity" json:"recent_activity"`
+	Dislikes       int64     `sqlite:"dislikes" json:"dislikes"`
+	RecentActivity *Post      `sqlite:"recent_activity" json:"recent_activity"`
 }
 
 type Session struct {

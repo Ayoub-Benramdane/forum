@@ -261,18 +261,22 @@
                             <span class="stat-value">{{.Likes}}</span>
                             <span class="stat-label">Likes</span>
                         </div>
+                        <div class="stat-item">
+                            <span class="stat-value">{{.Dislikes}}</span>
+                            <span class="stat-label">Dislikes</span>
+                        </div>
                     </div>
                 </div>
             </div>
             <h1 class="profile-name">Recent Activity:</h1>
             <div class="recent-activity">
-                {{range .RecentActivity}}
+                {{if .RecentActivity}}
                 <div class="activity-item">
                     <div class="activity-header">
-                        <span class="activity-title">Title: {{.Title}}</span>
-                        <span class="activity-date">{{.CreatedAt.Format "January 2, 2006"}}</span>
+                        <span class="activity-title">Title: {{.RecentActivity.Title}}</span>
+                        <span class="activity-date">{{.RecentActivity.CreatedAt.Format "January 2, 2006"}}</span>
                     </div>
-                    <p>{{.Content}}</p>
+                    <p>{{.RecentActivity.Content}}</p>
                 </div>
                 {{else}}
                 <p>No recent activity.</p>

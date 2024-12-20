@@ -208,54 +208,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        document.getElementById('signupForm').addEventListener('submit', function (event) {
-            let isValid = true;
-
-            // Reset previous error messages
-            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
-            document.querySelectorAll('.form-input').forEach(el => el.classList.remove('error'));
-
-            // Username validation
-            const username = document.getElementById('username');
-            if (username.value.length < 3 || username.value.length > 20 || !/^[a-zA-Z0-9_]+$/.test(username.value)) {
-                document.getElementById('usernameError').textContent = 'Invalid username format';
-                username.classList.add('error');
-                isValid = false;
-            }
-
-            // Email validation
-            const email = document.getElementById('email');
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email.value)) {
-                document.getElementById('emailError').textContent = 'Invalid email address';
-                email.classList.add('error');
-                isValid = false;
-            }
-
-            // Password validation
-            const password = document.getElementById('password');
-            const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
-            if (password.value.length < 8 || !passwordRegex.test(password.value)) {
-                document.getElementById('passwordError').textContent = 'Password does not meet requirements';
-                password.classList.add('error');
-                isValid = false;
-            }
-
-            // Confirm password validation
-            const confirmPassword = document.getElementById('confirmPassword');
-            if (password.value !== confirmPassword.value) {
-                document.getElementById('confirmPasswordError').textContent = 'Passwords do not match';
-                confirmPassword.classList.add('error');
-                isValid = false;
-            }
-
-            if (!isValid) {
-                event.preventDefault();
-            }
-        });
-    </script>
 </body>
 
 </html>

@@ -20,6 +20,7 @@ func main() {
 	http.HandleFunc("/profil", server.Profil)
 	http.HandleFunc("/editProfil", server.EditProfil)
 	http.HandleFunc("/", server.Home)
+	http.HandleFunc("/page/", server.Page)
 	http.HandleFunc("/filter", server.Filter)
 	http.HandleFunc("/post/", server.Post)
 	http.HandleFunc("/like/", server.LikePost)

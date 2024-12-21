@@ -24,17 +24,15 @@ func GetAllComments(PostID int64, status string) ([]structs.Comment, error) {
 		if err != nil {
 			return nil, err
 		}
-		likes, err := CountLikesComment(PostID, comment.ID)
+		comment.TotalLikes, err = CountLikesComment(PostID, comment.ID)
 		if err != nil {
 			return nil, err
 		}
-		dislikes, err := CountDislikesComment(PostID, comment.ID)
+		comment.TotalDislikes, err = CountDislikesComment(PostID, comment.ID)
 		if err != nil {
 			return nil, err
 		}
 		comment.PostID = PostID
-		comment.TotalLikes = likes
-		comment.TotalDislikes = dislikes
 		comment.Status = status
 		comments = append(comments, comment)
 	}

@@ -1,7 +1,6 @@
 package database
 
 import (
-	"fmt"
 	structs "forum/Data"
 )
 
@@ -19,7 +18,6 @@ func GetCommentByID(id_post, id_comment int64) (*structs.Comment, error) {
 }
 
 func UpdateComment(content string, id_comment, id_post int64) error {
-	fmt.Println(content, id_comment, id_post)
 	_, err := DB.Exec("UPDATE comments SET content = ? WHERE id = ? AND post_id = ?", content, id_comment, id_post)
 	return err
 }

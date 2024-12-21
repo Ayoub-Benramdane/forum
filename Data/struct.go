@@ -34,7 +34,7 @@ type Post struct {
 	TotalLikes    int64     `sqlite:"total_likes" json:"total_likes"`
 	TotalDislikes int64     `sqlite:"total_dislikes" json:"total_dislikes"`
 	TotalComments int64     `sqlite:"total_comments" json:"total_comments"`
-	TotalPosts    int64     `sqlite:"total_posts" json:"total_posts"`
+	TotalPosts    []int64     `sqlite:"total_posts" json:"total_posts"`
 	Categories    []string  `sqlite:"categories" json:"categories"`
 	Status        string    `sqlite:"status" json:"status"`
 }

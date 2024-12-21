@@ -12,31 +12,26 @@ func GetInfoUser(UserID int64) (*structs.User, error) {
 		fmt.Println(err)
 		return nil, err
 	}
-	posts, err := CountPostsUser(UserID)
+	user.Posts, err = CountPostsUser(UserID)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
 	}
-	comments, err := CountCommentsUser(UserID)
+	user.Comments, err = CountCommentsUser(UserID)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
 	}
-	likes, dislikes, err := CountLikesUser(UserID)
+	user.Likes, user.Dislikes, err = CountLikesUser(UserID)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
 	}
-	lastpost, err := LastPost(UserID)
+	user.RecentActivity, err = LastPost(UserID)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
 	}
-	user.Posts = posts
-	user.Comments = comments
-	user.Likes = likes
-	user.Dislikes = dislikes
-	user.RecentActivity = lastpost
 	return &user, nil
 }
 

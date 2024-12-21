@@ -29,41 +29,46 @@ func CreatePost(title, content string, categories []string, userID int64) error 
 	return nil
 }
 
-func GetAllPosts(status string) ([]structs.Post, error) {
-	rows, err := DB.Query(" SELECT p.id, p.title, p.content, p.created_at, u.username FROM posts p JOIN users u ON p.user_id = u.id ORDER BY p.created_at DESC")
+func GetAllPosts(status string, size, page int64) ([]structs.Post, error) {
+	rows, err := DB.Query("SELECT p.id, p.title, p.content, p.created_at, u.username FROM posts p JOIN users u ON p.user_id = u.id ORDER BY p.created_at DESC LIMIT ? OFFSET ?", size, size*page)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 	var posts []structs.Post
 	for rows.Next() {
-		var p structs.Post
-		err := rows.Scan(&p.ID, &p.Title, &p.Content, &p.CreatedAt, &p.Author)
+		var post structs.Post
+		err := rows.Scan(&post.ID, &post.Title, &post.Content, &post.CreatedAt, &post.Author)
 		if err != nil {
 			return nil, err
 		}
-		likes, err := CountLikes(p.ID)
+		post.TotalLikes, err = CountLikes(post.ID)
 		if err != nil {
 			return nil, err
 		}
-		dislikes, err := CountDislikes(p.ID)
+		post.TotalDislikes, err = CountDislikes(post.ID)
 		if err != nil {
 			return nil, err
 		}
-		comments, err := CountComments(p.ID)
+		post.TotalComments, err = CountComments(post.ID)
 		if err != nil {
 			return nil, err
 		}
-		categories, err := GetCategories(p.ID)
+		post.Categories, err = GetCategories(post.ID)
 		if err != nil {
 			return nil, err
 		}
-		p.TotalLikes = likes
-		p.TotalDislikes = dislikes
-		p.TotalComments = comments
-		p.Categories = categories
-		p.Status = status
-		posts = append(posts, p)
+		post.Status = status
+		posts = append(posts, post)
+	}
+	return posts, nil
+}
+
+func CountPosts() (float64, error) {
+	var posts float64
+	err := DB.QueryRow("SELECT COUNT(*) FROM posts").Scan(&posts)
+	if err != nil {
+		return 0, err
 	}
 	return posts, nil
 }
@@ -71,29 +76,25 @@ func GetAllPosts(status string) ([]structs.Post, error) {
 func GetPostByID(id int64) (*structs.Post, error) {
 	post := &structs.Post{}
 	err := DB.QueryRow("SELECT p.id, p.title, p.user_id, p.content, p.created_at, u.username FROM posts p JOIN users u ON p.user_id = u.id WHERE p.id == ?",
-	id).Scan(&post.ID, &post.Title, &post.UserID, &post.Content, &post.CreatedAt, &post.Author)
+		id).Scan(&post.ID, &post.Title, &post.UserID, &post.Content, &post.CreatedAt, &post.Author)
 	if err != nil {
 		return nil, err
 	}
-	likes, err := CountLikes(post.ID)
+	post.TotalLikes, err = CountLikes(post.ID)
 	if err != nil {
 		return nil, err
 	}
-	dislikes, err := CountDislikes(post.ID)
+	post.TotalDislikes, err = CountDislikes(post.ID)
 	if err != nil {
 		return nil, err
 	}
-	comments, err := CountComments(post.ID)
+	post.TotalComments, err = CountComments(post.ID)
 	if err != nil {
 		return nil, err
 	}
-	categories, err := GetCategories(post.ID)
+	post.Categories, err = GetCategories(post.ID)
 	if err != nil {
 		return nil, err
 	}
-	post.TotalLikes = likes
-	post.TotalDislikes = dislikes
-	post.TotalComments = comments
-	post.Categories = categories
 	return post, nil
 }

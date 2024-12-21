@@ -451,6 +451,16 @@
             </div>
         </div>
         {{end}}
+
+        <div id="pagination">
+            {{range .Pagination}}
+            <form action="/page/{{.}}" method="GET">
+                <button type="submit" class="post-action-btn">
+                    {{.}}
+                </button>
+            </form>
+            {{end}}
+        </div>
     </div>
 </body>
 

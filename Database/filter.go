@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	structs "forum/Data"
+	"math"
 )
 
 func GetFilterPosts(user *structs.Session, categories []string) ([]structs.Post, error) {
@@ -11,44 +12,51 @@ func GetFilterPosts(user *structs.Session, categories []string) ([]structs.Post,
 	var err error
 	for _, Category := range categories {
 		switch Category {
-		case "All": return GetAllPosts(user.Status)
-		case "MyPosts": rows, err = SelectPost(user.UserID)
-		case "MyLikes": rows, err = SelectLike(user.UserID)
-		default: rows, err = SelectCategory(Category)
+		case "All":
+			return GetAllPosts(user.Status, 20, 1)
+		case "MyPosts":
+			rows, err = SelectPost(user.UserID)
+		case "MyLikes":
+			rows, err = SelectLike(user.UserID)
+		default:
+			rows, err = SelectCategory(Category)
 		}
 		if err != nil {
 			return nil, err
 		}
 		defer rows.Close()
 		for rows.Next() {
-			var p structs.Post
-			err := rows.Scan(&p.ID, &p.Title, &p.Content, &p.CreatedAt, &p.Author)
+			var post structs.Post
+			err := rows.Scan(&post.ID, &post.Title, &post.Content, &post.CreatedAt, &post.Author)
 			if err != nil {
 				return nil, err
 			}
-			likes, err := CountLikes(p.ID)
+			post.TotalLikes, err = CountLikes(post.ID)
 			if err != nil {
 				return nil, err
 			}
-			dislikes, err := CountDislikes(p.ID)
+			post.TotalDislikes, err = CountDislikes(post.ID)
 			if err != nil {
 				return nil, err
 			}
-			comments, err := CountComments(p.ID)
+			post.TotalComments, err = CountComments(post.ID)
 			if err != nil {
 				return nil, err
 			}
-			categories, err := GetCategories(p.ID)
+			post.Categories, err = GetCategories(post.ID)
 			if err != nil {
 				return nil, err
 			}
-			p.TotalLikes = likes
-			p.TotalDislikes = dislikes
-			p.TotalComments = comments
-			p.Categories = categories
-			p.Status = user.Status
-			if NotExist(p.ID, posts) {
-				posts = append(posts, p)
+			totalPosts, err := CountPosts()
+			if err != nil {
+				return nil, err
+			}
+			for i := int64(1); i <= int64(math.Ceil(totalPosts/20)); i++ {
+				post.TotalPosts = append(post.TotalPosts, i)
+			}
+			post.Status = user.Status
+			if NotExist(post.ID, posts) {
+				posts = append(posts, post)
 			}
 		}
 	}
@@ -99,9 +107,9 @@ func NotExist(PostID int64, Posts []structs.Post) bool {
 
 func SortingPost(Posts []structs.Post) []structs.Post {
 	for i := 0; i < len(Posts); i++ {
-		for j := i+1; j < len(Posts); j++ {
+		for j := i + 1; j < len(Posts); j++ {
 			if Posts[j].CreatedAt.Before(Posts[i].CreatedAt) {
-				Posts[i], Posts[j] = Posts[j],Posts[i]
+				Posts[i], Posts[j] = Posts[j], Posts[i]
 			}
 		}
 	}

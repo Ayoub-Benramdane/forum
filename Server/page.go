@@ -2,19 +2,20 @@ package server
 
 import (
 	"html/template"
-	"math"
 	"net/http"
-	"strings"
+	"strconv"
 
 	structs "forum/Data"
 	database "forum/Database"
 )
 
-func Home(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found"})
+func Page(w http.ResponseWriter, r *http.Request) {
+	page, err := strconv.ParseInt(r.URL.Path[len("/page/"):], 10, 64)
+	if err != nil {
+		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid page ID"})
 		return
-	} else if r.Method != http.MethodPost && r.Method != http.MethodGet {
+	}
+	if r.Method != http.MethodPost && r.Method != http.MethodGet {
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed"})
 		return
 	}
@@ -27,24 +28,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	if user == nil {
 		user = &structs.Session{Status: "Disconnected"}
 	}
-	if r.Method == http.MethodPost {
-		title := strings.TrimSpace(r.FormValue("title"))
-		content := strings.TrimSpace(r.FormValue("content"))
-		if title == "" || content == "" {
-			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Check your input"})
-			return
-		}
-		if err := r.ParseForm(); err != nil {
-			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error parsing form"})
-			return
-		}
-		categories := r.Form["category"]
-		if errCrePost := database.CreatePost(title, content, categories, user.UserID); errCrePost != nil {
-			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Creating post"})
-			return
-		}
-	}
-	posts, errLoadPost := database.GetAllPosts(user.Status, 20, 0)
+	posts, errLoadPost := database.GetAllPosts(user.Status, 20, page-1)
 	if errLoadPost != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading posts"})
 		return
@@ -71,16 +55,4 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		Pagination: pagination,
 	}
 	tmpl.Execute(w, data)
-}
-
-func Pagination() ([]int64, error) {
-	totalPosts, err := database.CountPosts()
-	if err != nil {
-		return nil, err
-	}
-	var pagination []int64
-	for i := int64(1); i <= int64(math.Ceil(totalPosts/20)); i++ {
-		pagination = append(pagination, i)
-	}
-	return pagination, nil
 }

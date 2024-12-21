@@ -20,7 +20,7 @@ func Post(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid post ID"})
 		return
 	}
-	user := database.GetUserConnected()
+	user := database.GetUserConnected(r)
 	if user == nil {
 		user = &structs.Session{Status: "Disconnected"}
 	}

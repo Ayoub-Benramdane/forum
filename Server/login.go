@@ -26,7 +26,7 @@ func LogIn(w http.ResponseWriter, r *http.Request) {
 }
 
 func LogInGet(w http.ResponseWriter, r *http.Request) {
-	if user := database.GetUserConnected(); user != nil {
+	if user := database.GetUserConnected(r); user != nil {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 	tmpl, tmplErr := template.ParseFiles("Template/login.html")
@@ -45,7 +45,7 @@ func LogInPost(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "Check Username Or Password"})
 		return
 	}
-	if errData := database.CreateSession(user.Username, user.ID); errData != nil {
+	if errData := database.CreateSession(w,user.Username, user.ID); errData != nil {
 		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "Error Connection"})
 		return
 	}

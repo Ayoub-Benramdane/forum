@@ -23,9 +23,10 @@ func CreateTables() error {
 	_, err = DB.Exec(`
         CREATE TABLE IF NOT EXISTS session (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT NOT NULL,
-            user_id INTEGER NOT NULL,
-            statut TEXT NOT NULL,
+    		username TEXT NOT NULL UNIQUE,
+    		user_id INTEGER NOT NULL UNIQUE,
+    		statut TEXT NOT NULL,
+    		last_activity TIMESTAMP NOT NULL,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         )
     `)

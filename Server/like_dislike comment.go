@@ -29,7 +29,7 @@ func LikeComment(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid comment ID"})
 		return
 	}
-	user := database.GetUserConnected()
+	user := database.GetUserConnected(r)
 	if !database.CheckLikeComment(user.UserID, id_post, id_comment) {
 		if err := database.AddLikeComment(user.UserID, id_post, id_comment); err != nil {
 			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Adding Like"})
@@ -62,7 +62,7 @@ func DislikeComment(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid comment ID"})
 		return
 	}
-	user := database.GetUserConnected()
+	user := database.GetUserConnected(r)
 	if !database.CheckDislikeComment(user.UserID, id_post, id_comment) {
 		if err := database.AddDislikeComment(user.UserID, id_post, id_comment); err != nil {
 			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Adding Like"})

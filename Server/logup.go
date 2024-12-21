@@ -29,7 +29,7 @@ func LogUp(w http.ResponseWriter, r *http.Request) {
 }
 
 func LogUpGet(w http.ResponseWriter, r *http.Request) {
-	if user := database.GetUserConnected(); user != nil {
+	if user := database.GetUserConnected(r); user != nil {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 	tmpl, tmplErr := template.ParseFiles("Template/logup.html")

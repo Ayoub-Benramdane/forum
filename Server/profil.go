@@ -11,7 +11,7 @@ import (
 )
 
 func Profil(w http.ResponseWriter, r *http.Request) {
-	user := database.GetUserConnected()
+	user := database.GetUserConnected(r)
 	if r.URL.Path != "/profil" || user == nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found"})
 		return
@@ -33,7 +33,7 @@ func Profil(w http.ResponseWriter, r *http.Request) {
 }
 
 func EditProfil(w http.ResponseWriter, r *http.Request) {
-	user := database.GetUserConnected()
+	user := database.GetUserConnected(r)
 	if r.URL.Path != "/editProfil" || user == nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found"})
 		return
@@ -55,7 +55,7 @@ func EditProfilGet(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading profil edit page"})
 		return
 	}
-	user := database.GetUserConnected()
+	user := database.GetUserConnected(r)
 	info, errLoadInfo := database.GetInfoUser(user.UserID)
 	if errLoadInfo != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading Info for user"})
@@ -84,7 +84,7 @@ func EditProfilPost(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error processing registration"})
 		return
 	}
-	user := database.GetUserConnected()
+	user := database.GetUserConnected(r)
 	if errUpdate := database.UpdateInfo(user.UserID, username, email); errUpdate != nil {
 		if strings.Contains(errUpdate.Error(), "UNIQUE constraint failed") {
 			Errors(w, structs.Error{Code: http.StatusConflict, Message: "Username already taken"})

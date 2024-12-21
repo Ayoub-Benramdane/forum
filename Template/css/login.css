@@ -1,8 +1,8 @@
 :root {
-    --primary-color: #4f42b3;
-    --primary-bg: #181818;
-    --secondary-bg: #262626;
-    --primary-text: #F9F9F9;
+    --primary-color: #776ad6;
+    --primary-bg: #212121;
+    --secondary-bg: #404040;
+    --primary-text: #FAFAFA;
     --secondary-text: #fff;
 }
 
@@ -25,7 +25,9 @@ body {
     width: 100%;
     margin: 20px;
     display: flex;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: 0px 8px 0px 0px rgba(0, 0, 0, 0.75);
+    -webkit-box-shadow: 0px 8px 0px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0px 8px 0px 0px rgba(0, 0, 0, 0.75);
     flex-direction: column;
     gap: 10px;
     max-width: 350px;
@@ -72,7 +74,7 @@ body {
 .message,
 .signin {
     color: var(--primary-text);
-    font-size: 14px;
+    font-size: 15px;
 }
 
 .signin {

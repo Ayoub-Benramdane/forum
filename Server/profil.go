@@ -19,7 +19,7 @@ func Profil(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed"})
 		return
 	}
-	tmpl, tmplErr := template.ParseFiles("Template/html/profil.html")
+	tmpl, tmplErr := template.ParseFiles("./Template/html/profil.html")
 	if tmplErr != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load profil page template"})
 		return

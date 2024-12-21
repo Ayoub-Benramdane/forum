@@ -17,7 +17,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed"})
 		return
 	}
-	tmpl, tmplErr := template.ParseFiles("Template/html/home.html")
+	tmpl, tmplErr := template.ParseFiles("./Template/html/home.html")
 	if tmplErr != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load home page template"})
 		return

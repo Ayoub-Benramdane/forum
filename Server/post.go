@@ -29,7 +29,7 @@ func Post(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Post not found"})
 		return
 	}
-	tmpl, err := template.ParseFiles("Template/post.html")
+	tmpl, err := template.ParseFiles("./Template/html/post.html")
 	if err != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load post page template"})
 		return

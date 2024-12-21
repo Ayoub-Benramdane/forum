@@ -29,7 +29,7 @@ func LogInGet(w http.ResponseWriter, r *http.Request) {
 	if user := database.GetUserConnected(); user != nil {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
-	tmpl, tmplErr := template.ParseFiles("Template/html/login.html")
+	tmpl, tmplErr := template.ParseFiles("./Template/html/login.html")
 	if tmplErr != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load login page template"})
 		return

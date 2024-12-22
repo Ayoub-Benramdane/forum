@@ -1,0 +1,50 @@
+:root {
+    --primary-color: #776AD6;
+    --secondary-color: #272727;
+    --text-color: #f8f2ff;
+    --card-color: #404040;
+    --bg-color: #212121;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Ubuntu", serif;
+}
+
+.layout {
+    width: 100%;
+
+    display: grid;
+    grid:
+        "header header header" auto "leftSide body rightSide" 1fr "footer footer footer" auto / auto 1fr auto;
+    gap: 50px;
+}
+section {
+    text-align: center;
+}
+.header {
+    grid-area: header;
+    background-color: #212121;
+}
+
+.leftSide {
+    grid-area: leftSide;
+    background-color: #998e8e;
+}
+
+.body {
+    grid-area: body;
+    background-color: #8f8f8f;
+}
+
+.rightSide {
+    grid-area: rightSide;
+    background-color: #555555;
+}
+
+.footer {
+    grid-area: footer;
+    background-color: #3d3d3d;
+}

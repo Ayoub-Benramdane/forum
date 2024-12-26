@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - Forum - {{.Code}}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" href="./Template/css/style.css">
+</head>
+
+<body>
+    <div class="error-container">
+        <div class="error-card">
+            <img src="https://media.istockphoto.com/id/1197233052/sv/vektor/sidan-hittades-inte-fel-404-robot-fix-reparation-fatal-br%C3%B6t-krasch-handritad-skiss-vektor.jpg?s=170667a&w=0&k=20&c=3xWhh68h8UVoTDnS-EiiGur2GPaGDthU5EETRJFPYYw="
+                alt="" width="100%">
+            <h1 class="error-title">Error {{.Code}}</h1>
+            <p class="error-message">{{.Message}}</p>
+            <a href="/" class="btn btn-primary">Return to Home</a>
+        </div>
+    </div>
+</body>
+
+</html>

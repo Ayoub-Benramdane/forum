@@ -8,7 +8,7 @@ import (
 
 func Errors(w http.ResponseWriter, err structs.Error) {
 	w.WriteHeader(err.Code)
-	tmpl, tmplErr := template.ParseFiles("Template/errors.html")
+	tmpl, tmplErr := template.ParseFiles("Template/html/errors.html")
 	if tmplErr != nil {
 		http.Error(w, "Status Internal Server Error 500", http.StatusInternalServerError)
 		return

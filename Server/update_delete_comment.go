@@ -30,9 +30,17 @@ func DeleteComment(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid comment ID"})
 		return
 	}
-	if database.DeleteCommentId(id_post, id_comment) != nil {
+	user := database.GetUserConnected()
+	UserID, errCom := database.GetComment(id_comment)
+	if errCom != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Comment"})
 		return
+	}
+	if user.UserID == UserID {
+		if database.DeleteCommentId(id_post, id_comment) != nil {
+			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Comment"})
+			return
+		}
 	}
 	http.Redirect(w, r, fmt.Sprintf("/post/%d", id_post), http.StatusSeeOther)
 }
@@ -70,7 +78,7 @@ func EditCommentGet(w http.ResponseWriter, r *http.Request, id_post, id_comment 
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Comment not found"})
 		return
 	}
-	tmpl, err := template.ParseFiles("Template/editPostComment.html")
+	tmpl, err := template.ParseFiles("Template/html/editPostComment.html")
 	if err != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load post page template"})
 		return

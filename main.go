@@ -14,6 +14,10 @@ func main() {
 	} else if err := database.ConnectDatabase(); err != nil {
         log.Fatalf("Failed to initialize database: %v", err)
     }
+
+	fs := http.FileServer(http.Dir("./Template"))
+	http.Handle("/Template/", http.StripPrefix("/Template/", fs))
+	
 	http.HandleFunc("/register", server.LogUp)
 	http.HandleFunc("/login", server.LogIn)
 	http.HandleFunc("/logout", server.LogOut)

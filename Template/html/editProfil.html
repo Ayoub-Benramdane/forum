@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./Template/css/style.css">
+    <title>Edit Profile</title>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="logo">Forum</a>
+            <div class="user-menu">
+                <form action="/logout" method="POST">
+                    <button type="submit" class="btn btn-secondary">Logout</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <h1 class="page-title">Edit Profile</h1>
+            <form action="/editProfil" method="POST">
+                <div class="form-group">
+                    <label class="form-label" for="username">Username</label>
+                    <input type="text" id="username" name="username" class="form-input" value="{{.Username}}" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">Email</label>
+                    <input type="email" id="email" name="email" class="form-input" value="{{.Email}}" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="new-password">New Password (leave blank to keep current)</label>
+                    <input type="password" id="new-password" name="password" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="confirm-password">Confirm New Password</label>
+                    <input type="password" id="confirm-password" name="confirm-password" class="form-input">
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a href="/profil" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

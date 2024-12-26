@@ -50,7 +50,7 @@ func EditPostGet(w http.ResponseWriter, r *http.Request, id_post int64) {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Post not found"})
 		return
 	}
-	tmpl, err := template.ParseFiles("Template/editPostComment.html")
+	tmpl, err := template.ParseFiles("Template/html/editPostComment.html")
 	if err != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load edit post page template"})
 		return

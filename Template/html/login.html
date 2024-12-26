@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Forum</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./Template/css/style.css">
+</head>
+<body>
+    <form action="/login" method="POST" class="form">
+        <p class="title">Login </p>
+        <label>
+            <input type="text" id="username" name="username" class="input" required>
+            <span>Email</span>
+        </label>
+
+        <label>
+            <input type="password" id="password" name="password" class="input" required>
+            <span>Password</span>
+        </label>
+        <button class="submit">Submit</button>
+        <p class="signin">Don't have an account? <a href="/register">Sign up</a> </p>
+    </form>
+</body>
+
+</html>

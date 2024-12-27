@@ -3,6 +3,7 @@ package database
 import (
 	"fmt"
 	structs "forum/Data"
+	"time"
 )
 
 func GetInfoUser(UserID int64) (*structs.User, error) {
@@ -73,11 +74,20 @@ func LastPost(UserID int64) (*structs.Post, error) {
 	}
 	defer rows.Close()
 	var posts []structs.Post
+	var date time.Time
 	for rows.Next() {
 		var post structs.Post
-		err := rows.Scan(&post.Title, &post.Content, &post.CreatedAt)
+		err := rows.Scan(&post.Title, &post.Content, &date)
 		if err != nil {
 			return nil, err
+		}
+		timeAgo := time.Since(date)
+		if timeAgo.Minutes() < 1 {
+			post.CreatedAt = "Just now"
+		} else if timeAgo.Minutes() < 60 {
+			post.CreatedAt = fmt.Sprintf("%d minutes ago", int(timeAgo.Minutes()))
+		} else {
+			post.CreatedAt = fmt.Sprintf("%d hours ago", int(timeAgo.Hours()))
 		}
 		posts = append(posts, post)
 	}

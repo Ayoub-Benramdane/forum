@@ -27,10 +27,9 @@ body::before {
 }
 
 .wrapper {
-    width: 400px;
+    width: 600px;
     border-radius: 8px;
     padding: 30px;
-    text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -45,15 +44,38 @@ h2 {
     font-size: 2rem;
     margin-bottom: 20px;
     color: #fff;
+    text-align: center;
 }
 
-.input-field {
+.input-field,
+.textarea-field {
     position: relative;
     border-bottom: 2px solid #ccc;
     margin: 15px 0;
 }
 
-.input-field label {
+.input-field input,
+.textarea-field textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #fff;
+}
+
+.input-field input {
+    height: 40px;
+}
+
+.textarea-field textarea {
+    height: 200px;
+    resize: none;
+    padding-top: 10px;
+}
+
+.input-field label,
+.textarea-field label {
     position: absolute;
     top: 50%;
     left: 0;
@@ -64,54 +86,27 @@ h2 {
     transition: 0.15s ease;
 }
 
-.input-field input {
-    width: 100%;
-    height: 40px;
-    background: transparent;
-    border: none;
-    outline: none;
-    font-size: 16px;
-    color: #fff;
+.textarea-field label {
+    top: 20px;
 }
 
 .input-field input:focus~label,
-.input-field input:valid~label {
+.input-field input:valid~label,
+.textarea-field textarea:focus~label,
+.textarea-field textarea:valid~label {
     font-size: 0.8rem;
     top: 10px;
     transform: translateY(-120%);
 }
 
-.forget {
+.button-group {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 25px 0 35px 0;
-    color: #fff;
-}
-
-#remember {
-    accent-color: #fff;
-}
-
-.forget label {
-    display: flex;
-    align-items: center;
-}
-
-.forget label p {
-    margin-left: 8px;
-}
-
-.wrapper a {
-    color: #efefef;
-    text-decoration: none;
-}
-
-.wrapper a:hover {
-    text-decoration: underline;
+    gap: 15px;
+    margin-top: 30px;
 }
 
 button {
+    flex: 1;
     background: #fff;
     color: #000;
     font-weight: 600;
@@ -122,6 +117,10 @@ button {
     font-size: 16px;
     border: 2px solid transparent;
     transition: 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 button:hover {
@@ -130,8 +129,12 @@ button:hover {
     background: rgba(255, 255, 255, 0.15);
 }
 
-.register {
-    text-align: center;
-    margin-top: 30px;
+.cancel-btn {
+    background: transparent;
     color: #fff;
+    border-color: #fff;
+}
+
+.cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
 }

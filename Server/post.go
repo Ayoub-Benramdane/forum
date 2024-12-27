@@ -4,7 +4,6 @@ import (
 	"html/template"
 	"net/http"
 	"strconv"
-	"strings"
 
 	structs "forum/Data"
 	database "forum/Database"
@@ -34,18 +33,7 @@ func Post(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load post page template"})
 		return
 	}
-	if r.Method == http.MethodPost {
-		content := strings.TrimSpace(r.FormValue("content"))
-		if content == "" {
-			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Check your input"})
-			return
-		}
-		if errCrePost := database.CreateComment(content, user.UserID, id_post); errCrePost != nil {
-			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Creating Comment"})
-			return
-		}
-	}
-	comments, errLoadComment := database.GetAllComments(id_post, user.Status)
+	comments, errLoadComment := database.GetAllComments(id_post)
 	if errLoadComment != nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Comments not found"})
 		return

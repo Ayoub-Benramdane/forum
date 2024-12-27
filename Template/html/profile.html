@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="./Template/css/profil.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="profile-header">
+            <h2>{{.Username}}</h2>
+            <p class="email">{{.Email}}</p>
+        </div>
+
+        <div class="profile-content">
+            <div class="section">
+                <h3>Personal Information</h3>
+                <div class="input-field">
+                    <input type="text" value="{{.Username}}" required>
+                    <label>Full Name</label>
+                </div>
+                <div class="input-field">
+                    <input type="email" value="{{.Email}}" required>
+                    <label>Email Address</label>
+                </div>
+                <div class="input-field">
+                    <input type="text" value="{{.CreatedAt.Format `January 2, 2006 at 3:04 PM`}}" required>
+                    <label>Joined On</label>
+                </div>
+            </div>
+            <div class="section">
+                <h3>User Activity</h3>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span>{{.Posts}}</span>
+                        <span>Posts</span>
+                        <span>|</span>
+                        <span>{{.Comments}}</span>
+                        <span>Comments</span>
+                        <span>|</span>
+                        <span>{{.Likes}}</span>
+                        <span>Likes</span>
+                        <span>|</span>
+                        <span>{{.Dislikes}}</span>
+                        <span>Dislikes</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Recent Activity</h3>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        {{if .RecentActivity}}
+                        <label>{{.RecentActivity.CreatedAt}}</label>
+                        <div class="input-field">
+                            <input type="text" value="{{.RecentActivity.Title}}" />
+                            <label>Title</label>
+                        </div>
+                        <div class="input-field">
+                            <input type="text" value="{{.RecentActivity.Content}}" />
+                        </div>
+                        {{else}}
+                        <p>No recent activity.</p>
+                        {{end}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="save-btn"><a href="/profile-edit" class="myLink">Edit Profile</a></button>
+            <button class="password-btn"><a href="/" class="myLink">Back To Home</a></button>
+        </div>
+    </div>
+    </div>
+</body>
+
+</html>

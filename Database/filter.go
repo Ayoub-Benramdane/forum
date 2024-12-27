@@ -2,8 +2,10 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
 	structs "forum/Data"
 	"math"
+	"time"
 )
 
 func GetFilterPosts(user *structs.Session, categories []string) ([]structs.Post, error) {
@@ -13,7 +15,7 @@ func GetFilterPosts(user *structs.Session, categories []string) ([]structs.Post,
 	for _, Category := range categories {
 		switch Category {
 		case "All":
-			return GetAllPosts(user.Status, 20, 1)
+			return GetAllPosts(20, 1)
 		case "MyPosts":
 			rows, err = SelectPost(user.UserID)
 		case "MyLikes":
@@ -27,9 +29,20 @@ func GetFilterPosts(user *structs.Session, categories []string) ([]structs.Post,
 		defer rows.Close()
 		for rows.Next() {
 			var post structs.Post
-			err := rows.Scan(&post.ID, &post.Title, &post.Content, &post.CreatedAt, &post.Author)
+			var date time.Time
+			err := rows.Scan(&post.ID, &post.Title, &post.Content, &date, &post.Author)
 			if err != nil {
 				return nil, err
+			}
+			timeAgo := time.Since(date)
+			if timeAgo.Minutes() < 1 {
+				post.CreatedAt = "Just now"
+			} else if timeAgo.Minutes() < 60 {
+				post.CreatedAt = fmt.Sprintf("%d minutes ago", int(timeAgo.Minutes()))
+			} else if timeAgo.Minutes() < 60*24 {
+				post.CreatedAt = fmt.Sprintf("%d hours ago", int(timeAgo.Hours()))
+			} else {
+				post.CreatedAt = fmt.Sprintf("%d days ago", int(timeAgo.Hours())/24)
 			}
 			post.TotalLikes, err = CountLikes(post.ID)
 			if err != nil {
@@ -54,13 +67,13 @@ func GetFilterPosts(user *structs.Session, categories []string) ([]structs.Post,
 			for i := int64(1); i <= int64(math.Ceil(totalPosts/20)); i++ {
 				post.TotalPosts = append(post.TotalPosts, i)
 			}
-			post.Status = user.Status
 			if NotExist(post.ID, posts) {
 				posts = append(posts, post)
 			}
 		}
 	}
-	return SortingPost(posts), nil
+	// return SortingPost(posts), nil
+	return posts, nil
 }
 
 func SelectCategory(Category string) (*sql.Rows, error) {
@@ -105,13 +118,13 @@ func NotExist(PostID int64, Posts []structs.Post) bool {
 	return true
 }
 
-func SortingPost(Posts []structs.Post) []structs.Post {
-	for i := 0; i < len(Posts); i++ {
-		for j := i + 1; j < len(Posts); j++ {
-			if Posts[j].CreatedAt.Before(Posts[i].CreatedAt) {
-				Posts[i], Posts[j] = Posts[j], Posts[i]
-			}
-		}
-	}
-	return Posts
-}
+// func SortingPost(Posts []structs.Post) []structs.Post {
+// 	for i := 0; i < len(Posts); i++ {
+// 		for j := i + 1; j < len(Posts); j++ {
+// 			if Posts[j].CreatedAt.Before(Posts[i].CreatedAt) {
+// 				Posts[i], Posts[j] = Posts[j], Posts[i]
+// 			}
+// 		}
+// 	}
+// 	return Posts
+// }

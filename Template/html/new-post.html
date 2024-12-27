@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Post</title>
+    <link rel="stylesheet" href="./Template/css/new-post.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        <form action="/new-post" method="post">
+            <h2>Create New Post</h2>
+            <div class="input-field">
+                <input type="text" name="title" id="title" required>
+                <label>Post Title</label>
+            </div>
+                <label style="color: white;">Post Categories</label>
+            <div class="input-field">
+                <select name="category" id="category" class="form-select" multiple required>
+                    {{range .Categories}}
+                    <option value="{{.Name}}">{{.Name}}</option>
+                    {{end}}
+                </select>
+            </div>
+            <div class="textarea-field">
+                <textarea name="content" id="content" placeholder="What's on your mind?" required></textarea>
+                <label>Post Content</label>
+            </div>
+            <div class="button-group">
+                <button type="submit"><i class="fas fa-paper-plane"></i> Post</button>
+                <button type="button" class="cancel-btn"><i class="fas fa-times"></i><a href="/" class="myLink">Cancel</a></button>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>

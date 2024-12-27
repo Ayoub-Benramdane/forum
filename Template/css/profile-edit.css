@@ -81,37 +81,14 @@ h2 {
     transform: translateY(-120%);
 }
 
-.forget {
+.button-group {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 25px 0 35px 0;
-    color: #fff;
-}
-
-#remember {
-    accent-color: #fff;
-}
-
-.forget label {
-    display: flex;
-    align-items: center;
-}
-
-.forget label p {
-    margin-left: 8px;
-}
-
-.wrapper a {
-    color: #efefef;
-    text-decoration: none;
-}
-
-.wrapper a:hover {
-    text-decoration: underline;
+    gap: 15px;
+    margin-top: 30px;
 }
 
 button {
+    flex: 1;
     background: #fff;
     color: #000;
     font-weight: 600;
@@ -130,8 +107,12 @@ button:hover {
     background: rgba(255, 255, 255, 0.15);
 }
 
-.register {
-    text-align: center;
-    margin-top: 30px;
+.cancel-btn {
+    background: transparent;
     color: #fff;
+    border-color: #fff;
+}
+
+.cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
 }

@@ -29,14 +29,13 @@ type Post struct {
 	Title         string    `sqlite:"title" json:"title"`
 	Content       string    `sqlite:"content" json:"content"`
 	UserID        int64     `sqlite:"user_id" json:"user_id"`
-	CreatedAt     time.Time `sqlite:"created_at" json:"created_at"`
+	CreatedAt     string `sqlite:"created_at" json:"created_at"`
 	Author        string    `sqlite:"author" json:"author"`
 	TotalLikes    int64     `sqlite:"total_likes" json:"total_likes"`
 	TotalDislikes int64     `sqlite:"total_dislikes" json:"total_dislikes"`
 	TotalComments int64     `sqlite:"total_comments" json:"total_comments"`
 	TotalPosts    []int64     `sqlite:"total_posts" json:"total_posts"`
 	Categories    []string  `sqlite:"categories" json:"categories"`
-	Status        string    `sqlite:"status" json:"status"`
 }
 
 type Comment struct {
@@ -44,11 +43,10 @@ type Comment struct {
 	Content       string    `sqlite:"content" json:"content"`
 	UserID        int64     `sqlite:"user_id" json:"user_id"`
 	PostID        int64     `sqlite:"post_id" json:"post_id"`
-	CreatedAt     time.Time `sqlite:"created_at" json:"created_at"`
+	CreatedAt     string `sqlite:"created_at" json:"created_at"`
 	Author        string    `sqlite:"author" json:"author"`
 	TotalLikes    int64     `sqlite:"total_likes" json:"total_likes"`
 	TotalDislikes int64     `sqlite:"total_dislikes" json:"total_dislikes"`
-	Status        string    `sqlite:"status" json:"status"`
 }
 
 type Category struct {

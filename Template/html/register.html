@@ -1,40 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./Template/css/style.css">
-    <title>Sign Up - Forum</title>
+    <title>Registration - Form</title>
+    <link rel="stylesheet" href="./Template/css/register.css">
 </head>
 
 <body>
-
-    <form action="/register" method="POST" id="signupForm" class="form">
-        <p class="title">Register </p>
-        <label>
-            <input type="text" id="username" name="username" class="input" required minlength="3" maxlength="20"
-                pattern="^[a-zA-Z0-9_]+$"
-                title="Username must be 3-20 characters, only letters, numbers, and underscores">
-            <span>Username</span>
-        </label>
-        <label>
-            <input type="email" id="email" name="email" class="input" required>
-            <span>Email</span>
-        </label>
-
-        <label>
-            <input type="password" id="password" name="password" class="input" required minlength="8">
-            <span>Password</span>
-        </label>
-        <label>
-            <input type="password" id="confirmPassword" name="confirm-password" class="input" required>
-            <span>Confirm password</span>
-        </label>
-        <button class="submit">Submit</button>
-        <p class="signin">Already have an acount ? <a href="/login">Sign in</a> </p>
-    </form>
-
+    <div class="wrapper">
+        <form action="/register" method="post">
+            <h2>Register</h2>
+            <div class="input-field">
+                <input type="text" name="username" id="username" required>
+                <label>Full Name</label>
+            </div>
+            <div class="input-field">
+                <input type="email" id="email" name="email" required>
+                <label>Email Address</label>
+            </div>
+            <div class="input-field">
+                <input type="password" id="password" name="password" required>
+                <label>Create Password</label>
+            </div>
+            <div class="input-field">
+                <input type="password" id="confirm-password" name="confirm-password" required>
+                <label>Confirm Password</label>
+            </div>
+            <button type="submit">Register</button>
+            <div class="login">
+                <p>Already have an account? <a href="/login">Login</a></p>
+            </div>
+        </form>
+    </div>
 </body>
 
 </html>

@@ -1,6 +1,7 @@
 package database
 
 import (
+	"fmt"
 	"time"
 
 	structs "forum/Data"
@@ -17,18 +18,29 @@ func GetComment(commentID int64) (int64, error) {
 	return userID, err
 }
 
-func GetAllComments(PostID int64, status string) ([]structs.Comment, error) {
+func GetAllComments(PostID int64) ([]structs.Comment, error) {
 	rows, err := DB.Query("SELECT c.id, c.user_id, c.content, c.created_at, u.username FROM comments c JOIN users u ON c.user_id = u.id WHERE c.post_id = ? ORDER BY c.created_at DESC", PostID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 	var comments []structs.Comment
+	var date time.Time
 	for rows.Next() {
 		var comment structs.Comment
-		err := rows.Scan(&comment.ID, &comment.UserID, &comment.Content, &comment.CreatedAt, &comment.Author)
+		err := rows.Scan(&comment.ID, &comment.UserID, &comment.Content, &date, &comment.Author)
 		if err != nil {
 			return nil, err
+		}
+		timeAgo := time.Since(date)
+		if timeAgo.Minutes() < 1 {
+			comment.CreatedAt = "Just now"
+		} else if timeAgo.Minutes() < 60 {
+			comment.CreatedAt = fmt.Sprintf("%d minutes ago", int(timeAgo.Minutes()))
+		} else if timeAgo.Minutes() < 60*24 {
+			comment.CreatedAt = fmt.Sprintf("%d hours ago", int(timeAgo.Hours()))
+		} else {
+			comment.CreatedAt = fmt.Sprintf("%d days ago", int(timeAgo.Hours())/24)
 		}
 		comment.TotalLikes, err = CountLikesComment(PostID, comment.ID)
 		if err != nil {
@@ -39,7 +51,6 @@ func GetAllComments(PostID int64, status string) ([]structs.Comment, error) {
 			return nil, err
 		}
 		comment.PostID = PostID
-		comment.Status = status
 		comments = append(comments, comment)
 	}
 	return comments, nil

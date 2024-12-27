@@ -1,28 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Forum</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./Template/css/style.css">
+    <link rel="stylesheet" href="./Template/css/login.css">
 </head>
-<body>
-    <form action="/login" method="POST" class="form">
-        <p class="title">Login </p>
-        <label>
-            <input type="text" id="username" name="username" class="input" required>
-            <span>Email</span>
-        </label>
 
-        <label>
-            <input type="password" id="password" name="password" class="input" required>
-            <span>Password</span>
-        </label>
-        <button class="submit">Submit</button>
-        <p class="signin">Don't have an account? <a href="/register">Sign up</a> </p>
-    </form>
+<body>
+    <div class="wrapper">
+        <form action="/login" method="post">
+            <h2>Login</h2>
+            <div class="input-field">
+                <input type="text" id="username" name="username" required>
+                <label>Username</label>
+            </div>
+            <div class="input-field">
+                <input type="password" id="password" name="password" required>
+                <label>Enter your password</label>
+            </div>
+            <button type="submit">Log In</button>
+            <div class="register">
+                <p>Don't have an account? <a href="/register">Register</a></p>
+            </div>
+        </form>
+    </div>
 </body>
 
 </html>

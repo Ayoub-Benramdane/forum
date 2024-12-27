@@ -28,7 +28,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 	if user == nil {
 		user = &structs.Session{Status: "Disconnected"}
 	}
-	posts, errLoadPost := database.GetAllPosts(user.Status, 20, page-1)
+	posts, errLoadPost := database.GetAllPosts(20, page-1)
 	if errLoadPost != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading posts"})
 		return

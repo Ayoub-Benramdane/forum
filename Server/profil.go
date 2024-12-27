@@ -10,16 +10,16 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func Profil(w http.ResponseWriter, r *http.Request) {
+func Profile(w http.ResponseWriter, r *http.Request) {
 	user := database.GetUserConnected()
-	if r.URL.Path != "/profil" || user == nil {
+	if r.URL.Path != "/profile" || user == nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found"})
 		return
 	} else if r.Method != http.MethodPost && r.Method != http.MethodGet {
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed"})
 		return
 	}
-	tmpl, tmplErr := template.ParseFiles("Template/html/profil.html")
+	tmpl, tmplErr := template.ParseFiles("Template/html/profile.html")
 	if tmplErr != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load profil page template"})
 		return
@@ -34,7 +34,7 @@ func Profil(w http.ResponseWriter, r *http.Request) {
 
 func EditProfil(w http.ResponseWriter, r *http.Request) {
 	user := database.GetUserConnected()
-	if r.URL.Path != "/editProfil" || user == nil {
+	if r.URL.Path != "/profile-edit" || user == nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found"})
 		return
 	}
@@ -50,7 +50,7 @@ func EditProfil(w http.ResponseWriter, r *http.Request) {
 }
 
 func EditProfilGet(w http.ResponseWriter, r *http.Request) {
-	tmpl, tmplErr := template.ParseFiles("Template/html/editProfil.html")
+	tmpl, tmplErr := template.ParseFiles("Template/html/profile-edit.html")
 	if tmplErr != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading profil edit page"})
 		return
@@ -99,5 +99,5 @@ func EditProfilPost(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	http.Redirect(w, r, "/profil", http.StatusSeeOther)
+	http.Redirect(w, r, "/profile", http.StatusSeeOther)
 }

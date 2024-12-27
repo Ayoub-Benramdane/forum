@@ -1,6 +1,7 @@
 package database
 
 import (
+	"fmt"
 	"time"
 
 	structs "forum/Data"
@@ -29,7 +30,7 @@ func CreatePost(title, content string, categories []string, userID int64) error 
 	return nil
 }
 
-func GetAllPosts(status string, size, page int64) ([]structs.Post, error) {
+func GetAllPosts(size, page int64) ([]structs.Post, error) {
 	rows, err := DB.Query("SELECT p.id, p.title, p.content, p.created_at, u.username FROM posts p JOIN users u ON p.user_id = u.id ORDER BY p.created_at DESC LIMIT ? OFFSET ?", size, size*page)
 	if err != nil {
 		return nil, err
@@ -38,9 +39,20 @@ func GetAllPosts(status string, size, page int64) ([]structs.Post, error) {
 	var posts []structs.Post
 	for rows.Next() {
 		var post structs.Post
-		err := rows.Scan(&post.ID, &post.Title, &post.Content, &post.CreatedAt, &post.Author)
+		var date time.Time
+		err := rows.Scan(&post.ID, &post.Title, &post.Content, &date, &post.Author)
 		if err != nil {
 			return nil, err
+		}
+		timeAgo := time.Since(date)
+		if timeAgo.Minutes() < 1 {
+			post.CreatedAt = "Just now"
+		} else if timeAgo.Minutes() < 60 {
+			post.CreatedAt = fmt.Sprintf("%d minutes ago", int(timeAgo.Minutes()))
+		} else if timeAgo.Minutes() < 60*24 {
+			post.CreatedAt = fmt.Sprintf("%d hours ago", int(timeAgo.Hours()))
+		} else {
+			post.CreatedAt = fmt.Sprintf("%d days ago", int(timeAgo.Hours())/24)
 		}
 		post.TotalLikes, err = CountLikes(post.ID)
 		if err != nil {
@@ -58,7 +70,6 @@ func GetAllPosts(status string, size, page int64) ([]structs.Post, error) {
 		if err != nil {
 			return nil, err
 		}
-		post.Status = status
 		posts = append(posts, post)
 	}
 	return posts, nil
@@ -75,10 +86,21 @@ func CountPosts() (float64, error) {
 
 func GetPostByID(id int64) (*structs.Post, error) {
 	post := &structs.Post{}
+	var date time.Time
 	err := DB.QueryRow("SELECT p.id, p.title, p.user_id, p.content, p.created_at, u.username FROM posts p JOIN users u ON p.user_id = u.id WHERE p.id == ?",
-		id).Scan(&post.ID, &post.Title, &post.UserID, &post.Content, &post.CreatedAt, &post.Author)
+		id).Scan(&post.ID, &post.Title, &post.UserID, &post.Content, &date, &post.Author)
 	if err != nil {
 		return nil, err
+	}
+	timeAgo := time.Since(date)
+	if timeAgo.Minutes() < 1 {
+		post.CreatedAt = "Just now"
+	} else if timeAgo.Minutes() < 60 {
+		post.CreatedAt = fmt.Sprintf("%d minutes ago", int(timeAgo.Minutes()))
+	} else if timeAgo.Minutes() < 60*24 {
+		post.CreatedAt = fmt.Sprintf("%d hours ago", int(timeAgo.Hours()))
+	} else {
+		post.CreatedAt = fmt.Sprintf("%d days ago", int(timeAgo.Hours())/24)
 	}
 	post.TotalLikes, err = CountLikes(post.ID)
 	if err != nil {

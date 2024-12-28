@@ -4,8 +4,8 @@ import (
 	"html/template"
 	"net/http"
 
-	database "forum/Database"
 	structs "forum/Data"
+	database "forum/Database"
 )
 
 func Filter(w http.ResponseWriter, r *http.Request) {
@@ -40,14 +40,21 @@ func Filter(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading posts", Page: "Home", Path: "/"})
 		return
 	}
+	pagination, errPage := Pagination()
+	if errPage != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading pagination", Page: "Home", Path: "/"})
+		return
+	}
 	data := struct {
 		User       *structs.Session
 		Posts      []structs.Post
 		Categories []structs.Category
+		Pagination []int64
 	}{
 		User:       user,
 		Posts:      posts,
 		Categories: categories,
+		Pagination: pagination,
 	}
 	tmpl.Execute(w, data)
 }

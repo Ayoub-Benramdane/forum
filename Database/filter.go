@@ -15,7 +15,7 @@ func GetFilterPosts(user *structs.Session, categories []string) ([]structs.Post,
 	for _, Category := range categories {
 		switch Category {
 		case "All":
-			return GetAllPosts(20, 1)
+			return GetAllPosts(20, 0)
 		case "MyPosts":
 			rows, err = SelectPost(user.UserID)
 		case "MyLikes":

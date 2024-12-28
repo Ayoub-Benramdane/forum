@@ -8,6 +8,9 @@ import (
 )
 
 func CreatePost(title, content string, categories []string, userID int64) error {
+	if userID == 0 {
+		return fmt.Errorf("session closed")
+	}
 	result, err := DB.Exec("INSERT INTO posts (title, content, user_id, created_at) VALUES (?, ?, ?, ?)", title, content, userID, time.Now())
 	if err != nil {
 		return err
@@ -40,20 +43,10 @@ func GetAllPosts(size, page int64) ([]structs.Post, error) {
 	for rows.Next() {
 		var post structs.Post
 		var date time.Time
-		err := rows.Scan(&post.ID, &post.Title, &post.Content, &date, &post.Author)
-		if err != nil {
+		if err := rows.Scan(&post.ID, &post.Title, &post.Content, &date, &post.Author); err != nil {
 			return nil, err
 		}
-		timeAgo := time.Since(date)
-		if timeAgo.Minutes() < 1 {
-			post.CreatedAt = "Just now"
-		} else if timeAgo.Minutes() < 60 {
-			post.CreatedAt = fmt.Sprintf("%d minutes ago", int(timeAgo.Minutes()))
-		} else if timeAgo.Minutes() < 60*24 {
-			post.CreatedAt = fmt.Sprintf("%d hours ago", int(timeAgo.Hours()))
-		} else {
-			post.CreatedAt = fmt.Sprintf("%d days ago", int(timeAgo.Hours())/24)
-		}
+		post.CreatedAt = TimeAgo(date)
 		post.TotalLikes, err = CountLikes(post.ID)
 		if err != nil {
 			return nil, err
@@ -92,16 +85,7 @@ func GetPostByID(id int64) (*structs.Post, error) {
 	if err != nil {
 		return nil, err
 	}
-	timeAgo := time.Since(date)
-	if timeAgo.Minutes() < 1 {
-		post.CreatedAt = "Just now"
-	} else if timeAgo.Minutes() < 60 {
-		post.CreatedAt = fmt.Sprintf("%d minutes ago", int(timeAgo.Minutes()))
-	} else if timeAgo.Minutes() < 60*24 {
-		post.CreatedAt = fmt.Sprintf("%d hours ago", int(timeAgo.Hours()))
-	} else {
-		post.CreatedAt = fmt.Sprintf("%d days ago", int(timeAgo.Hours())/24)
-	}
+	post.CreatedAt = TimeAgo(date)
 	post.TotalLikes, err = CountLikes(post.ID)
 	if err != nil {
 		return nil, err

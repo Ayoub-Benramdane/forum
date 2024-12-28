@@ -10,27 +10,22 @@ func GetInfoUser(UserID int64) (*structs.User, error) {
 	var user structs.User
 	err := DB.QueryRow("SELECT * FROM users WHERE id = ?", UserID).Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.CreatedAt)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	user.Posts, err = CountPostsUser(UserID)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	user.Comments, err = CountCommentsUser(UserID)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	user.Likes, user.Dislikes, err = CountLikesUser(UserID)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	user.RecentActivity, err = LastPost(UserID)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	return &user, nil
@@ -81,14 +76,7 @@ func LastPost(UserID int64) (*structs.Post, error) {
 		if err != nil {
 			return nil, err
 		}
-		timeAgo := time.Since(date)
-		if timeAgo.Minutes() < 1 {
-			post.CreatedAt = "Just now"
-		} else if timeAgo.Minutes() < 60 {
-			post.CreatedAt = fmt.Sprintf("%d minutes ago", int(timeAgo.Minutes()))
-		} else {
-			post.CreatedAt = fmt.Sprintf("%d hours ago", int(timeAgo.Hours()))
-		}
+		post.CreatedAt = TimeAgo(date)
 		posts = append(posts, post)
 	}
 	if posts != nil {
@@ -97,16 +85,22 @@ func LastPost(UserID int64) (*structs.Post, error) {
 	return nil, err
 }
 
-func UpdateInfo(UserID int64, username, email string) error {
-	_, err := DB.Exec("UPDATE users SET username = ?, email = ? WHERE id = ?", username, email, UserID)
+func UpdateInfo(userID int64, username, email string) error {
+	if userID == 0 {
+		return fmt.Errorf("session closed")
+	}
+	_, err := DB.Exec("UPDATE users SET username = ?, email = ? WHERE id = ?", username, email, userID)
 	if err != nil {
 		return err
 	}
-	_, err = DB.Exec("UPDATE session SET username = ? WHERE user_id = ?", username, UserID)
+	_, err = DB.Exec("UPDATE session SET username = ? WHERE user_id = ?", username, userID)
 	return err
 }
 
-func UpdatePass(UserID int64, password string) error {
-	_, err := DB.Exec("UPDATE users SET  password = ? WHERE id = ?", password, UserID)
+func UpdatePass(userID int64, password string) error {
+	if userID == 0 {
+		return fmt.Errorf("session closed")
+	}
+	_, err := DB.Exec("UPDATE users SET  password = ? WHERE id = ?", password, userID)
 	return err
 }

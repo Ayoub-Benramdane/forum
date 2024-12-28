@@ -33,8 +33,7 @@ func GetAllCategorys() ([]structs.Category, error) {
 	var categories []structs.Category
 	for rows.Next() {
 		var category structs.Category
-		err := rows.Scan(&category.Name)
-		if err != nil {
+		if err := rows.Scan(&category.Name); err != nil {
 			return nil, err
 		}
 		categories = append(categories, category)
@@ -51,8 +50,7 @@ func GetCategories(postID int64) ([]string, error) {
 	var categories []string
 	for rows.Next() {
 		var category structs.Category
-		err := rows.Scan(&category.Name)
-		if err != nil {
+		if err := rows.Scan(&category.Name); err != nil {
 			return nil, err
 		}
 		categories = append(categories, category.Name)

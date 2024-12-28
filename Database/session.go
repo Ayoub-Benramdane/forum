@@ -6,10 +6,7 @@ import (
 
 func CreateSession(username string, id int64) error {
 	_, err := DB.Exec("INSERT INTO session (username, user_id, statut) VALUES (?, ?, ?)", username, id, "Connected")
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func GetUserConnected() *structs.Session {
@@ -23,8 +20,5 @@ func GetUserConnected() *structs.Session {
 
 func DeleteSession() error {
 	_, err := DB.Exec("DELETE FROM session")
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }

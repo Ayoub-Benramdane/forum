@@ -2,7 +2,6 @@ package database
 
 import (
 	"database/sql"
-	"fmt"
 	structs "forum/Data"
 	"math"
 	"time"
@@ -14,14 +13,10 @@ func GetFilterPosts(user *structs.Session, categories []string) ([]structs.Post,
 	var err error
 	for _, Category := range categories {
 		switch Category {
-		case "All":
-			return GetAllPosts(20, 0)
-		case "MyPosts":
-			rows, err = SelectPost(user.UserID)
-		case "MyLikes":
-			rows, err = SelectLike(user.UserID)
-		default:
-			rows, err = SelectCategory(Category)
+		case "All": return GetAllPosts(20, 0)
+		case "MyPosts": rows, err = SelectPost(user.UserID)
+		case "MyLikes": rows, err = SelectLike(user.UserID)
+		default: rows, err = SelectCategory(Category)
 		}
 		if err != nil {
 			return nil, err
@@ -30,20 +25,10 @@ func GetFilterPosts(user *structs.Session, categories []string) ([]structs.Post,
 		for rows.Next() {
 			var post structs.Post
 			var date time.Time
-			err := rows.Scan(&post.ID, &post.Title, &post.Content, &date, &post.Author)
-			if err != nil {
+			if err := rows.Scan(&post.ID, &post.Title, &post.Content, &date, &post.Author); err != nil {
 				return nil, err
 			}
-			timeAgo := time.Since(date)
-			if timeAgo.Minutes() < 1 {
-				post.CreatedAt = "Just now"
-			} else if timeAgo.Minutes() < 60 {
-				post.CreatedAt = fmt.Sprintf("%d minutes ago", int(timeAgo.Minutes()))
-			} else if timeAgo.Minutes() < 60*24 {
-				post.CreatedAt = fmt.Sprintf("%d hours ago", int(timeAgo.Hours()))
-			} else {
-				post.CreatedAt = fmt.Sprintf("%d days ago", int(timeAgo.Hours())/24)
-			}
+			post.CreatedAt = TimeAgo(date)
 			post.TotalLikes, err = CountLikes(post.ID)
 			if err != nil {
 				return nil, err
@@ -72,8 +57,7 @@ func GetFilterPosts(user *structs.Session, categories []string) ([]structs.Post,
 			}
 		}
 	}
-	// return SortingPost(posts), nil
-	return posts, nil
+	return SortingPost(posts), nil
 }
 
 func SelectCategory(Category string) (*sql.Rows, error) {
@@ -102,8 +86,8 @@ func SelectLike(UserID int64) (*sql.Rows, error) {
 	rows, err := DB.Query(`
 			SELECT p.id, p.title, p.content, p.created_at, u.username
 			FROM posts p JOIN users u ON p.user_id = u.id
-			JOIN post_likes l ON l.post_id = p.id
-			WHERE l.user_id = ?
+			JOIN post_reactions r ON r.post_id = p.id
+			WHERE r.user_id = ?
 			ORDER BY p.created_at DESC
 		`, UserID)
 	return rows, err
@@ -117,14 +101,3 @@ func NotExist(PostID int64, Posts []structs.Post) bool {
 	}
 	return true
 }
-
-// func SortingPost(Posts []structs.Post) []structs.Post {
-// 	for i := 0; i < len(Posts); i++ {
-// 		for j := i + 1; j < len(Posts); j++ {
-// 			if Posts[j].CreatedAt.Before(Posts[i].CreatedAt) {
-// 				Posts[i], Posts[j] = Posts[j], Posts[i]
-// 			}
-// 		}
-// 	}
-// 	return Posts
-// }

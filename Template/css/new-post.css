@@ -21,7 +21,7 @@ body::before {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: url("https: //images.wallpapersden.com/image/download/guts-black-swordsman-art_a2ZnamuUmZqaraWkpJRobWllrWdma2U.jpg"), #000;
+    background: url("https://images.hdqwalls.com/download/the-jujutsu-kaisen-5k-k0-3840x2160.jpg");
     background-position: center;
     background-size: cover;
 }
@@ -94,10 +94,10 @@ h2 {
     height: auto;
     min-height: 100px;
     width: 100%;
+    background: transparent;
 }
 
 .form-select option {
-    background: #1a1a1a;
     color: #fff;
     padding: 0.5rem;
 }
@@ -139,18 +139,18 @@ button {
     gap: 8px;
 }
 
-button:hover {
-    color: #fff;
-    border-color: #fff;
-    background: rgba(255, 255, 255, 0.15);
+.myLink,
+.myLink:hover,
+.myLink:active,
+.myLink:visited,
+.myLink:focus {
+    text-decoration: none;
+    color: #000;
 }
 
-.cancel-btn {
-    background: transparent;
-    color: #fff;
-    border-color: #fff;
-}
-
+button:hover,
 .cancel-btn:hover {
+    color: #fff;
+    border-color: #fff;
     background: rgba(255, 255, 255, 0.15);
 }

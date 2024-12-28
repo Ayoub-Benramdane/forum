@@ -14,7 +14,6 @@ body {
     justify-content: center;
     min-height: 100vh;
     width: 100%;
-    padding: 20px 10px;
 }
 
 body::before {
@@ -22,7 +21,7 @@ body::before {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: url("https: //images.wallpapersden.com/image/download/guts-black-swordsman-art_a2ZnamuUmZqaraWkpJRobWllrWdma2U.jpg"), #000;
+    background: url("https://images.hdqwalls.com/download/the-jujutsu-kaisen-5k-k0-3840x2160.jpg");
     background-position: center;
     background-size: cover;
 }
@@ -32,6 +31,7 @@ body::before {
     max-width: 600px;
     border-radius: 8px;
     padding: 30px;
+    background: transparent;
     text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(8px);
@@ -41,35 +41,6 @@ body::before {
 .profile-header {
     text-align: center;
     margin-bottom: 30px;
-}
-
-.profile-pic {
-    position: relative;
-    width: 150px;
-    height: 150px;
-    margin: 0 auto 20px;
-}
-
-.profile-pic img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid rgba(255, 255, 255, 0.5);
-}
-
-.edit-pic {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
 }
 
 .edit-pic i {
@@ -91,7 +62,7 @@ h2 {
     text-align: left;
     margin-bottom: 30px;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.1);
+    border: rgba(255, 255, 255, 0.15) solid 1px;
     border-radius: 8px;
 }
 
@@ -117,9 +88,9 @@ h2 {
 }
 
 .input-field input {
+    background: transparent;
     width: 100%;
     height: 40px;
-    background: transparent;
     border: none;
     outline: none;
     font-size: 16px;
@@ -138,7 +109,6 @@ h2 {
     align-items: center;
     margin: 20px 0;
     padding: 10px;
-    background: rgba(255, 255, 255, 0.05);
     border-radius: 6px;
 }
 
@@ -168,38 +138,6 @@ h2 {
     opacity: 0;
     width: 0;
     height: 0;
-}
-
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(255, 255, 255, 0.2);
-    transition: .4s;
-    border-radius: 34px;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    transition: .4s;
-    border-radius: 50%;
-}
-
-input:checked+.slider {
-    background-color: rgba(255, 255, 255, 0.8);
-}
-
-input:checked+.slider:before {
-    transform: translateX(26px);
 }
 
 .button-group {
@@ -235,11 +173,6 @@ button {
 button:hover {
     border-color: #fff;
     background: rgba(255, 255, 255, 0.15);
-}
-
-.password-btn {
-    background: transparent;
-    border-color: #fff;
 }
 
 .password-btn:hover {

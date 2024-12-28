@@ -8,6 +8,9 @@ import (
 )
 
 func CreateComment(content string, userID, postID int64) error {
+	if userID == 0 {
+		return fmt.Errorf("session closed")
+	}
 	_, err := DB.Exec("INSERT INTO comments (content, user_id, post_id, created_at) VALUES (?, ?, ?, ?)", content, userID, postID, time.Now())
 	return err
 }
@@ -28,8 +31,7 @@ func GetAllComments(PostID int64) ([]structs.Comment, error) {
 	var date time.Time
 	for rows.Next() {
 		var comment structs.Comment
-		err := rows.Scan(&comment.ID, &comment.UserID, &comment.Content, &date, &comment.Author)
-		if err != nil {
+		if err := rows.Scan(&comment.ID, &comment.UserID, &comment.Content, &date, &comment.Author); err != nil {
 			return nil, err
 		}
 		timeAgo := time.Since(date)
@@ -59,8 +61,5 @@ func GetAllComments(PostID int64) ([]structs.Comment, error) {
 func CountComments(postID int64) (int64, error) {
 	var comments int64
 	err := DB.QueryRow("SELECT COUNT(*) FROM comments WHERE post_id = ?", postID).Scan(&comments)
-	if err != nil {
-		return 0, err
-	}
-	return comments, nil
+	return comments, err
 }

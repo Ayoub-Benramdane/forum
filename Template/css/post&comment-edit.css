@@ -15,13 +15,20 @@
 
 body {
     min-height: 100vh;
-    padding: 20px;
-    background-color: #1a1a1a;
     color: var(--primary-color);
 }
 
+body::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url("https://images.hdqwalls.com/download/the-jujutsu-kaisen-5k-k0-3840x2160.jpg");
+    background-position: center;
+    background-size: cover;
+}
+
 .navbar {
-    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -41,7 +48,6 @@ body {
 .container {
     max-width: 800px;
     margin: 80px auto 0;
-    padding: 2rem;
 }
 
 .card {
@@ -91,7 +97,6 @@ body {
 }
 
 .form-select option {
-    background: #1a1a1a;
     padding: 0.5rem;
 }
 

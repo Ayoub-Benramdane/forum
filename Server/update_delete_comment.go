@@ -31,16 +31,24 @@ func DeleteComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	user := database.GetUserConnected()
+	post, errPost := database.GetPostByID(id_post)
+	if errPost != nil {
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Post Not Found", Path: fmt.Sprintf("/post/%d", id_post)})
+		return
+	}
 	UserID, errCom := database.GetComment(id_comment)
 	if errCom != nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Comment Not Found", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
-	if user.UserID == UserID {
+	if user.UserID == UserID || user.UserID == post.UserID {
 		if database.DeleteCommentId(id_post, id_comment) != nil {
 			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Comment", Path: fmt.Sprintf("/post/%d", id_post)})
 			return
 		}
+	} else {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "you can't Delete Comment", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+		return
 	}
 	http.Redirect(w, r, fmt.Sprintf("/post/%d", id_post), http.StatusSeeOther)
 }
@@ -59,6 +67,16 @@ func EditComment(w http.ResponseWriter, r *http.Request) {
 	id_comment, err := strconv.ParseInt(ids[1], 10, 64)
 	if err != nil {
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid comment ID", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+		return
+	}
+	UserID, errCom := database.GetComment(id_comment)
+	if errCom != nil {
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Comment Not Found", Path: fmt.Sprintf("/post/%d", id_post)})
+		return
+	}
+	user := database.GetUserConnected()
+	if user.UserID != UserID {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "you can't Updating Comment", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
 	switch r.Method {

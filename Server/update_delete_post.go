@@ -18,8 +18,20 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 	} else if r.Method != http.MethodGet {
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
-	} else if database.DeletePostId(id_post) != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+	}
+	user := database.GetUserConnected()
+	post, errPost := database.GetPostByID(id_post)
+	if errPost != nil {
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Post Not Found", Path: fmt.Sprintf("/post/%d", id_post)})
+		return
+	}
+	if user.UserID == post.UserID {
+		if database.DeletePostId(id_post) != nil {
+			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+			return
+		}
+	} else {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "you can't Delete Post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
 	http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -29,6 +41,16 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 	id_post, err := strconv.ParseInt(r.URL.Path[len("/post/edit/"):], 10, 64)
 	if err != nil {
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid post ID", Page: "Home", Path: "/"})
+		return
+	}
+	user := database.GetUserConnected()
+	post, errPost := database.GetPostByID(id_post)
+	if errPost != nil {
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Post Not Found", Path: fmt.Sprintf("/post/%d", id_post)})
+		return
+	}
+	if user.UserID != post.UserID {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "you can't Updating Post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
 	switch r.Method {

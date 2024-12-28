@@ -1,5 +1,7 @@
 package database
 
+import "fmt"
+
 var like = "like"
 var dislike = "dislike"
 
@@ -10,6 +12,9 @@ func CheckLikeComment(userID, postID, commentID int64) bool {
 }
 
 func AddLikeComment(userID, postID, commentID int64) error {
+	if userID == 0 {
+		return fmt.Errorf("session closed")
+	}
 	if err := DeleteDislikeComment(userID, postID, commentID); err != nil {
 		return err
 	}
@@ -18,6 +23,9 @@ func AddLikeComment(userID, postID, commentID int64) error {
 }
 
 func DeleteLikeComment(userID, postID, commentID int64) error {
+	if userID == 0 {
+		return fmt.Errorf("session closed")
+	}
 	_, err := DB.Exec("DELETE FROM comment_reactions WHERE user_id = ? AND post_id = ? AND comment_id = ? AND type = ?", userID, postID, commentID, like)
 	return err
 }
@@ -25,10 +33,7 @@ func DeleteLikeComment(userID, postID, commentID int64) error {
 func CountLikesComment(postID, commentID int64) (int64, error) {
 	var likes int64
 	err := DB.QueryRow("SELECT COUNT(*) FROM comment_reactions WHERE post_id = ? AND comment_id = ? AND type = ?", postID, commentID, like).Scan(&likes)
-	if err != nil {
-		return 0, err
-	}
-	return likes, nil
+	return likes, err
 }
 
 func CheckDislikeComment(userID, postID, commentID int64) bool {
@@ -38,6 +43,9 @@ func CheckDislikeComment(userID, postID, commentID int64) bool {
 }
 
 func AddDislikeComment(userID, postID, commentID int64) error {
+	if userID == 0 {
+		return fmt.Errorf("session closed")
+	}
 	if err := DeleteLikeComment(userID, postID, commentID); err != nil {
 		return err
 	}
@@ -46,6 +54,9 @@ func AddDislikeComment(userID, postID, commentID int64) error {
 }
 
 func DeleteDislikeComment(userID, postID, commentID int64) error {
+	if userID == 0 {
+		return fmt.Errorf("session closed")
+	}
 	_, err := DB.Exec("DELETE FROM comment_reactions WHERE user_id = ? AND post_id = ? AND comment_id = ? AND type = ?", userID, postID, commentID, dislike)
 	return err
 }
@@ -53,8 +64,5 @@ func DeleteDislikeComment(userID, postID, commentID int64) error {
 func CountDislikesComment(postID, commentID int64) (int64, error) {
 	var likes int64
 	err := DB.QueryRow("SELECT COUNT(*) FROM comment_reactions WHERE post_id = ? AND comment_id = ? AND type = ?", postID, commentID, dislike).Scan(&likes)
-	if err != nil {
-		return 0, err
-	}
-	return likes, nil
+	return likes, err
 }

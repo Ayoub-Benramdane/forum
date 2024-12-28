@@ -12,33 +12,33 @@ import (
 
 func DeleteComment(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed"})
+		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return
 	}
 	ids := strings.Split(r.URL.Path[len("/post/delete_comment/"):], "/")
 	if len(ids) != 2 {
-		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid ID"})
+		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid ID", Page: "Home", Path: "/"})
 		return
 	}
 	id_post, err := strconv.ParseInt(ids[0], 10, 64)
 	if err != nil {
-		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid post ID"})
+		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid post ID", Page: "Home", Path: "/"})
 		return
 	}
 	id_comment, err := strconv.ParseInt(ids[1], 10, 64)
 	if err != nil {
-		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid comment ID"})
+		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid comment ID", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
 	user := database.GetUserConnected()
 	UserID, errCom := database.GetComment(id_comment)
 	if errCom != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Comment"})
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Comment Not Found", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
 	if user.UserID == UserID {
 		if database.DeleteCommentId(id_post, id_comment) != nil {
-			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Comment"})
+			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Comment", Path: fmt.Sprintf("/post/%d", id_post)})
 			return
 		}
 	}
@@ -48,17 +48,17 @@ func DeleteComment(w http.ResponseWriter, r *http.Request) {
 func EditComment(w http.ResponseWriter, r *http.Request) {
 	ids := strings.Split(r.URL.Path[len("/post/edit_comment/"):], "/")
 	if len(ids) != 2 {
-		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid ID"})
+		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid ID", Page: "Home", Path: "/"})
 		return
 	}
 	id_post, err := strconv.ParseInt(ids[0], 10, 64)
 	if err != nil {
-		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid post ID"})
+		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid post ID", Page: "Home", Path: "/"})
 		return
 	}
 	id_comment, err := strconv.ParseInt(ids[1], 10, 64)
 	if err != nil {
-		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid comment ID"})
+		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid comment ID", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
 	switch r.Method {
@@ -67,7 +67,7 @@ func EditComment(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		EditCommentPost(w, r, id_post, id_comment)
 	default:
-		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed"})
+		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
 }
@@ -75,12 +75,12 @@ func EditComment(w http.ResponseWriter, r *http.Request) {
 func EditCommentGet(w http.ResponseWriter, r *http.Request, id_post, id_comment int64) {
 	comment, errLoadPost := database.GetCommentByID(id_post, id_comment)
 	if errLoadPost != nil {
-		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Comment not found"})
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Comment not found", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
-	tmpl, err := template.ParseFiles("Template/html/editPostComment.html")
+	tmpl, err := template.ParseFiles("Template/html/post&comment-edit.html")
 	if err != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load post page template"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load post page template", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
 	data := struct {
@@ -96,10 +96,10 @@ func EditCommentGet(w http.ResponseWriter, r *http.Request, id_post, id_comment 
 func EditCommentPost(w http.ResponseWriter, r *http.Request, id_post, id_comment int64) {
 	content := strings.TrimSpace(r.FormValue("content"))
 	if content == "" {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Check your input"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Check your input", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	} else if errUpdtPost := database.UpdateComment(content, id_comment, id_post); errUpdtPost != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Updating post"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Updating post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
 	http.Redirect(w, r, fmt.Sprintf("/post/%d", id_post), http.StatusSeeOther)

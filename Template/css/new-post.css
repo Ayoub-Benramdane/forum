@@ -90,6 +90,22 @@ h2 {
     top: 20px;
 }
 
+.form-select {
+    height: auto;
+    min-height: 100px;
+    width: 100%;
+}
+
+.form-select option {
+    background: #1a1a1a;
+    color: #fff;
+    padding: 0.5rem;
+}
+
+.category-tags {
+    margin-bottom: 1.5rem;
+}
+
 .input-field input:focus~label,
 .input-field input:valid~label,
 .textarea-field textarea:focus~label,

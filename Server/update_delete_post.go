@@ -11,17 +11,15 @@ import (
 )
 
 func DeletePost(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed"})
-		return
-	}
 	id_post, err := strconv.ParseInt(r.URL.Path[len("/post/delete/"):], 10, 64)
 	if err != nil {
-		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid post ID"})
+		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid post ID", Page: "Home", Path: "/"})
 		return
-	}
-	if database.DeletePostId(id_post) != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Post"})
+	} else if r.Method != http.MethodGet {
+		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+		return
+	} else if database.DeletePostId(id_post) != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
 	http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -30,7 +28,7 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 func EditPost(w http.ResponseWriter, r *http.Request) {
 	id_post, err := strconv.ParseInt(r.URL.Path[len("/post/edit/"):], 10, 64)
 	if err != nil {
-		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid post ID"})
+		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid post ID", Page: "Home", Path: "/"})
 		return
 	}
 	switch r.Method {
@@ -39,7 +37,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		EditPostPost(w, r, id_post)
 	default:
-		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed"})
+		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
 }
@@ -47,17 +45,17 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 func EditPostGet(w http.ResponseWriter, r *http.Request, id_post int64) {
 	post, errLoadPost := database.GetPostByID(id_post)
 	if errLoadPost != nil {
-		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Post not found"})
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Post not found", Page: "Home", Path: "/"})
 		return
 	}
-	tmpl, err := template.ParseFiles("Template/html/editPostComment.html")
+	tmpl, err := template.ParseFiles("Template/html/post&comment-edit.html")
 	if err != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load edit post page template"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load edit post page template", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
 	categories, errLoadPost := database.GetAllCategorys()
 	if errLoadPost != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading categories"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading categories", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
 	data := struct {
@@ -74,16 +72,16 @@ func EditPostPost(w http.ResponseWriter, r *http.Request, id_post int64) {
 	title := strings.TrimSpace(r.FormValue("title"))
 	content := strings.TrimSpace(r.FormValue("content"))
 	if title == "" || content == "" {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Check your input"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Check your input", Page: "Post", Path: fmt.Sprintf("/post/edit/%d", id_post)})
 		return
 	}
 	if err := r.ParseForm(); err != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error parsing form"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error parsing form", Page: "Post", Path: fmt.Sprintf("/post/edit/%d", id_post)})
 		return
 	}
 	categories := r.Form["category"]
 	if errUpdtPost := database.UpdatePost(title, content, categories, id_post); errUpdtPost != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Updating post"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Updating post", Page: "Post", Path: fmt.Sprintf("/post/edit/%d", id_post)})
 		return
 	}
 	http.Redirect(w, r, fmt.Sprintf("/post/%d", id_post), http.StatusSeeOther)

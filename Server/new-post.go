@@ -10,7 +10,7 @@ import (
 
 func NewPost(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/new-post" {
-		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found"})
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
 		return
 	}
 	switch r.Method {
@@ -19,7 +19,7 @@ func NewPost(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		NewPostPost(w, r)
 	default:
-		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed"})
+		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return
 	}
 }
@@ -30,12 +30,12 @@ func NewPostGet(w http.ResponseWriter, r *http.Request) {
 	}
 	tmpl, tmplErr := template.ParseFiles("Template/html/new-post.html")
 	if tmplErr != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load new post page template"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load new post page template", Page: "Home", Path: "/"})
 		return
 	}
 	categories, errLoadPost := database.GetAllCategorys()
 	if errLoadPost != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading categories"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading categories", Page: "New-Post", Path: "/new-post"})
 		return
 	}
 	data := struct {
@@ -54,16 +54,16 @@ func NewPostPost(w http.ResponseWriter, r *http.Request) {
 	title := strings.TrimSpace(r.FormValue("title"))
 	content := strings.TrimSpace(r.FormValue("content"))
 	if title == "" || content == "" {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Check your input"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Check your input", Page: "New-Post", Path: "/new-post"})
 		return
 	}
 	if err := r.ParseForm(); err != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error parsing form"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error parsing form", Page: "New-Post", Path: "/new-post"})
 		return
 	}
 	categories := r.Form["category"]
 	if errCrePost := database.CreatePost(title, content, categories, user.UserID); errCrePost != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Creating post"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Creating post", Page: "New-Post", Path: "/new-post"})
 		return
 	}
 	http.Redirect(w, r, "/", http.StatusSeeOther)

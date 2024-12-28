@@ -14,7 +14,7 @@ import (
 
 func LogUp(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/register" {
-		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found"})
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
 		return
 	}
 	switch r.Method {
@@ -23,7 +23,7 @@ func LogUp(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		LogUpPost(w, r)
 	default:
-		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed"})
+		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return
 	}
 }
@@ -34,7 +34,7 @@ func LogUpGet(w http.ResponseWriter, r *http.Request) {
 	}
 	tmpl, tmplErr := template.ParseFiles("Template/html/register.html")
 	if tmplErr != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load logup page template"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load logup page template", Page: "Home", Path: "/"})
 		return
 	}
 	tmpl.Execute(w, nil)
@@ -46,24 +46,24 @@ func LogUpPost(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 	password2 := r.FormValue("confirm-password")
 	if password != password2 {
-		Errors(w, structs.Error{Code: http.StatusConflict, Message: "Password not matched"})
+		Errors(w, structs.Error{Code: http.StatusConflict, Message: "Password not matched", Page: "Register", Path: "/register"})
 		return
 	}
 	if errSigne := validateSignupInput(username, email, password); errSigne != nil {
-		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: errSigne.Error()})
+		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: errSigne.Error(), Page: "Register", Path: "/register"})
 		return
 	}
 	hashedPassword, errCrepting := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if errCrepting != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error processing registration"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error processing registration", Page: "Register", Path: "/register"})
 		return
 	}
 	if errCreate := database.CreateNewUser(username, email, string(hashedPassword)); errCreate != nil {
 		if strings.Contains(errCreate.Error(), "UNIQUE constraint failed") {
-			Errors(w, structs.Error{Code: http.StatusConflict, Message: "Username or email already taken"})
+			Errors(w, structs.Error{Code: http.StatusConflict, Message: "Username or email already taken", Page: "Register", Path: "/register"})
 			return
 		}
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error creating user"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error creating user", Page: "Register", Path: "/register"})
 		return
 	}
 	http.Redirect(w, r, "/login", http.StatusSeeOther)

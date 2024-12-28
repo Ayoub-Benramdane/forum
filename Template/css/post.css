@@ -132,6 +132,15 @@ body {
     color: rgba(255, 255, 255, 0.8);
 }
 
+.myLink,
+.myLink:hover,
+.myLink:active,
+.myLink:visited,
+.myLink:focus {
+    text-decoration: none;
+    color: #fff;
+}
+
 /* Comments Section */
 .comments-section {
     background: rgba(255, 255, 255, 0.1);

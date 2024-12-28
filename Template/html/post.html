@@ -7,6 +7,7 @@
     <title>Forum - Post Details</title>
     <link rel="stylesheet" href="./Template/css/post.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
 </head>
 
 <body>
@@ -14,27 +15,28 @@
         <!-- Post Content -->
         <div class="post">
             <div class="post-header">
-                {{if eq .User.Status "Connected"}}
                 <div class="post-info">
                     <span class="post-author">{{.Post.Author}}</span>
                     <span class="post-date">{{.Post.CreatedAt}}</span>
                 </div>
+                {{if eq .User.Status "Connected"}}
+                <div class="post-options">
+                    <button class="edit-btn"><i class="fas fa-edit"></i><a class="myLink"
+                            href="/post/edit/{{.Post.ID}}">Edit</a></button>
+                    <button class="delete-btn"><i class="fas fa-trash"></i><a class="myLink"
+                            href="/post/delete/{{.Post.ID}}">Delete</a></button>
+                </div>
                 {{end}}
-            </div>
-            <div class="post-options">
-                <button class="edit-btn"><i class="fas fa-edit"></i><a href="/post/edit/{{.Post.ID}}">Edit</a></button>
-                <button class="delete-btn"><i class="fas fa-trash"></i><a
-                        href="/post/delete/{{.Post.ID}}">Delete</a></button>
             </div>
             <h1 class="post-title">{{.Post.Title}}</h1>
             <div class="category-tags">
                 {{range .Post.Categories}}
                 <span class="category-tag">#{{.}}</span>
                 {{end}}
-            </div>
+            </div><br>
             <p class="post-content">{{.Post.Content}}</p>
             <div class="post-actions">
-                {{if eq .User.Status "Connected"}}
+                {{if eq $.User.Status "Connected"}}
                 <div class="like-dislike">
                     <button class="action-btn"><a href="/like/{{.Post.ID}}" class="myLink"><i
                                 class="fas fa-thumbs-up"></i>
@@ -51,7 +53,7 @@
                         <span>{{.Post.TotalDislikes}}</span></button>
                 </div>
                 {{end}}
-                <button class="comment-count"><i class="fas fa-comment">{{.Post.TotalComments}} Comment</a></button>
+                <button class="comment-count"> <i class="fas fa-comment"></i> {{.Post.TotalComments}} Comment</button>
             </div>
         </div>
 
@@ -61,7 +63,7 @@
             {{if eq .User.Status "Connected"}}
             <!-- New Comment Form -->
             <div class="new-comment">
-                <form action="/post/{{.Post.ID}}" method="POST">
+                <form action="/post/{{$.Post.ID}}" method="POST">
                     <div class="comment-form">
                         <textarea name="content" id="content" placeholder="Write a comment..." required></textarea>
                         <button type="submit"><i class="fas fa-paper-plane"></i> Post Comment</button>
@@ -85,29 +87,29 @@
                         </div>
                         {{if eq $.User.Status "Connected"}}
                         <div class="comment-options">
-                            <button class="edit-btn"><i class="fas fa-edit"></i><a
+                            <button class="edit-btn"><i class="fas fa-edit"></i><a class="myLink"
                                     href="/post/edit_comment/{{.PostID}}/{{.ID}}">Edit</a></button>
-                            <button class="delete-btn"><i class="fas fa-trash"></i><a
+                            <button class="delete-btn"><i class="fas fa-trash"></i><a class="myLink"
                                     href="/post/delete_comment/{{.PostID}}/{{.ID}}">Delete</a></button>
-                        </div>
+                        </div><br>
                         {{end}}
                         <p>{{.Content}}</p>
                         <div class="comment-actions">
-                            {{if eq .User.Status "Connected"}}
+                            {{if eq $.User.Status "Connected"}}
                             <div class="like-dislike">
                                 <button class="action-btn"><a href="/post/like_comment/{{.PostID}}/{{.ID}}"
                                         class="myLink"><i class="fas fa-thumbs-up"></i>
-                                        <span>{{.Post.TotalLikes}}</span></a></button>
+                                        <span>{{.TotalLikes}}</span></a></button>
                                 <button class="action-btn"><a href="/post/dislike_comment/{{.PostID}}/{{.ID}}"
                                         class="myLink"><i class="fas fa-thumbs-down"></i>
-                                        <span>{{.Post.TotalDislikes}}</span></a></button>
+                                        <span>{{.TotalDislikes}}</span></a></button>
                             </div>
                             {{else}}
                             <div class="like-dislike">
                                 <button class="action-btn"><i class="fas fa-thumbs-up"></i>
-                                    <span>{{.Post.TotalLikes}}</span></button>
+                                    <span>{{.TotalLikes}}</span></button>
                                 <button class="action-btn"><i class="fas fa-thumbs-down"></i>
-                                    <span>{{.Post.TotalDislikes}}</span></button>
+                                    <span>{{.TotalDislikes}}</span></button>
                             </div>
                             {{end}}
                         </div>

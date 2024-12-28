@@ -10,15 +10,15 @@ import (
 
 func Filter(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/filter" {
-		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found"})
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
 		return
 	} else if r.Method != http.MethodPost {
-		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed"})
+		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return
 	}
 	tmpl, tmplErr := template.ParseFiles("Template/html/home.html")
 	if tmplErr != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load home page template"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load home page template", Page: "Home", Path: "/"})
 		return
 	}
 	user := database.GetUserConnected()
@@ -26,18 +26,18 @@ func Filter(w http.ResponseWriter, r *http.Request) {
 		user = &structs.Session{Status: "Disconnected"}
 	}
 	if err := r.ParseForm(); err != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error parsing form"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error parsing form", Page: "Home", Path: "/"})
 		return
 	}
 	categorie := r.Form["category"]
 	posts, errLoadPost := database.GetFilterPosts(user, categorie)
 	if errLoadPost != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading posts"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading posts", Page: "Home", Path: "/"})
 		return
 	}
 	categories, errLoadCategory := database.GetAllCategorys()
 	if errLoadCategory != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading posts"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading posts", Page: "Home", Path: "/"})
 		return
 	}
 	data := struct {

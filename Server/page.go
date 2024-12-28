@@ -12,16 +12,16 @@ import (
 func Page(w http.ResponseWriter, r *http.Request) {
 	page, err := strconv.ParseInt(r.URL.Path[len("/page/"):], 10, 64)
 	if err != nil {
-		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid page ID"})
+		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid page ID", Page: "Home", Path: "/"})
 		return
 	}
 	if r.Method != http.MethodPost && r.Method != http.MethodGet {
-		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed"})
+		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return
 	}
 	tmpl, tmplErr := template.ParseFiles("Template/html/home.html")
 	if tmplErr != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load home page template"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load home page template", Page: "Home", Path: "/"})
 		return
 	}
 	user := database.GetUserConnected()
@@ -30,17 +30,17 @@ func Page(w http.ResponseWriter, r *http.Request) {
 	}
 	posts, errLoadPost := database.GetAllPosts(20, page-1)
 	if errLoadPost != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading posts"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading posts", Page: "Home", Path: "/"})
 		return
 	}
 	categories, errLoadPost := database.GetAllCategorys()
 	if errLoadPost != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading categories"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading categories", Page: "Home", Path: "/"})
 		return
 	}
 	pagination, errPage := Pagination()
 	if errPage != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading pagination"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading pagination", Page: "Home", Path: "/"})
 		return
 	}
 	data := struct {

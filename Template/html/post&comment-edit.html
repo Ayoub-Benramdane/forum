@@ -5,14 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit {{if .Post}}Post{{else}}Comment{{end}}</title>
-    <link rel="stylesheet" href="./Template/css/style.css">
+    <link rel="stylesheet" href="./Template/css/post&comment-edit.css">
 </head>
 
 <body>
     <nav class="navbar">
-        <div class="navbar-content">
-            <a href="/" class="logo">Forum</a>
-        </div>
+        <a href="/" class="logo">Forum</a>
     </nav>
 
     <div class="container">
@@ -29,12 +27,10 @@
                 </div>
 
                 <div class="category-tags">
-                    <label for="content" class="form-label">Categories</label>
-                    <select name="category" class="form-select" multiple>
+                    <label for="category" class="form-label">Categories</label>
+                    <select id="category" name="category" class="form-select" multiple>
                         {{range .Categories}}
-                        <option value="{{.Name}}">
-                            {{.Name}}
-                        </option>
+                        <option value="{{.Name}}">{{.Name}}</option>
                         {{end}}
                     </select>
                 </div>

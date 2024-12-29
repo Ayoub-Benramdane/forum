@@ -26,7 +26,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	if user == nil {
 		user = &structs.Session{Status: "Disconnected"}
 	}
-	posts, errLoadPost := database.GetAllPosts(20, 0)
+	posts, errLoadPost := database.GetAllPosts()
 	if errLoadPost != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading posts", Page: "Home", Path: "/"})
 		return
@@ -36,7 +36,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading categories", Page: "Home", Path: "/"})
 		return
 	}
-	pagination, errPage := Pagination()
+	pagination, errPage := Pagination([]string{"All"}, 0)
 	if errPage != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading pagination", Page: "Home", Path: "/"})
 		return
@@ -55,13 +55,21 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, data)
 }
 
-func Pagination() ([]int64, error) {
-	totalPosts, err := database.CountPosts()
-	if err != nil {
-		return nil, err
-	}
+func Pagination(categories []string, posts int) ([]int64, error) {
+	var totalPosts float64
+	var err error
 	var pagination []int64
-	for i := int64(1); i <= int64(math.Ceil(totalPosts/20)); i++ {
+	for _, cat := range categories {
+		if cat == "All" {
+			totalPosts, err = database.CountPosts()
+			if err != nil {
+				return nil, err
+			}
+			break
+		}
+		totalPosts = float64(posts)
+	}
+	for i := int64(1); i <= int64(math.Ceil(totalPosts/10)); i++ {
 		pagination = append(pagination, i)
 	}
 	return pagination, nil

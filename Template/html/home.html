@@ -56,7 +56,8 @@
                 <button type="submit" class="filter-post-btn">Apply Filters</button>
             </form>
             {{if eq .User.Status "Connected"}}
-            <button class="new-post-btn"><i class="fas fa-plus"></i><a href="/new-post">New Post</a></button>
+            <button class="new-post-btn"><a href="/new-post" class="myLink"><i class="fas fa-plus"></i>New
+                    Post</a></button>
             {{end}}
         </div>
 

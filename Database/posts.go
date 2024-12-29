@@ -33,8 +33,8 @@ func CreatePost(title, content string, categories []string, userID int64) error 
 	return nil
 }
 
-func GetAllPosts(size, page int64) ([]structs.Post, error) {
-	rows, err := DB.Query("SELECT p.id, p.title, p.content, p.created_at, u.username FROM posts p JOIN users u ON p.user_id = u.id ORDER BY p.created_at DESC LIMIT ? OFFSET ?", size, size*page)
+func GetAllPosts() ([]structs.Post, error) {
+	rows, err := DB.Query("SELECT p.id, p.title, p.content, p.created_at, u.username FROM posts p JOIN users u ON p.user_id = u.id ORDER BY p.created_at")
 	if err != nil {
 		return nil, err
 	}
@@ -65,14 +65,10 @@ func GetAllPosts(size, page int64) ([]structs.Post, error) {
 		}
 		posts = append(posts, post)
 	}
-	return posts, nil
-}
-
-func CountPosts() (float64, error) {
-	var posts float64
-	err := DB.QueryRow("SELECT COUNT(*) FROM posts").Scan(&posts)
-	if err != nil {
-		return 0, err
+	SortingPost(posts)
+	*Posts = posts
+	if len(posts) > 10 {
+		return posts[:10], nil
 	}
 	return posts, nil
 }
@@ -99,8 +95,17 @@ func GetPostByID(id int64) (*structs.Post, error) {
 		return nil, err
 	}
 	post.Categories, err = GetCategories(post.ID)
-	if err != nil {
-		return nil, err
-	}
-	return post, nil
+	return post, err
+}
+
+func CountPosts() (float64, error) {
+	var posts float64
+	err := DB.QueryRow("SELECT COUNT(*) FROM posts").Scan(&posts)
+	return posts, err
+}
+
+func CountPostsByCat() (float64, error) {
+	var posts float64
+	err := DB.QueryRow("SELECT COUNT(*) FROM posts").Scan(&posts)
+	return posts, err
 }

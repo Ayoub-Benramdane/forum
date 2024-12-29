@@ -3,9 +3,10 @@ package database
 import (
 	"database/sql"
 	structs "forum/Data"
-	"math"
 	"time"
 )
+
+var Posts = &structs.PostsShowing
 
 func GetFilterPosts(user *structs.Session, categories []string) ([]structs.Post, error) {
 	var posts []structs.Post
@@ -13,10 +14,14 @@ func GetFilterPosts(user *structs.Session, categories []string) ([]structs.Post,
 	var err error
 	for _, Category := range categories {
 		switch Category {
-		case "All": return GetAllPosts(20, 0)
-		case "MyPosts": rows, err = SelectPost(user.UserID)
-		case "MyLikes": rows, err = SelectLike(user.UserID)
-		default: rows, err = SelectCategory(Category)
+		case "All":
+			return GetAllPosts()
+		case "MyPosts":
+			rows, err = SelectPost(user.UserID)
+		case "MyLikes":
+			rows, err = SelectLike(user.UserID)
+		default:
+			rows, err = SelectCategory(Category)
 		}
 		if err != nil {
 			return nil, err
@@ -45,19 +50,17 @@ func GetFilterPosts(user *structs.Session, categories []string) ([]structs.Post,
 			if err != nil {
 				return nil, err
 			}
-			totalPosts, err := CountPosts()
-			if err != nil {
-				return nil, err
-			}
-			for i := int64(1); i <= int64(math.Ceil(totalPosts/20)); i++ {
-				post.TotalPosts = append(post.TotalPosts, i)
-			}
 			if NotExist(post.ID, posts) {
 				posts = append(posts, post)
 			}
 		}
 	}
-	return SortingPost(posts), nil
+	SortingPost(posts)
+	*Posts = posts
+	if len(posts) > 10 {
+		return posts[:10], nil
+	}
+	return posts, nil
 }
 
 func SelectCategory(Category string) (*sql.Rows, error) {

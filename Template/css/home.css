@@ -113,16 +113,15 @@ body {
 }
 
 .new-post-btn {
-    background: #fff;
+    background: rgba(255, 255, 255, 0.2);
     color: #000;
-    border: none;
-    padding: 8px 16px;
+    width: 180px;
+    padding: 8px 10px;
     border-radius: 4px;
     cursor: pointer;
     transition: 0.3s;
 }
 
-.new-post-btn:hover,
 .filter-post-btn:hover {
     background: rgba(255, 255, 255, 0.8);
 }

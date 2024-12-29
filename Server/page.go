@@ -9,6 +9,8 @@ import (
 	database "forum/Database"
 )
 
+var Posts = &structs.PostsShowing
+
 func Page(w http.ResponseWriter, r *http.Request) {
 	page, err := strconv.ParseInt(r.URL.Path[len("/page/"):], 10, 64)
 	if err != nil {
@@ -28,17 +30,22 @@ func Page(w http.ResponseWriter, r *http.Request) {
 	if user == nil {
 		user = &structs.Session{Status: "Disconnected"}
 	}
-	posts, errLoadPost := database.GetAllPosts(20, page-1)
-	if errLoadPost != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading posts", Page: "Home", Path: "/"})
-		return
+	x := (page - 1) * 10
+	y := x + 10
+	var posts []structs.Post
+	if int64(len(*Posts)) > y {
+		posts = (*Posts)[x:y]
+	} else if int64(len(*Posts)) > x {
+		posts = (*Posts)[x:]
+	} else {
+		posts = *Posts
 	}
 	categories, errLoadPost := database.GetAllCategorys()
 	if errLoadPost != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading categories", Page: "Home", Path: "/"})
 		return
 	}
-	pagination, errPage := Pagination()
+	pagination, errPage := Pagination([]string{"All"}, 0)
 	if errPage != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading pagination", Page: "Home", Path: "/"})
 		return

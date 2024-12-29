@@ -40,7 +40,7 @@ func Filter(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading posts", Page: "Home", Path: "/"})
 		return
 	}
-	pagination, errPage := Pagination()
+	pagination, errPage := Pagination(categorie, len(posts))
 	if errPage != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading pagination", Page: "Home", Path: "/"})
 		return

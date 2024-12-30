@@ -11,7 +11,7 @@ import (
 )
 
 func DeletePost(w http.ResponseWriter, r *http.Request) {
-	id_post, err := strconv.ParseInt(r.URL.Path[len("/post/delete/"):], 10, 64)
+	id_post, err := strconv.ParseInt(r.URL.Path[len("/delete/"):], 10, 64)
 	if err != nil {
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid post ID", Page: "Home", Path: "/"})
 		return
@@ -38,7 +38,7 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func EditPost(w http.ResponseWriter, r *http.Request) {
-	id_post, err := strconv.ParseInt(r.URL.Path[len("/post/edit/"):], 10, 64)
+	id_post, err := strconv.ParseInt(r.URL.Path[len("/edit/"):], 10, 64)
 	if err != nil {
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid post ID", Page: "Home", Path: "/"})
 		return

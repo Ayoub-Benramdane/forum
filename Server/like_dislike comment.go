@@ -14,7 +14,7 @@ func LikeComment(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return
 	}
-	ids := strings.Split(r.URL.Path[len("/post/like_comment/"):], "/")
+	ids := strings.Split(r.URL.Path[len("/like_comment/"):], "/")
 	if len(ids) != 2 {
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid ID", Page: "Home", Path: "/"})
 		return
@@ -47,7 +47,7 @@ func LikeComment(w http.ResponseWriter, r *http.Request) {
 }
 
 func DislikeComment(w http.ResponseWriter, r *http.Request) {
-	ids := strings.Split(r.URL.Path[len("/post/dislike_comment/"):], "/")
+	ids := strings.Split(r.URL.Path[len("/dislike_comment/"):], "/")
 	if len(ids) != 2 {
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid ID", Page: "Home", Path: "/"})
 		return

@@ -11,6 +11,34 @@
 </head>
 
 <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="/" class="logo">Forum</a>
+            {{if eq .User.Status "Connected"}}
+            <div class="user-info">
+                <form action="/profile" method="POST">
+                    <button class="user-button">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        <span>{{.User.Username}}</span>
+                    </button>
+                </form>
+                <form action="/logout" method="post">
+                    <button class="log-btn">Logout</button>
+                </form>
+            </div>
+            {{else}}
+            <div class="user-info">
+                <form action="/login" method="get">
+                    <button class="log-btn">Log In</button>
+                </form>
+            </div>
+            {{end}}
+        </div>
+    </nav>
     <div class="container">
         <!-- Post Content -->
         <div class="post">
@@ -21,10 +49,8 @@
                 </div>
                 {{if eq .User.Status "Connected"}}
                 <div class="post-options">
-                    <button class="edit-btn"><i class="fas fa-edit"></i><a class="myLink"
-                            href="/post/edit/{{.Post.ID}}">Edit</a></button>
-                    <button class="delete-btn"><i class="fas fa-trash"></i><a class="myLink"
-                            href="/post/delete/{{.Post.ID}}">Delete</a></button>
+                    <a class="myLink" href="/edit/{{.Post.ID}}"><button class="edit-btn"><i class="fas fa-edit"></i>Edit</button></a>
+                    <a class="myLink" href="/delete/{{.Post.ID}}"><button class="delete-btn"><i class="fas fa-trash"></i>Delete</button></a>
                 </div>
                 {{end}}
             </div>
@@ -87,20 +113,18 @@
                         </div>
                         {{if eq $.User.Status "Connected"}}
                         <div class="comment-options">
-                            <button class="edit-btn"><i class="fas fa-edit"></i><a class="myLink"
-                                    href="/post/edit_comment/{{.PostID}}/{{.ID}}">Edit</a></button>
-                            <button class="delete-btn"><i class="fas fa-trash"></i><a class="myLink"
-                                    href="/post/delete_comment/{{.PostID}}/{{.ID}}">Delete</a></button>
+                            <a class="myLink" href="/edit_comment/{{.PostID}}/{{.ID}}"><button class="edit-btn"><i class="fas fa-edit"></i>Edit</button></a>
+                            <a class="myLink" href="/delete_comment/{{.PostID}}/{{.ID}}"><button class="delete-btn"><i class="fas fa-trash"></i>Delete</button></a>
                         </div><br>
                         {{end}}
                         <p>{{.Content}}</p>
                         <div class="comment-actions">
                             {{if eq $.User.Status "Connected"}}
                             <div class="like-dislike">
-                                <button class="action-btn"><a href="/post/like_comment/{{.PostID}}/{{.ID}}"
+                                <button class="action-btn"><a href="/like_comment/{{.PostID}}/{{.ID}}"
                                         class="myLink"><i class="fas fa-thumbs-up"></i>
                                         <span>{{.TotalLikes}}</span></a></button>
-                                <button class="action-btn"><a href="/post/dislike_comment/{{.PostID}}/{{.ID}}"
+                                <button class="action-btn"><a href="/dislike_comment/{{.PostID}}/{{.ID}}"
                                         class="myLink"><i class="fas fa-thumbs-down"></i>
                                         <span>{{.TotalDislikes}}</span></a></button>
                             </div>

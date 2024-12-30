@@ -15,7 +15,7 @@ func DeleteComment(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return
 	}
-	ids := strings.Split(r.URL.Path[len("/post/delete_comment/"):], "/")
+	ids := strings.Split(r.URL.Path[len("/delete_comment/"):], "/")
 	if len(ids) != 2 {
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid ID", Page: "Home", Path: "/"})
 		return
@@ -54,7 +54,7 @@ func DeleteComment(w http.ResponseWriter, r *http.Request) {
 }
 
 func EditComment(w http.ResponseWriter, r *http.Request) {
-	ids := strings.Split(r.URL.Path[len("/post/edit_comment/"):], "/")
+	ids := strings.Split(r.URL.Path[len("/edit_comment/"):], "/")
 	if len(ids) != 2 {
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid ID", Page: "Home", Path: "/"})
 		return

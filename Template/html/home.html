@@ -56,8 +56,7 @@
                 <button type="submit" class="filter-post-btn">Apply Filters</button>
             </form>
             {{if eq .User.Status "Connected"}}
-            <button class="new-post-btn"><a href="/new-post" class="myLink"><i class="fas fa-plus"></i>New
-                    Post</a></button>
+            <a href="/new-post" class="myLink"><button class="new-post-btn"><i class="fas fa-plus"></i>New Post</button></a>
             {{end}}
         </div>
 
@@ -93,8 +92,8 @@
                             <span>{{.TotalDislikes}}</span></button>
                     </div>
                     {{end}}
-                    <button class="comment-btn"><a href="/post/{{.ID}}" class="myLink"><i class="fas fa-comment"></i>
-                            {{.TotalComments}} Comment</a></button>
+                    <a href="/post/{{.ID}}" class="myLink"><button class="comment-btn"><i class="fas fa-comment"></i>
+                            {{.TotalComments}} Comment</button></a>
                 </div>
             </div>
         </div>

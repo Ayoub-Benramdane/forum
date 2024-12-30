@@ -17,6 +17,10 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid page ID", Page: "Home", Path: "/"})
 		return
 	}
+	if page > int64(len(*Posts)+9)/10 {
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page Not Found", Page: "Home", Path: "/"})
+		return
+	}
 	if r.Method != http.MethodPost && r.Method != http.MethodGet {
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return

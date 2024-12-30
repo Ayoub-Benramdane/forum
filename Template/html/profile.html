@@ -60,6 +60,7 @@
                         </div>
                         <div class="input-field">
                             <input type="text" value="{{.RecentActivity.Content}}" />
+                            <label>Content</label>
                         </div>
                         {{else}}
                         <p>No recent activity.</p>
@@ -70,8 +71,8 @@
         </div>
 
         <div class="button-group">
-            <button class="save-btn"><a href="/profile-edit" class="myLink">Edit Profile</a></button>
-            <button class="password-btn"><a href="/" class="myLink">Back To Home</a></button>
+            <a href="/profile-edit" class="myLink"><button class="save-btn">Edit Profile</button></a>
+            <a href="/" class="myLink"><button class="password-btn">Back To Home</button></a>
         </div>
     </div>
     </div>

@@ -24,9 +24,9 @@ func CreateTables() error {
         CREATE TABLE IF NOT EXISTS session (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT NOT NULL,
-            user_id INTEGER NOT NULL,
+            user_id INTEGER NOT NULL UNIQUE,
 			token TEXT NOT NULL,
-            statut TEXT NOT NULL,
+            status TEXT NOT NULL,
 			created_at DATETIME NOT NULL,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         )

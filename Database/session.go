@@ -2,6 +2,7 @@ package database
 
 import (
 	"log"
+	"time"
 
 	structs "forum/Data"
 
@@ -9,14 +10,14 @@ import (
 )
 
 func CreateSession(username string, id int64, token string) error {
-	_, err := DB.Exec("INSERT INTO session (username, user_id,  statut, token) VALUES (?, ?, ?, ?)", username, id, "Connected", token)
+	_, err := DB.Exec("INSERT INTO session (username, user_id,  status, token,created_at) VALUES (?, ?, ?, ?, ?)", username, id, "Connected", token, time.Now())
 	return err
 }
 
 func GetUserConnected(token string) *structs.Session {
 	var session structs.Session
 	err := DB.QueryRow("SELECT id, username, user_id, status FROM session WHERE token = ?", token).Scan(&session.ID, &session.Username, &session.UserID, &session.Status)
-	if err != nil {
+	if err != nil || token == "" {
 		return nil
 	}
 	return &session

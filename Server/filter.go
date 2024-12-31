@@ -21,9 +21,9 @@ func Filter(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load home page template", Page: "Home", Path: "/"})
 		return
 	}
-	cookie, _ := r.Cookie("session")
+	cookie, err := r.Cookie("session")
 	user := database.GetUserConnected(cookie.Value)
-	if user == nil {
+	if err != nil {
 		user = &structs.Session{Status: "Disconnected"}
 	}
 	if err := r.ParseForm(); err != nil {

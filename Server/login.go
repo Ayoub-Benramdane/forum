@@ -53,7 +53,7 @@ func LogInPost(w http.ResponseWriter, r *http.Request) {
 	}
 	token := database.GenerateToken(username)
 	err1 := database.CreateSession(user.Username, user.ID, token)
-	fmt.Println(err1)
+	fmt.Println(err1, 555)
 	if err1 != nil {
 		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "Error Connection", Page: "Login", Path: "/login"})
 		return

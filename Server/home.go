@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"html/template"
 	"math"
 	"net/http"
@@ -23,14 +24,15 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	cookie, err := r.Cookie("session")
-	if err != nil || cookie.Value == "" {
+	if err != nil {
 		http.Redirect(w, r, "/login", http.StatusFound)
 		return
 	}
 	user := database.GetUserConnected(cookie.Value)
 	if user == nil {
-		user = &structs.Session{Status: "Disconnected"}
+		http.Redirect(w, r, "/logout", http.StatusFound)
 	}
+	fmt.Println(user)
 	posts, errLoadPost := database.GetAllPosts()
 	if errLoadPost != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading posts", Page: "Home", Path: "/"})

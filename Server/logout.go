@@ -1,8 +1,8 @@
 package server
 
 import (
-	database "forum/Database"
 	structs "forum/Data"
+	database "forum/Database"
 	"net/http"
 )
 
@@ -11,9 +11,14 @@ func LogOut(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return
 	}
-	if database.DeleteSession() != nil {
+	cookie,err := r.Cookie("session")
+	if err != nil || cookie.Value == "" {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "No cookies", Page: "Home", Path: "/"})
+	}
+	if database.DeleteSession(cookie.Value) != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Ending Session", Page: "Home", Path: "/"})
 		return
 	}
+	http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }

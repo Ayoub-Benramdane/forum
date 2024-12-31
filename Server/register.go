@@ -2,12 +2,13 @@ package server
 
 import (
 	"fmt"
-	database "forum/Database"
-	structs "forum/Data"
 	"html/template"
 	"net/http"
 	"regexp"
 	"strings"
+
+	structs "forum/Data"
+	database "forum/Database"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -29,9 +30,6 @@ func LogUp(w http.ResponseWriter, r *http.Request) {
 }
 
 func LogUpGet(w http.ResponseWriter, r *http.Request) {
-	if user := database.GetUserConnected(); user != nil {
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-	}
 	tmpl, tmplErr := template.ParseFiles("Template/html/register.html")
 	if tmplErr != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load logup page template", Page: "Home", Path: "/"})
@@ -75,8 +73,8 @@ func validateSignupInput(username, email, password string) error {
 	} else if !regexp.MustCompile(`^[a-zA-Z0-9_]+$`).MatchString(username) {
 		return fmt.Errorf("username can only contain letters, numbers, and underscores")
 	} else if !regexp.MustCompile(`^[^\s@]+@[^\s@]+\.[^\s@]+$`).MatchString(email) {
-        return fmt.Errorf("please enter a valid email address")
-    } else if len(password) < 8 {
+		return fmt.Errorf("please enter a valid email address")
+	} else if len(password) < 8 {
 		return fmt.Errorf("password must be at least 8 characters long")
 	} else if !regexp.MustCompile(`[A-Z]`).MatchString(password) || !regexp.MustCompile(`[a-z]`).MatchString(password) || !regexp.MustCompile(`[0-9]`).MatchString(password) || !regexp.MustCompile(`[^a-zA-Z0-9]`).MatchString(password) {
 		return fmt.Errorf("password must contain at least one uppercase letter, lowercase letter, number, and special character")

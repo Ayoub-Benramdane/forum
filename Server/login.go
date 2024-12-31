@@ -1,10 +1,13 @@
 package server
 
 import (
-	database "forum/Database"
-	structs "forum/Data"
+	"fmt"
 	"html/template"
 	"net/http"
+	"time"
+
+	structs "forum/Data"
+	database "forum/Database"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -26,7 +29,8 @@ func LogIn(w http.ResponseWriter, r *http.Request) {
 }
 
 func LogInGet(w http.ResponseWriter, r *http.Request) {
-	if user := database.GetUserConnected(); user != nil {
+
+	if user := database.GetUserConnected(""); user != nil {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 	tmpl, tmplErr := template.ParseFiles("Template/html/login.html")
@@ -38,16 +42,29 @@ func LogInGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func LogInPost(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("okok123")
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 	user, errData := database.GetUserByUsername(username)
+	fmt.Println(password)
 	if errData != nil || bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)) != nil {
 		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "Check Username Or Password", Page: "Login", Path: "/login"})
 		return
 	}
-	if errData := database.CreateSession(user.Username, user.ID); errData != nil {
+	token := database.GenerateToken(username)
+	err1 := database.CreateSession(user.Username, user.ID, token)
+	fmt.Println(err1)
+	if err1 != nil {
 		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "Error Connection", Page: "Login", Path: "/login"})
 		return
 	}
+	cookie := &http.Cookie{
+		Name:     "session",
+		Value:    token,
+		Expires:  time.Now().Add(2 * time.Minute),
+		HttpOnly: true,
+		Path:     "/",
+	}
+	http.SetCookie(w, cookie)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

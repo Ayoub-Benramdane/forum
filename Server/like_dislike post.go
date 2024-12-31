@@ -17,8 +17,9 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return
 	}
-	user := database.GetUserConnected()
-	if user == nil {
+	cookie, _ := r.Cookie("session")
+	user := database.GetUserConnected(cookie.Value)
+		if user == nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Adding Like", Page: "Home", Path: "/"})
 		return
 	}
@@ -44,8 +45,9 @@ func DislikePost(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return
 	}
-	user := database.GetUserConnected()
-	if user == nil {
+	cookie, _ := r.Cookie("session")
+	user := database.GetUserConnected(cookie.Value)
+		if user == nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Adding Dislike", Page: "Home", Path: "/"})
 		return
 	}

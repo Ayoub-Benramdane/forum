@@ -22,7 +22,12 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load home page template", Page: "Home", Path: "/"})
 		return
 	}
-	user := database.GetUserConnected()
+	cookie, err := r.Cookie("session")
+	if err != nil || cookie.Value == "" {
+		http.Redirect(w, r, "/login", http.StatusFound)
+		return
+	}
+	user := database.GetUserConnected(cookie.Value)
 	if user == nil {
 		user = &structs.Session{Status: "Disconnected"}
 	}

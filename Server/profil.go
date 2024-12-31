@@ -11,7 +11,8 @@ import (
 )
 
 func Profile(w http.ResponseWriter, r *http.Request) {
-	user := database.GetUserConnected()
+	cookie, _ := r.Cookie("session")
+	user := database.GetUserConnected(cookie.Value)
 	if r.URL.Path != "/profile" || user == nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
 		return
@@ -33,7 +34,8 @@ func Profile(w http.ResponseWriter, r *http.Request) {
 }
 
 func EditProfil(w http.ResponseWriter, r *http.Request) {
-	user := database.GetUserConnected()
+	cookie, _ := r.Cookie("session")
+	user := database.GetUserConnected(cookie.Value)
 	if r.URL.Path != "/profile-edit" || user == nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
 		return
@@ -55,7 +57,8 @@ func EditProfilGet(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading profil edit page", Page: "Profile", Path: "/profile"})
 		return
 	}
-	user := database.GetUserConnected()
+	cookie, _ := r.Cookie("session")
+	user := database.GetUserConnected(cookie.Value)
 	info, errLoadInfo := database.GetInfoUser(user.UserID)
 	if errLoadInfo != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading Info for user", Page: "Profile", Path: "/profile"})
@@ -70,7 +73,8 @@ func EditProfilPost(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 	password1 := r.FormValue("new-password")
 	password2 := r.FormValue("confirm-password")
-	user := database.GetUserConnected()
+	cookie, _ := r.Cookie("session")
+	user := database.GetUserConnected(cookie.Value)
 	if password != "" {
 		user, errData := database.GetUserByUsername(username)
 		if errData != nil || bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)) != nil {

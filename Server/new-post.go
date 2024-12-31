@@ -25,7 +25,8 @@ func NewPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func NewPostGet(w http.ResponseWriter, r *http.Request) {
-	if user := database.GetUserConnected(); user == nil {
+	cookie, _ := r.Cookie("session")
+	if user := database.GetUserConnected(cookie.Value); user == nil {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 	tmpl, tmplErr := template.ParseFiles("Template/html/new-post.html")
@@ -47,7 +48,8 @@ func NewPostGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func NewPostPost(w http.ResponseWriter, r *http.Request) {
-	user := database.GetUserConnected()
+	cookie, _ := r.Cookie("session")
+	user := database.GetUserConnected(cookie.Value)
 	if user == nil {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}

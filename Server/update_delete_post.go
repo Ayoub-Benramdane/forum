@@ -19,7 +19,8 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
-	user := database.GetUserConnected()
+	cookie, _ := r.Cookie("session")
+	user := database.GetUserConnected(cookie.Value)
 	post, errPost := database.GetPostByID(id_post)
 	if errPost != nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Post Not Found", Path: fmt.Sprintf("/post/%d", id_post)})
@@ -43,7 +44,8 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid post ID", Page: "Home", Path: "/"})
 		return
 	}
-	user := database.GetUserConnected()
+	cookie, _ := r.Cookie("session")
+	user := database.GetUserConnected(cookie.Value)
 	post, errPost := database.GetPostByID(id_post)
 	if errPost != nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Post Not Found", Path: fmt.Sprintf("/post/%d", id_post)})

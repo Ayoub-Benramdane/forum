@@ -30,7 +30,8 @@ func DeleteComment(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid comment ID", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
-	user := database.GetUserConnected()
+	cookie, _ := r.Cookie("session")
+	user := database.GetUserConnected(cookie.Value)
 	post, errPost := database.GetPostByID(id_post)
 	if errPost != nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Post Not Found", Path: fmt.Sprintf("/post/%d", id_post)})
@@ -74,7 +75,8 @@ func EditComment(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Comment Not Found", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
-	user := database.GetUserConnected()
+	cookie, _ := r.Cookie("session")
+	user := database.GetUserConnected(cookie.Value)
 	if user.UserID != UserID {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "you can't Updating Comment", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return

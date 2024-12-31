@@ -25,7 +25,9 @@ func CreateTables() error {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT NOT NULL,
             user_id INTEGER NOT NULL,
+			token TEXT NOT NULL,
             statut TEXT NOT NULL,
+			created_at DATETIME NOT NULL,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         )
     `)

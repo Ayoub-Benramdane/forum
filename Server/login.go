@@ -55,7 +55,8 @@ func LogInPost(w http.ResponseWriter, r *http.Request) {
 	err1 := database.CreateSession(user.Username, user.ID, token)
 	fmt.Println(err1, 555)
 	if err1 != nil {
-		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "Error Connection", Page: "Login", Path: "/login"})
+		database.DeleteSession(username, username)
+		http.Redirect(w, r, "/login", http.StatusFound)
 		return
 	}
 	cookie := &http.Cookie{

@@ -18,7 +18,7 @@ body {
 
 body::before {
     content: "";
-    position: absolute;
+    position: fixed;
     width: 100%;
     height: 100%;
     background: url("https://images.hdqwalls.com/download/the-jujutsu-kaisen-5k-k0-3840x2160.jpg"), rgba(255, 255, 255, 0.5);
@@ -30,7 +30,7 @@ body::before {
     width: 100%;
     max-width: 600px;
     border-radius: 8px;
-    padding: 30px;
+    padding: 10px;
     background: transparent;
     text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.5);
@@ -40,7 +40,7 @@ body::before {
 
 .profile-header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
 }
 
 .edit-pic i {
@@ -60,7 +60,7 @@ h2 {
 
 .section {
     text-align: left;
-    margin-bottom: 30px;
+    margin : 10px;
     padding: 20px;
     border: rgba(255, 255, 255, 0.15) solid 1px;
     border-radius: 8px;
@@ -126,25 +126,11 @@ h2 {
     font-size: 0.9rem;
 }
 
-/* Toggle Switch Styles */
-.toggle {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 34px;
-}
-
-.toggle input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
 .button-group {
     display: flex;
     gap: 15px;
     justify-content: center;
-    margin-top: 30px;
+    margin: 20px;
 }
 
 .myLink,
@@ -161,7 +147,7 @@ button {
     color: #000;
     font-weight: 600;
     border: none;
-    padding: 12px 20px;
+    padding: 12px 12px;
     cursor: pointer;
     border-radius: 3px;
     font-size: 16px;

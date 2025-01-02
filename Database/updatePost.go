@@ -1,14 +1,11 @@
 package database
 
-import "fmt"
-
 func DeletePostId(PostID int64) error {
 	_, err := DB.Exec("DELETE FROM posts WHERE id = ?", PostID)
 	return err
 }
 
 func UpdatePost(title, content string, categories []string, PostID int64) error {
-	fmt.Println(title, categories, content, PostID)
 	_, err := DB.Exec("UPDATE posts SET title = ?, content = ? WHERE id = ?", title, content, PostID)
 	if err != nil {
 		return err

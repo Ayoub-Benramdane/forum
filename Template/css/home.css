@@ -20,7 +20,7 @@ body {
     position: fixed;
     top: 0;
     width: 100%;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(63, 62, 62, 0.082);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     z-index: 1000;
@@ -41,13 +41,6 @@ body {
     gap: 10px;
     color: #fff;
     margin-left: auto;
-}
-
-.avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
 }
 
 .log-btn,
@@ -142,12 +135,6 @@ body {
     align-items: center;
     gap: 10px;
     margin-bottom: 15px;
-}
-
-.post-avatar {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
 }
 
 .post-date {

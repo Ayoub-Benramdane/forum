@@ -29,13 +29,13 @@ body::before {
 }
 
 .navbar {
+    position: fixed;
     top: 0;
-    left: 0;
-    right: 0;
-    padding: 1rem;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border-color);
+    width: 100%;
+    background: rgba(63, 62, 62, 0.082);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1000;
 }
 
 .logo {

@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
 	"time"
@@ -29,8 +28,8 @@ func LogIn(w http.ResponseWriter, r *http.Request) {
 }
 
 func LogInGet(w http.ResponseWriter, r *http.Request) {
-
-	if user := database.GetUserConnected(""); user != nil {
+	cookie, err := r.Cookie("session")
+	if err == nil && database.GetUserConnected(cookie.Value) != nil {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 	tmpl, tmplErr := template.ParseFiles("Template/html/login.html")
@@ -42,21 +41,16 @@ func LogInGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func LogInPost(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("okok123")
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 	user, errData := database.GetUserByUsername(username)
-	fmt.Println(password)
 	if errData != nil || bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)) != nil {
 		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "Check Username Or Password", Page: "Login", Path: "/login"})
 		return
 	}
 	token := database.GenerateToken(username)
-	err1 := database.CreateSession(user.Username, user.ID, token)
-	fmt.Println(err1, 555)
-	if err1 != nil {
-		database.DeleteSession(username, username)
-		http.Redirect(w, r, "/login", http.StatusFound)
+	if database.CreateSession(user.Username, user.ID, token) != nil {
+		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "Error Connection", Page: "Login", Path: "/login"})
 		return
 	}
 	cookie := &http.Cookie{

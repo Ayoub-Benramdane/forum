@@ -9,7 +9,8 @@ import (
 )
 
 func NewPost(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/new-post" {
+	cookie, err := r.Cookie("session")
+	if r.URL.Path != "/new-post" || err != nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
 		return
 	}
@@ -17,7 +18,7 @@ func NewPost(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		NewPostGet(w, r)
 	case http.MethodPost:
-		NewPostPost(w, r)
+		NewPostPost(w, r, cookie)
 	default:
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return
@@ -25,10 +26,6 @@ func NewPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func NewPostGet(w http.ResponseWriter, r *http.Request) {
-	cookie, _ := r.Cookie("session")
-	if user := database.GetUserConnected(cookie.Value); user == nil {
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-	}
 	tmpl, tmplErr := template.ParseFiles("Template/html/new-post.html")
 	if tmplErr != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load new post page template", Page: "Home", Path: "/"})
@@ -47,12 +44,8 @@ func NewPostGet(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, data)
 }
 
-func NewPostPost(w http.ResponseWriter, r *http.Request) {
-	cookie, _ := r.Cookie("session")
+func NewPostPost(w http.ResponseWriter, r *http.Request, cookie *http.Cookie) {
 	user := database.GetUserConnected(cookie.Value)
-	if user == nil {
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-	}
 	title := strings.TrimSpace(r.FormValue("title"))
 	content := strings.TrimSpace(r.FormValue("content"))
 	if title == "" || content == "" {

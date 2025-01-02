@@ -21,9 +21,15 @@ func Post(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid post ID", Page: "Home", Path: "/"})
 		return
 	}
-	cookie, _ := r.Cookie("session")
-	user := database.GetUserConnected(cookie.Value)
-	if user == nil {
+	cookie, err := r.Cookie("session")
+	var user *structs.Session
+	if err == nil {
+		user = database.GetUserConnected(cookie.Value)
+	} else {
+		if database.DeleteSession() != nil {
+			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Ending Session", Page: "Home", Path: "/"})
+			return
+		}
 		user = &structs.Session{Status: "Disconnected"}
 	}
 	post, errLoadPost := database.GetPostByID(id_post)

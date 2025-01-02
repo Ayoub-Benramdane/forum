@@ -17,12 +17,12 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return
 	}
-	cookie, _ := r.Cookie("session")
-	user := database.GetUserConnected(cookie.Value)
-		if user == nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Adding Like", Page: "Home", Path: "/"})
+	cookie, err := r.Cookie("session")
+	if err != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Adding Like", Page: "Post", Path: "/"})
 		return
 	}
+	user := database.GetUserConnected(cookie.Value)
 	if !database.CheckLike(user.UserID, id_post) {
 		if err := database.AddLike(user.UserID, id_post); err != nil {
 			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Adding Like", Page: "Home", Path: "/"})
@@ -45,12 +45,12 @@ func DislikePost(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return
 	}
-	cookie, _ := r.Cookie("session")
-	user := database.GetUserConnected(cookie.Value)
-		if user == nil {
+	cookie, err := r.Cookie("session")
+	if err != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Adding Dislike", Page: "Home", Path: "/"})
 		return
 	}
+	user := database.GetUserConnected(cookie.Value)
 	if !database.CheckDislike(user.UserID, id_post) {
 		if err := database.AddDislike(user.UserID, id_post); err != nil {
 			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Adding Dislike", Page: "Home", Path: "/"})

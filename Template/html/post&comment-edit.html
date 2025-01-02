@@ -18,7 +18,7 @@
             <h1 class="page-title">Edit {{if .Post}}Post{{else}}Comment{{end}}</h1>
 
             <form
-                action="{{if .Post}}/post/edit/{{.Post.ID}}{{else}}/post/edit_comment/{{.Comment.PostID}}/{{.Comment.ID}}{{end}}"
+                action="{{if .Post}}/edit/{{.Post.ID}}{{else}}/edit_comment/{{.Comment.PostID}}/{{.Comment.ID}}{{end}}"
                 method="POST">
                 {{if .Post}}
                 <div class="form-group">

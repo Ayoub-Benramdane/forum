@@ -19,7 +19,11 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
-	cookie, _ := r.Cookie("session")
+	cookie, err := r.Cookie("session")
+	if err != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+		return
+	}
 	user := database.GetUserConnected(cookie.Value)
 	post, errPost := database.GetPostByID(id_post)
 	if errPost != nil {
@@ -44,7 +48,11 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid post ID", Page: "Home", Path: "/"})
 		return
 	}
-	cookie, _ := r.Cookie("session")
+	cookie, err := r.Cookie("session")
+	if err != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Updating Post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+		return
+	}
 	user := database.GetUserConnected(cookie.Value)
 	post, errPost := database.GetPostByID(id_post)
 	if errPost != nil {

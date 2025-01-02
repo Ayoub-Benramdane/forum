@@ -11,9 +11,18 @@ import (
 )
 
 func Profile(w http.ResponseWriter, r *http.Request) {
-	cookie, _ := r.Cookie("session")
-	user := database.GetUserConnected(cookie.Value)
-	if r.URL.Path != "/profile" || user == nil {
+	cookie, err := r.Cookie("session")
+	var user *structs.Session
+	if err == nil {
+		user = database.GetUserConnected(cookie.Value)
+	} else {
+		if database.DeleteSession() != nil {
+			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Ending Session", Page: "Home", Path: "/"})
+			return
+		}
+		user = &structs.Session{Status: "Disconnected"}
+	}
+	if r.URL.Path != "/profile" || err != nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
 		return
 	} else if r.Method != http.MethodPost && r.Method != http.MethodGet {
@@ -34,30 +43,28 @@ func Profile(w http.ResponseWriter, r *http.Request) {
 }
 
 func EditProfil(w http.ResponseWriter, r *http.Request) {
-	cookie, _ := r.Cookie("session")
-	user := database.GetUserConnected(cookie.Value)
-	if r.URL.Path != "/profile-edit" || user == nil {
+	cookie, err := r.Cookie("session")
+	if r.URL.Path != "/profile-edit" || err != nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
 		return
 	}
 	switch r.Method {
 	case http.MethodGet:
-		EditProfilGet(w, r)
+		EditProfilGet(w, r, cookie)
 	case http.MethodPost:
-		EditProfilPost(w, r)
+		EditProfilPost(w, r, cookie)
 	default:
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Profile", Path: "/profile"})
 		return
 	}
 }
 
-func EditProfilGet(w http.ResponseWriter, r *http.Request) {
+func EditProfilGet(w http.ResponseWriter, r *http.Request, cookie *http.Cookie) {
 	tmpl, tmplErr := template.ParseFiles("Template/html/profile-edit.html")
 	if tmplErr != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading profil edit page", Page: "Profile", Path: "/profile"})
 		return
 	}
-	cookie, _ := r.Cookie("session")
 	user := database.GetUserConnected(cookie.Value)
 	info, errLoadInfo := database.GetInfoUser(user.UserID)
 	if errLoadInfo != nil {
@@ -67,13 +74,12 @@ func EditProfilGet(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, info)
 }
 
-func EditProfilPost(w http.ResponseWriter, r *http.Request) {
+func EditProfilPost(w http.ResponseWriter, r *http.Request, cookie *http.Cookie) {
 	username := strings.TrimSpace(r.FormValue("username"))
 	email := strings.TrimSpace(r.FormValue("email"))
 	password := r.FormValue("password")
 	password1 := r.FormValue("new-password")
 	password2 := r.FormValue("confirm-password")
-	cookie, _ := r.Cookie("session")
 	user := database.GetUserConnected(cookie.Value)
 	if password != "" {
 		user, errData := database.GetUserByUsername(username)

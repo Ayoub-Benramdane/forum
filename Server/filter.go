@@ -22,8 +22,14 @@ func Filter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	cookie, err := r.Cookie("session")
-	user := database.GetUserConnected(cookie.Value)
-	if err != nil {
+	var user *structs.Session
+	if err == nil {
+		user = database.GetUserConnected(cookie.Value)
+	} else {
+		if database.DeleteSession() != nil {
+			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Ending Session", Page: "Home", Path: "/"})
+			return
+		}
 		user = &structs.Session{Status: "Disconnected"}
 	}
 	if err := r.ParseForm(); err != nil {

@@ -9,7 +9,7 @@
 
 body {
     min-height: 100vh;
-    background: url("https://images.hdqwalls.com/download/the-jujutsu-kaisen-5k-k0-3840x2160.jpg");
+    background: url("https://images.hdqwalls.com/download/the-jujutsu-kaisen-5k-k0-3840x2160.jpg"), rgba(255, 255, 255, 0.5);
     background-position: center;
     background-size: cover;
     background-attachment: fixed;
@@ -59,7 +59,6 @@ body {
 
 .log-btn,
 .user-button {
-    width: 100px;
     height: 40px;
     background: transparent;
     color: #fff;

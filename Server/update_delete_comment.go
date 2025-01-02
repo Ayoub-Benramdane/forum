@@ -30,8 +30,17 @@ func DeleteComment(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid comment ID", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
-	cookie, _ := r.Cookie("session")
-	user := database.GetUserConnected(cookie.Value)
+	cookie, err := r.Cookie("session")
+	var user *structs.Session
+	if err == nil {
+		user = database.GetUserConnected(cookie.Value)
+	} else {
+		if database.DeleteSession() != nil {
+			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Ending Session", Page: "Home", Path: "/"})
+			return
+		}
+		user = &structs.Session{Status: "Disconnected"}
+	}
 	post, errPost := database.GetPostByID(id_post)
 	if errPost != nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Post Not Found", Path: fmt.Sprintf("/post/%d", id_post)})
@@ -75,7 +84,11 @@ func EditComment(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Comment Not Found", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
-	cookie, _ := r.Cookie("session")
+	cookie, err := r.Cookie("session")
+	if err != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Updating Comment", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+		return
+	}
 	user := database.GetUserConnected(cookie.Value)
 	if user.UserID != UserID {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "you can't Updating Comment", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})

@@ -13,32 +13,32 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func LogUp(w http.ResponseWriter, r *http.Request) {
+func Register(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/register" {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
 		return
 	}
 	switch r.Method {
 	case http.MethodGet:
-		LogUpGet(w, r)
+		RegisterGet(w, r)
 	case http.MethodPost:
-		LogUpPost(w, r)
+		RegisterPost(w, r)
 	default:
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return
 	}
 }
 
-func LogUpGet(w http.ResponseWriter, r *http.Request) {
+func RegisterGet(w http.ResponseWriter, r *http.Request) {
 	tmpl, tmplErr := template.ParseFiles("Template/html/register.html")
 	if tmplErr != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load logup page template", Page: "Home", Path: "/"})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load Register page template", Page: "Home", Path: "/"})
 		return
 	}
 	tmpl.Execute(w, nil)
 }
 
-func LogUpPost(w http.ResponseWriter, r *http.Request) {
+func RegisterPost(w http.ResponseWriter, r *http.Request) {
 	username := strings.TrimSpace(r.FormValue("username"))
 	email := strings.TrimSpace(r.FormValue("email"))
 	password := r.FormValue("password")

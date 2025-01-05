@@ -13,29 +13,21 @@
 <body>
     <!-- Navbar -->
     <nav class="navbar">
-        <div class="nav-content">
-            <a href="/" class="logo">Forum</a>
-            {{if eq .User.Status "Connected"}}
-            <div class="user-info">
-                <form action="/profile" method="POST">
-                    <button class="user-button">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
-                        <span>{{.User.Username}}</span>
-                    </button>
-                </form>
-                <form action="/logout" method="post">
-                    <button class="log-btn">Logout</button>
-                </form>
-            </div>
+        <a href="/" class="logo">Forum</a>
+        {{if eq .User.Status "Connected"}}
+        <div class="user-info">
+            <form action="/profile" method="POST">
+                <button class="user-button">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <span>{{.User.Username}}</span>
+                </button>
+            </form>
+            <a href="/logout" class="myLink"><button class="log-btn">Logout</button></a>
             {{else}}
-            <div class="user-info">
-                <form action="/login" method="get">
-                    <button class="log-btn">Log In</button>
-                </form>
-            </div>
+            <a href="/login" class="myLink"><button class="log-btn">Log In</button></a>
             {{end}}
         </div>
     </nav>
@@ -43,106 +35,91 @@
         <!-- Post Content -->
         <div class="post">
             <div class="post-header">
-                <div class="post-info">
-                    <span class="post-author">{{.Post.Author}}</span>
-                    <span class="post-date">{{.Post.CreatedAt}}</span>
-                </div>
-                {{if eq .User.Status "Connected"}}
-                <div class="post-options">
-                    <a class="myLink" href="/edit/{{.Post.ID}}"><button class="edit-btn"><i class="fas fa-edit"></i>Edit</button></a>
-                    <a class="myLink" href="/delete/{{.Post.ID}}"><button class="delete-btn"><i class="fas fa-trash"></i>Delete</button></a>
-                </div>
-                {{end}}
+                <span class="post-author">{{.Post.Author}}</span>
+                <span class="post-date">{{.Post.CreatedAt}}</span>
             </div>
+            {{if eq .User.Status "Connected"}}
+            <div class="post-options">
+                <a class="myLink" href="/edit/{{.Post.ID}}"><button class="edit-btn"><i
+                            class="fas fa-edit"></i>Edit</button></a>
+                <a class="myLink" href="/delete/{{.Post.ID}}"><button class="delete-btn"><i
+                            class="fas fa-trash"></i>Delete</button></a>
+            </div>
+            {{end}}
             <h1 class="post-title">{{.Post.Title}}</h1>
+            <p class="post-content">{{.Post.Content}}</p>
             <div class="category-tags">
                 {{range .Post.Categories}}
                 <span class="category-tag">#{{.}}</span>
                 {{end}}
-            </div><br>
-            <p class="post-content">{{.Post.Content}}</p>
-            <div class="post-actions">
+            </div>
+            <div class="like-dislike">
                 {{if eq $.User.Status "Connected"}}
-                <div class="like-dislike">
-                    <button class="action-btn"><a href="/like/{{.Post.ID}}" class="myLink"><i
-                                class="fas fa-thumbs-up"></i>
-                            <span>{{.Post.TotalLikes}}</span></a></button>
-                    <button class="action-btn"><a href="/dislike/{{.Post.ID}}" class="myLink"><i
-                                class="fas fa-thumbs-down"></i>
-                            <span>{{.Post.TotalDislikes}}</span></a></button>
-                </div>
+                <a href="/like/{{.Post.ID}}" class="myLink"><button class="action-btn"><i class="fas fa-thumbs-up"></i>
+                        <span>{{.Post.TotalLikes}}</span></button></a>
+                <a href="/like/{{.Post.ID}}" class="myLink"><button class="action-btn"><a href="/dislike/{{.Post.ID}}"
+                            class="myLink"><i class="fas fa-thumbs-down"></i>
+                            <span>{{.Post.TotalDislikes}}</span></button></a>
                 {{else}}
-                <div class="like-dislike">
-                    <button class="action-btn"><i class="fas fa-thumbs-up"></i>
-                        <span>{{.Post.TotalLikes}}</span></button>
-                    <button class="action-btn"><i class="fas fa-thumbs-down"></i>
-                        <span>{{.Post.TotalDislikes}}</span></button>
-                </div>
+                <button class="action-btn"><i class="fas fa-thumbs-up"></i>
+                    <span>{{.Post.TotalLikes}}</span></button>
+                <button class="action-btn"><i class="fas fa-thumbs-down"></i>
+                    <span>{{.Post.TotalDislikes}}</span></button>
                 {{end}}
-                <button class="comment-count"> <i class="fas fa-comment"></i> {{.Post.TotalComments}} Comment</button>
+                <button class="action-btn"> <i class="fas fa-comment"></i> {{.Post.TotalComments}}
+                    Comment</button>
             </div>
         </div>
 
         <!-- Comments Section -->
         <div class="comments-section">
             <h3>Comments</h3>
-            {{if eq .User.Status "Connected"}}
             <!-- New Comment Form -->
-            <div class="new-comment">
-                <form action="/post/{{$.Post.ID}}" method="POST">
-                    <div class="comment-form">
-                        <textarea name="content" id="content" placeholder="Write a comment..." required></textarea>
-                        <button type="submit"><i class="fas fa-paper-plane"></i> Post Comment</button>
-                    </div>
-                </form>
-            </div>
+            {{if eq .User.Status "Connected"}}
+            <form action="/post/{{$.Post.ID}}" method="POST">
+                <textarea name="content" id="content" placeholder="Write a comment..." required></textarea>
+                <button type="submit" class="btn"><i class="fas fa-paper-plane"></i> Post Comment</button>
+            </form>
             {{else}}
-            <div class="comment-form">
-                <p>Please log in to add a comment.</p>
-            </div>
+            <a href="/login" class="myLink">Please log in to add a comment.</a>
             {{end}}
 
             <!-- Existing Comments -->
             {{range .Comments}}
             <div class="comments-list">
-                <div class="comment">
-                    <div class="comment-content">
-                        <div class="comment-header">
-                            <span class="comment-author">{{.Author}}</span>
-                            <span class="comment-date">{{.CreatedAt}}</span>
-                        </div>
-                        {{if eq $.User.Status "Connected"}}
-                        <div class="comment-options">
-                            <a class="myLink" href="/edit_comment/{{.PostID}}/{{.ID}}"><button class="edit-btn"><i class="fas fa-edit"></i>Edit</button></a>
-                            <a class="myLink" href="/delete_comment/{{.PostID}}/{{.ID}}"><button class="delete-btn"><i class="fas fa-trash"></i>Delete</button></a>
-                        </div><br>
-                        {{end}}
-                        <p>{{.Content}}</p>
-                        <div class="comment-actions">
-                            {{if eq $.User.Status "Connected"}}
-                            <div class="like-dislike">
-                                <button class="action-btn"><a href="/like_comment/{{.PostID}}/{{.ID}}"
-                                        class="myLink"><i class="fas fa-thumbs-up"></i>
-                                        <span>{{.TotalLikes}}</span></a></button>
-                                <button class="action-btn"><a href="/dislike_comment/{{.PostID}}/{{.ID}}"
-                                        class="myLink"><i class="fas fa-thumbs-down"></i>
-                                        <span>{{.TotalDislikes}}</span></a></button>
-                            </div>
-                            {{else}}
-                            <div class="like-dislike">
-                                <button class="action-btn"><i class="fas fa-thumbs-up"></i>
-                                    <span>{{.TotalLikes}}</span></button>
-                                <button class="action-btn"><i class="fas fa-thumbs-down"></i>
-                                    <span>{{.TotalDislikes}}</span></button>
-                            </div>
-                            {{end}}
-                        </div>
-                    </div>
+                <div class="comment-header">
+                    <span class="comment-author">{{.Author}}</span>
+                    <span class="comment-date">{{.CreatedAt}}</span>
+                </div>
+                {{if eq $.User.Status "Connected"}}
+                <div class="comment-options">
+                    <a class="myLink" href="/edit_comment/{{.PostID}}/{{.ID}}"><button class="edit-btn"><i
+                                class="fas fa-edit"></i>Edit</button></a>
+                    <a class="myLink" href="/delete_comment/{{.PostID}}/{{.ID}}"><button class="delete-btn"><i
+                                class="fas fa-trash"></i>Delete</button></a>
+                </div>
+                {{end}}
+                <p>{{.Content}}</p>
+                <div class="like-dislike">
+                    {{if eq $.User.Status "Connected"}}
+                    <button class="action-btn"><a href="/like_comment/{{.PostID}}/{{.ID}}" class="myLink"><i
+                                class="fas fa-thumbs-up"></i>
+                            <span>{{.TotalLikes}}</span></a></button>
+                    <button class="action-btn"><a href="/dislike_comment/{{.PostID}}/{{.ID}}" class="myLink"><i
+                                class="fas fa-thumbs-down"></i>
+                            <span>{{.TotalDislikes}}</span></a></button>
+                    {{else}}
+                    <button class="action-btn"><i class="fas fa-thumbs-up"></i>
+                        <span>{{.TotalLikes}}</span></button>
+                    <button class="action-btn"><i class="fas fa-thumbs-down"></i>
+                        <span>{{.TotalDislikes}}</span></button>
+                    {{end}}
                 </div>
             </div>
             {{end}}
         </div>
     </div>
+    <script src="../Script/comment.js"></script>
 </body>
 
 </html>

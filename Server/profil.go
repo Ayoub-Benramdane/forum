@@ -42,7 +42,7 @@ func Profile(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, info)
 }
 
-func EditProfil(w http.ResponseWriter, r *http.Request) {
+func EditProfile(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("session")
 	if r.URL.Path != "/profile-edit" || err != nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
@@ -50,16 +50,16 @@ func EditProfil(w http.ResponseWriter, r *http.Request) {
 	}
 	switch r.Method {
 	case http.MethodGet:
-		EditProfilGet(w, r, cookie)
+		EditProfileGet(w, r, cookie)
 	case http.MethodPost:
-		EditProfilPost(w, r, cookie)
+		EditProfilePost(w, r, cookie)
 	default:
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Profile", Path: "/profile"})
 		return
 	}
 }
 
-func EditProfilGet(w http.ResponseWriter, r *http.Request, cookie *http.Cookie) {
+func EditProfileGet(w http.ResponseWriter, r *http.Request, cookie *http.Cookie) {
 	tmpl, tmplErr := template.ParseFiles("Template/html/profile-edit.html")
 	if tmplErr != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading profil edit page", Page: "Profile", Path: "/profile"})
@@ -74,7 +74,7 @@ func EditProfilGet(w http.ResponseWriter, r *http.Request, cookie *http.Cookie) 
 	tmpl.Execute(w, info)
 }
 
-func EditProfilPost(w http.ResponseWriter, r *http.Request, cookie *http.Cookie) {
+func EditProfilePost(w http.ResponseWriter, r *http.Request, cookie *http.Cookie) {
 	username := strings.TrimSpace(r.FormValue("username"))
 	email := strings.TrimSpace(r.FormValue("email"))
 	password := r.FormValue("password")
@@ -82,15 +82,27 @@ func EditProfilPost(w http.ResponseWriter, r *http.Request, cookie *http.Cookie)
 	password2 := r.FormValue("confirm-password")
 	user := database.GetUserConnected(cookie.Value)
 	if password != "" {
-		user, errData := database.GetUserByUsername(username)
-		if errData != nil || bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)) != nil {
+		user1, errData := database.GetUserByUsername(username)
+		if errData != nil || bcrypt.CompareHashAndPassword([]byte(user1.Password), []byte(password)) != nil {
 			Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "Check your Password", Page: "Profile edit", Path: "/profile-edit"})
 			return
 		}
-	}
-	if password1 == "" && password2 == "" {
-		password1 = "Aa@11111"
-	} else if password != password2 {
+		if password1 != password2 || password1 == "" {
+			Errors(w, structs.Error{Code: http.StatusConflict, Message: "Password not matched", Page: "Profile edit", Path: "/profile-edit"})
+			return
+		}
+		hashedPassword, errCrepting := bcrypt.GenerateFromPassword([]byte(password1), bcrypt.DefaultCost)
+		if errCrepting != nil {
+			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error processing registration", Page: "Profile edit", Path: "/profile-edit"})
+			return
+		}
+		if database.UpdatePass(user.UserID, string(hashedPassword)) != nil {
+			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Updating Password", Page: "Profile edit", Path: "/profile-edit"})
+			return
+		}
+	} else if password1 == "" && password2 == "" {
+		password1 = "Aa@00000"
+	} else {
 		Errors(w, structs.Error{Code: http.StatusConflict, Message: "Password not matched", Page: "Profile edit", Path: "/profile-edit"})
 		return
 	}
@@ -98,12 +110,6 @@ func EditProfilPost(w http.ResponseWriter, r *http.Request, cookie *http.Cookie)
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: errSigne.Error(), Page: "Profile edit", Path: "/profile-edit"})
 		return
 	}
-	hashedPassword, errCrepting := bcrypt.GenerateFromPassword([]byte(password1), bcrypt.DefaultCost)
-	if errCrepting != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error processing registration", Page: "Profile edit", Path: "/profile-edit"})
-		return
-	}
-
 	if errUpdate := database.UpdateInfo(user.UserID, username, email); errUpdate != nil {
 		if strings.Contains(errUpdate.Error(), "UNIQUE constraint failed") {
 			Errors(w, structs.Error{Code: http.StatusConflict, Message: "Username already taken", Page: "Profile edit", Path: "/profile-edit"})
@@ -111,12 +117,6 @@ func EditProfilPost(w http.ResponseWriter, r *http.Request, cookie *http.Cookie)
 		}
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Updating user", Page: "Profile edit", Path: "/profile-edit"})
 		return
-	}
-	if password1 != "" {
-		if errUpdate := database.UpdatePass(user.UserID, string(hashedPassword)); errUpdate != nil {
-			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Updating Password", Page: "Profile edit", Path: "/profile-edit"})
-			return
-		}
 	}
 	http.Redirect(w, r, "/profile", http.StatusSeeOther)
 }

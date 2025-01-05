@@ -1,11 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@200;300;400;500;600;700&display=swap");
 
-:root {
-    --primary-color: #fff;
-    --background-blur: rgba(255, 255, 255, 0.15);
-    --border-color: rgba(255, 255, 255, 0.5);
-}
-
 * {
     margin: 0;
     padding: 0;
@@ -14,94 +8,97 @@
 }
 
 body {
+    align-items: center;
+    justify-content: center;
     min-height: 100vh;
-    color: var(--primary-color);
-}
-
-body::before {
-    content: "";
-    position: absolute;
     width: 100%;
-    height: 100%;
-    background: url("https://images.hdqwalls.com/download/the-jujutsu-kaisen-5k-k0-3840x2160.jpg"), rgba(255, 255, 255, 0.5);
+    background: url("https://images.unsplash.com/photo-1489846986031-7cea03ab8fd0?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
     background-position: center;
     background-size: cover;
+    background-attachment: fixed;
 }
 
 .navbar {
     position: fixed;
     top: 0;
     width: 100%;
-    background: rgba(63, 62, 62, 0.082);
+    padding: 20px;
+    background: rgba(34, 49, 40, 0.5);
     backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     z-index: 1000;
 }
 
 .logo {
-    color: var(--border-color);
+    color: rgba(255, 255, 255, 0.5);
     text-decoration: none;
     font-size: 1.5rem;
     font-weight: 600;
 }
 
 .container {
-    max-width: 800px;
-    margin: 80px auto 0;
-}
-
-.card {
-    background: rgba(0, 0, 0, 0.5);
+    max-width: 40%;
+    margin: 80px auto;
+    height: 80vh;
+    background: rgba(34, 49, 40, 0.6);
     border-radius: 12px;
     padding: 2rem;
-    border: 1px solid var(--border-color);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(8px);
+}
+
+.container1 {
+    max-width: 40%;
+    margin: 80px auto;
+    height: 50vh;
+    background: rgba(34, 49, 40, 0.6);
+    border-radius: 12px;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(8px);
 }
 
 .page-title {
-    margin-bottom: 2rem;
+    margin: 2rem;
     text-align: center;
     font-size: 2rem;
-}
-
-.form-group {
-    margin-bottom: 1.5rem;
+    color: #b9c7bd;
 }
 
 .form-label {
     display: block;
-    margin-bottom: 0.5rem;
+    margin: 1rem auto;
     font-weight: 500;
+    color: #e8e8e8;
 }
 
 .form-input,
-.form-textarea,
-.form-select {
-    width: 100%;
-    padding: 0.75rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    color: var(--primary-color);
-    font-size: 1rem;
-}
-
 .form-textarea {
-    min-height: 150px;
-    resize: vertical;
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    border-bottom: 2px solid #ccc;
+    color: #e8e8e8;
 }
 
 .form-select {
+    min-height: 100px;
+    border-radius: 5px;
+    width: 100%;
+    background: transparent;
     height: auto;
     min-height: 100px;
 }
 
-.form-select option {
-    padding: 0.5rem;
+.form-textarea {
+    min-height: 150px;
+    resize: none;
 }
 
-.category-tags {
-    margin-bottom: 1.5rem;
+.form-select option {
+    color: #fff;
+    padding: 0.5rem;
 }
 
 .button-group {
@@ -124,26 +121,38 @@ body::before {
 }
 
 .btn-primary {
-    background: var(--primary-color);
+    background: #fff;
     color: #000;
     border: none;
 }
 
 .btn-secondary {
     background: transparent;
-    color: var(--primary-color);
-    border: 2px solid var(--primary-color);
+    color: #e8e8e8;
+    border: 2px solid #e8e8e8;
 }
 
 .btn-primary:hover,
 .btn-secondary:hover {
-    background: var(--background-blur);
-    color: var(--primary-color);
-    border-color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border-color: #fff;
+}
+
+@media (max-width: 1000px) {
+
+    .container,
+    .container1 {
+        max-width: 75%;
+        padding: 2rem;
+        transition: 2s;
+    }
 }
 
 @media (max-width: 600px) {
-    .container {
+
+    .container,
+    .container1 {
         padding: 1rem;
     }
 

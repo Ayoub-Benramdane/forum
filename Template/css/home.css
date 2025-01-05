@@ -9,37 +9,28 @@
 
 body {
     min-height: 100vh;
-    background: url("https://images.hdqwalls.com/download/the-jujutsu-kaisen-5k-k0-3840x2160.jpg"), rgba(255, 255, 255, 0.5);
+    background: url("https://images.unsplash.com/photo-1489846986031-7cea03ab8fd0?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
     background-position: center;
     background-size: cover;
     background-attachment: fixed;
 }
 
-/* Navbar Styles */
 .navbar {
     position: fixed;
     top: 0;
     width: 100%;
-    background: rgba(63, 62, 62, 0.082);
+    padding: 20px;
+    background: rgba(34, 49, 40, 0.5);
     backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     z-index: 1000;
-}
-
-.nav-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 15px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
 .user-info {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     gap: 10px;
-    color: #fff;
+    color: #e8e8e8;
     margin-left: auto;
 }
 
@@ -47,8 +38,8 @@ body {
 .user-button {
     height: 40px;
     background: transparent;
-    color: #fff;
-    border: 1px solid #fff;
+    color: #e8e8e8;
+    border: 1px solid rgba(232, 232, 232, 0.5);
     padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;
@@ -57,13 +48,13 @@ body {
 
 .log-btn:hover,
 .user-button:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(232, 232, 232, 0.15);
 }
 
 /* Main Container */
 .container {
-    max-width: 800px;
-    margin: 80px auto 20px;
+    max-width: 80%;
+    margin: 80px auto;
     padding: 20px;
 }
 
@@ -73,119 +64,116 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(34, 49, 40, 0.4);
     padding: 15px;
     border-radius: 8px;
     backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-}
-
-.filterForm {
-    width: 100%;
 }
 
 .filter-select {
-    width: 60%;
-    background: rgba(255, 255, 255, 0.2);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    width: 600px;
+    min-height: 100px;
+    margin: 10px;
+    background: rgba(232, 232, 232, 0.1);
+    color: #e8e8e8;
+    border: 1px solid rgba(232, 232, 232, 0.3);
     padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;
+    transition: width 0.5s;
 }
 
 .filter-post-btn {
-    background: #fff;
-    margin: 0 10px;
-    color: #000;
+    width: 30%;
+    background: rgba(232, 232, 232, 0.9);
+    margin: 10px;
+    color: #223128;
     border: none;
-    padding: 8px 16px;
+    padding: 8px;
     border-radius: 4px;
     cursor: pointer;
     transition: 0.3s;
 }
 
 .new-post-btn {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.2);
-    width: 180px;
-    padding: 8px 10px;
+    color: #e8e8e8;
+    background: rgba(232, 232, 232, 0.15);
+    width: 150px;
+    padding: 8px;
     border-radius: 4px;
+    border: none;
     cursor: pointer;
     transition: 0.3s;
 }
 
 .filter-post-btn:hover {
-    background: rgba(255, 255, 255, 0.8);
+    background: #e8e8e8;
 }
 
 /* Posts */
 .post {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(34, 49, 40, 0.4);
     backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 20px;
-    color: #fff;
+    color: #e8e8e8;
 }
 
 .post-header {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
 }
 
 .post-date {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.9em;
+    color: rgba(232, 232, 232, 0.6);
+    font-size: 0.8em;
     margin-left: auto;
 }
 
 .post-title {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 .category-tag {
     display: inline-flex;
     align-items: center;
-    padding: 0.25rem 0.75rem;
-    background: var(--gray-100);
-    color: var(--gray-700);
+    padding: 0.25rem;
     border-radius: 9999px;
     font-size: 0.75rem;
     font-weight: 500;
-    margin-right: 0.5rem;
 }
 
 .post-content {
     margin-bottom: 15px;
+    overflow: scroll;
+    font-size: 15px;
     line-height: 1.5;
 }
 
 .post-actions {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.like-dislike {
-    display: flex;
-    gap: 10px;
+    padding: 5px;
+    border-top: 1px solid rgba(232, 232, 232, 0.2);
 }
 
 .action-btn,
 .comment-btn {
     background: transparent;
-    color: #fff;
+    color: #e8e8e8;
     border: none;
     cursor: pointer;
     padding: 5px 10px;
     border-radius: 4px;
     transition: 0.3s;
+}
+
+.action-btn:hover,
+.comment-btn:hover {
+    background: rgba(232, 232, 232, 0.15);
 }
 
 .myLink,
@@ -194,69 +182,7 @@ body {
 .myLink:visited,
 .myLink:focus {
     text-decoration: none;
-    color: #fff;
-}
-
-.action-btn:hover,
-.comment-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-/* Comments Section */
-.comments-section {
-    margin-top: 15px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 15px;
-}
-
-.comment {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-.comment-avatar {
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-}
-
-.comment-content {
-    flex: 1;
-}
-
-.comment-author {
-    font-weight: 600;
-    margin-right: 10px;
-}
-
-.add-comment {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-.add-comment input {
-    flex: 1;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 8px 12px;
-    border-radius: 4px;
-    color: #fff;
-}
-
-.add-comment button {
-    background: transparent;
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 8px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.add-comment button:hover {
-    background: rgba(255, 255, 255, 0.1);
+    color: #e8e8e8;
 }
 
 /* Pagination */
@@ -268,9 +194,9 @@ body {
 }
 
 .page-btn {
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(232, 232, 232, 0.1);
+    color: #e8e8e8;
+    border: 1px solid rgba(232, 232, 232, 0.3);
     padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;
@@ -278,10 +204,34 @@ body {
 }
 
 .page-btn.active {
-    background: #fff;
-    color: #000;
+    background: rgba(232, 232, 232, 0.9);
+    color: #223128;
 }
 
 .page-btn:hover:not(.active) {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(232, 232, 232, 0.15);
+}
+
+@media (max-width: 1060px) {
+    .filter-select {
+        width: 400px;
+        transition: width 0.5s;
+    }
+}
+
+@media (max-width: 800px) {
+    .filter-select {
+        width: 90%;
+    }
+
+    .filter-post-btn {
+        width: 50%;
+    }
+}
+
+@media (max-width: 560px) {
+    .new-post-btn {
+        width: 90%;
+        transition: width 0.5s;
+    }
 }

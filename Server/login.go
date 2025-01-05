@@ -11,23 +11,23 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func LogIn(w http.ResponseWriter, r *http.Request) {
+func Login(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/login" {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
 		return
 	}
 	switch r.Method {
 	case http.MethodGet:
-		LogInGet(w, r)
+		LoginGet(w, r)
 	case http.MethodPost:
-		LogInPost(w, r)
+		LoginPost(w, r)
 	default:
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return
 	}
 }
 
-func LogInGet(w http.ResponseWriter, r *http.Request) {
+func LoginGet(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("session")
 	if err == nil && database.GetUserConnected(cookie.Value) != nil {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -40,7 +40,7 @@ func LogInGet(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, nil)
 }
 
-func LogInPost(w http.ResponseWriter, r *http.Request) {
+func LoginPost(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 	user, errData := database.GetUserByUsername(username)
@@ -56,7 +56,7 @@ func LogInPost(w http.ResponseWriter, r *http.Request) {
 	cookie := &http.Cookie{
 		Name:     "session",
 		Value:    token,
-		Expires:  time.Now().Add(2 * time.Minute),
+		Expires:  time.Now().Add(20 * time.Minute),
 		HttpOnly: true,
 		Path:     "/",
 	}

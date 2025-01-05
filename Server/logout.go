@@ -7,8 +7,8 @@ import (
 	database "forum/Database"
 )
 
-func LogOut(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
+func Logout(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return
 	}

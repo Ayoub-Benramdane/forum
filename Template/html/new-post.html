@@ -17,21 +17,20 @@
                 <input type="text" name="title" id="title" required>
                 <label>Post Title</label>
             </div>
-                <label style="color: white;">Post Categories</label>
-            <div class="input-field">
-                <select name="category" id="category" class="form-select" multiple required>
-                    {{range .Categories}}
-                    <option value="{{.Name}}">{{.Name}}</option>
-                    {{end}}
-                </select>
-            </div>
+            <label class="lbl">Post Categories</label>
+            <select name="category" id="category" class="form-select" multiple required>
+                {{range .Categories}}
+                <option value="{{.Name}}">{{.Name}}</option>
+                {{end}}
+            </select>
             <div class="textarea-field">
-                <textarea name="content" id="content" placeholder="&#10;What's on your mind?" required></textarea>
+                <textarea name="content" id="content" placeholder="What's on your mind?" required></textarea>
                 <label>Post Content</label>
             </div>
             <div class="button-group">
-                <button type="submit"><i class="fas fa-paper-plane"></i> Post</button>
-                <a href="/" class="myLink"><button type="button" class="cancel-btn"><i class="fas fa-times"></i>Cancel</button></a>
+                <button type="submit"><i class="fas fa-paper-plane"></i><pre> </pre>Post</button>
+                <a href="/" class="myLink"><button type="button" class="cancel-btn"><i
+                            class="fas fa-times"></i><pre> </pre>Cancel</button></a>
             </div>
         </form>
     </div>

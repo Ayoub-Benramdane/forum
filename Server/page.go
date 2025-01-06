@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -31,6 +32,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	cookie, err := r.Cookie("session")
+	fmt.Println(cookie.Expires)
 	var user *structs.Session
 	if err == nil {
 		user = database.GetUserConnected(cookie.Value)

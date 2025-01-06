@@ -12,6 +12,9 @@ import (
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
+	if _, err := r.Cookie("session"); err == nil {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	}
 	if r.URL.Path != "/login" {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
 		return
@@ -28,10 +31,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func LoginGet(w http.ResponseWriter, r *http.Request) {
-	cookie, err := r.Cookie("session")
-	if err == nil && database.GetUserConnected(cookie.Value) != nil {
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-	}
 	tmpl, tmplErr := template.ParseFiles("Template/html/login.html")
 	if tmplErr != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load login page template", Page: "Home", Path: "/"})
@@ -58,7 +57,6 @@ func LoginPost(w http.ResponseWriter, r *http.Request) {
 		Value:    token,
 		Expires:  time.Now().Add(20 * time.Minute),
 		HttpOnly: true,
-		Path:     "/",
 	}
 	http.SetCookie(w, cookie)
 	http.Redirect(w, r, "/", http.StatusSeeOther)

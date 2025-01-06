@@ -37,7 +37,8 @@ body {
 }
 
 .container {
-    margin: auto;
+    max-width: 60%;
+    margin: 80px auto 0;
     padding: 2rem;
     align-items: center;
     justify-content: center;

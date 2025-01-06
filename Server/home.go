@@ -24,6 +24,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	}
 	cookie, err := r.Cookie("session")
 	var user *structs.Session
+
 	if err == nil {
 		user = database.GetUserConnected(cookie.Value)
 	} else {

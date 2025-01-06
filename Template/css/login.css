@@ -47,9 +47,9 @@ h2 {
 
 .input-field label {
     position: absolute;
-    top: 70%;
+    top: 0;
     left: 0;
-    transform: translateY(-50%);
+    transform: translateY(-100%);
     color: #fff;
     font-size: 16px;
     pointer-events: none;
@@ -64,13 +64,6 @@ h2 {
     outline: none;
     font-size: 16px;
     color: #fff;
-}
-
-.input-field input:focus~label,
-.input-field input:valid~label {
-    font-size: 0.8rem;
-    top: 0;
-    transform: translateY(-120%);
 }
 
 .forget {

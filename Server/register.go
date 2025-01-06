@@ -14,6 +14,9 @@ import (
 )
 
 func Register(w http.ResponseWriter, r *http.Request) {
+	if _, err := r.Cookie("session"); err == nil {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	}
 	if r.URL.Path != "/register" {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
 		return

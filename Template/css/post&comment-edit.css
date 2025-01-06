@@ -37,7 +37,7 @@ body {
 
 .container {
     max-width: 40%;
-    margin: 80px auto;
+    margin: 80px auto 0;
     height: 80vh;
     background: rgba(34, 49, 40, 0.6);
     border-radius: 12px;

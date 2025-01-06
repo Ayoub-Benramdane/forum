@@ -54,7 +54,7 @@ body {
 /* Main Container */
 .container {
     max-width: 80%;
-    margin: 80px auto;
+    margin: 80px auto 0;
     padding: 20px;
 }
 

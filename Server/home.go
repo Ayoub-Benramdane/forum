@@ -24,14 +24,9 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	}
 	cookie, err := r.Cookie("session")
 	var user *structs.Session
-
 	if err == nil {
 		user = database.GetUserConnected(cookie.Value)
 	} else {
-		if database.DeleteSession() != nil {
-			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Ending Session", Page: "Home", Path: "/"})
-			return
-		}
 		user = &structs.Session{Status: "Disconnected"}
 	}
 	posts, errLoadPost := database.GetAllPosts()

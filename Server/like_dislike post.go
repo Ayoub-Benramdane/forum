@@ -1,10 +1,11 @@
 package server
 
 import (
-	structs "forum/Data"
-	database "forum/Database"
 	"net/http"
 	"strconv"
+
+	structs "forum/Data"
+	database "forum/Database"
 )
 
 func LikePost(w http.ResponseWriter, r *http.Request) {

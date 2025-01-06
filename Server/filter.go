@@ -26,7 +26,7 @@ func Filter(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		user = database.GetUserConnected(cookie.Value)
 	} else {
-		if database.DeleteSession() != nil {
+		if database.DeleteSession(cookie.Value) != nil {
 			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Ending Session", Page: "Home", Path: "/"})
 			return
 		}

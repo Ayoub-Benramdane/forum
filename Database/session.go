@@ -1,6 +1,7 @@
 package database
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -20,11 +21,12 @@ func GetUserConnected(token string) *structs.Session {
 	if err != nil {
 		return nil
 	}
+	fmt.Println(session)
 	return &session
 }
 
-func DeleteSession() error {
-	_, err := DB.Exec("DELETE FROM session")
+func DeleteSession(value string) error {
+	_, err := DB.Exec("DELETE FROM session WHERE token = ?", value)
 	return err
 }
 

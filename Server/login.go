@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 	"time"
@@ -48,6 +49,11 @@ func LoginPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	token := database.GenerateToken(username)
+	fmt.Println(";po")
+	if database.GetUserConnected(token) != nil {
+		fmt.Println(";po")
+		http.Redirect(w, r, "/logout", http.StatusSeeOther)
+	}
 	if database.CreateSession(user.Username, user.ID, token) != nil {
 		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "Error Connection", Page: "Login", Path: "/login"})
 		return

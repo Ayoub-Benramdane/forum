@@ -2,12 +2,14 @@ package server
 
 import (
 	"fmt"
-	structs "forum/Data"
-	database "forum/Database"
 	"html/template"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
+
+	structs "forum/Data"
+	database "forum/Database"
 )
 
 func DeleteComment(w http.ResponseWriter, r *http.Request) {
@@ -60,6 +62,15 @@ func DeleteComment(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "you can't Delete Comment", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
+	token := cookie.Value
+	cookie = &http.Cookie{
+		Name:     "session",
+		Value:    token,
+		Expires:  time.Now().Add(5 * time.Minute),
+		HttpOnly: true,
+		Path:     "/",
+	}
+	http.SetCookie(w, cookie)
 	http.Redirect(w, r, fmt.Sprintf("/post/%d", id_post), http.StatusSeeOther)
 }
 
@@ -98,7 +109,7 @@ func EditComment(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		EditCommentGet(w, r, id_post, id_comment)
 	case http.MethodPost:
-		EditCommentPost(w, r, id_post, id_comment)
+		EditCommentPost(w, r, id_post, id_comment, cookie)
 	default:
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
@@ -126,7 +137,7 @@ func EditCommentGet(w http.ResponseWriter, r *http.Request, id_post, id_comment 
 	tmpl.Execute(w, data)
 }
 
-func EditCommentPost(w http.ResponseWriter, r *http.Request, id_post, id_comment int64) {
+func EditCommentPost(w http.ResponseWriter, r *http.Request, id_post, id_comment int64, cookie *http.Cookie) {
 	content := strings.TrimSpace(r.FormValue("content"))
 	if content == "" {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Check your input", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
@@ -135,5 +146,14 @@ func EditCommentPost(w http.ResponseWriter, r *http.Request, id_post, id_comment
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Updating post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
+	token := cookie.Value
+	cookie = &http.Cookie{
+		Name:     "session",
+		Value:    token,
+		Expires:  time.Now().Add(5 * time.Minute),
+		HttpOnly: true,
+		Path:     "/",
+	}
+	http.SetCookie(w, cookie)
 	http.Redirect(w, r, fmt.Sprintf("/post/%d", id_post), http.StatusSeeOther)
 }

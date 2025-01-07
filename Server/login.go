@@ -1,9 +1,9 @@
 package server
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
+	"strings"
 	"time"
 
 	structs "forum/Data"
@@ -48,21 +48,35 @@ func LoginPost(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "Check Username Or Password", Page: "Login", Path: "/login"})
 		return
 	}
-	token := database.GenerateToken(username)
-	fmt.Println(";po")
-	if database.GetUserConnected(token) != nil {
-		fmt.Println(";po")
-		http.Redirect(w, r, "/logout", http.StatusSeeOther)
-	}
-	if database.CreateSession(user.Username, user.ID, token) != nil {
-		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "Error Connection", Page: "Login", Path: "/login"})
+	tkn, errToken := database.GenerateToken(username)
+	if errToken != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Token not generated", Page: "Login", Path: "/login"})
 		return
+	}
+	token := string(tkn)
+	if errCreate := database.CreateSession(user.Username, user.ID, token); errCreate != nil {
+		if strings.Contains(errCreate.Error(), "UNIQUE constraint failed") {
+			user_id, err := GetUserFromToken(token)
+			if database.DeleteSessionNew(user_id) != nil {
+				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Ending Session", Page: "Home", Path: "/"})
+				return
+			}
+			http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
+			if database.CreateSession(user.Username, user.ID, token) != nil {
+				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Connection", Page: "Home", Path: "/"})
+				return
+			}
+		} else {
+			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Connection", Page: "Login", Path: "/login"})
+			return
+		}
 	}
 	cookie := &http.Cookie{
 		Name:     "session",
 		Value:    token,
 		Expires:  time.Now().Add(20 * time.Minute),
 		HttpOnly: true,
+		Path:     "/",
 	}
 	http.SetCookie(w, cookie)
 	http.Redirect(w, r, "/", http.StatusSeeOther)

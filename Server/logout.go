@@ -13,7 +13,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	cookie, err := r.Cookie("session")
-	if err != nil || cookie.Value == "" {
+	if err != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "No cookies", Page: "Home", Path: "/"})
 		return
 	}

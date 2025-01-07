@@ -2,12 +2,14 @@ package server
 
 import (
 	"fmt"
-	structs "forum/Data"
-	database "forum/Database"
 	"html/template"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
+
+	structs "forum/Data"
+	database "forum/Database"
 )
 
 func DeletePost(w http.ResponseWriter, r *http.Request) {
@@ -39,6 +41,15 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "you can't Delete Post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
+	token := cookie.Value
+	cookie = &http.Cookie{
+		Name:     "session",
+		Value:    token,
+		Expires:  time.Now().Add(5 * time.Minute),
+		HttpOnly: true,
+		Path:     "/",
+	}
+	http.SetCookie(w, cookie)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
@@ -67,7 +78,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		EditPostGet(w, r, id_post)
 	case http.MethodPost:
-		EditPostPost(w, r, id_post)
+		EditPostPost(w, r, id_post, cookie)
 	default:
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
@@ -100,7 +111,7 @@ func EditPostGet(w http.ResponseWriter, r *http.Request, id_post int64) {
 	tmpl.Execute(w, data)
 }
 
-func EditPostPost(w http.ResponseWriter, r *http.Request, id_post int64) {
+func EditPostPost(w http.ResponseWriter, r *http.Request, id_post int64, cookie *http.Cookie) {
 	title := strings.TrimSpace(r.FormValue("title"))
 	content := strings.TrimSpace(r.FormValue("content"))
 	if title == "" || content == "" {
@@ -116,5 +127,14 @@ func EditPostPost(w http.ResponseWriter, r *http.Request, id_post int64) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Updating post", Page: "Post", Path: fmt.Sprintf("/post/edit/%d", id_post)})
 		return
 	}
+	token := cookie.Value
+	cookie = &http.Cookie{
+		Name:     "session",
+		Value:    token,
+		Expires:  time.Now().Add(5 * time.Minute),
+		HttpOnly: true,
+		Path:     "/",
+	}
+	http.SetCookie(w, cookie)
 	http.Redirect(w, r, fmt.Sprintf("/post/%d", id_post), http.StatusSeeOther)
 }

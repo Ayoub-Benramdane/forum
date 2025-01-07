@@ -1,11 +1,13 @@
 package server
 
 import (
-	structs "forum/Data"
-	database "forum/Database"
 	"html/template"
 	"net/http"
 	"strings"
+	"time"
+
+	structs "forum/Data"
+	database "forum/Database"
 )
 
 func NewPost(w http.ResponseWriter, r *http.Request) {
@@ -61,5 +63,14 @@ func NewPostPost(w http.ResponseWriter, r *http.Request, cookie *http.Cookie) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Creating post", Page: "New-Post", Path: "/new-post"})
 		return
 	}
+	token := cookie.Value
+	cookie = &http.Cookie{
+		Name:     "session",
+		Value:    token,
+		Expires:  time.Now().Add(5 * time.Minute),
+		HttpOnly: true,
+		Path:     "/",
+	}
+	http.SetCookie(w, cookie)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

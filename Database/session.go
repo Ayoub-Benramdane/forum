@@ -1,8 +1,6 @@
 package database
 
 import (
-	"fmt"
-	"log"
 	"time"
 
 	structs "forum/Data"
@@ -21,19 +19,14 @@ func GetUserConnected(token string) *structs.Session {
 	if err != nil {
 		return nil
 	}
-	fmt.Println(session)
 	return &session
 }
 
-func DeleteSession(value string) error {
-	_, err := DB.Exec("DELETE FROM session WHERE token = ?", value)
+func DeleteSession(UserID int64) error {
+	_, err := DB.Exec("DELETE FROM session WHERE user_id = ?", UserID)
 	return err
 }
 
-func GenerateToken(email string) string {
-	hash, err := bcrypt.GenerateFromPassword([]byte(email), bcrypt.DefaultCost)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return string(hash)
+func GenerateToken(email string) ([]byte, error) {
+	return bcrypt.GenerateFromPassword([]byte(email), bcrypt.DefaultCost)
 }

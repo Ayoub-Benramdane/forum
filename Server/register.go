@@ -33,7 +33,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 }
 
 func RegisterGet(w http.ResponseWriter, r *http.Request) {
-	tmpl, tmplErr := template.ParseFiles("Template/html/register.html")
+	tmpl, tmplErr := template.ParseFiles("Template/html/login.html")
 	if tmplErr != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load Register page template", Page: "Home", Path: "/"})
 		return

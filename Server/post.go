@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	structs "forum/Data"
 	database "forum/Database"
@@ -52,6 +53,15 @@ func Post(w http.ResponseWriter, r *http.Request) {
 			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Creating Comment", Path: fmt.Sprintf("/post/%d", id_post)})
 			return
 		}
+		token := cookie.Value
+		cookie = &http.Cookie{
+			Name:     "session",
+			Value:    token,
+			Expires:  time.Now().Add(5 * time.Minute),
+			HttpOnly: true,
+			Path:     "/",
+		}
+		http.SetCookie(w, cookie)
 	}
 	comments, errLoadComment := database.GetAllComments(id_post)
 	if errLoadComment != nil {

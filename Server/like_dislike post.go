@@ -3,6 +3,7 @@ package server
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	structs "forum/Data"
 	database "forum/Database"
@@ -33,6 +34,15 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Like", Page: "Home", Path: "/"})
 		return
 	}
+	token := cookie.Value
+	cookie = &http.Cookie{
+		Name:     "session",
+		Value:    token,
+		Expires:  time.Now().Add(5 * time.Minute),
+		HttpOnly: true,
+		Path:     "/",
+	}
+	http.SetCookie(w, cookie)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
@@ -61,5 +71,14 @@ func DislikePost(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Dislike", Page: "Home", Path: "/"})
 		return
 	}
+	token := cookie.Value
+	cookie = &http.Cookie{
+		Name:     "session",
+		Value:    token,
+		Expires:  time.Now().Add(5 * time.Minute),
+		HttpOnly: true,
+		Path:     "/",
+	}
+	http.SetCookie(w, cookie)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

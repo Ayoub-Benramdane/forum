@@ -27,10 +27,6 @@ func Post(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		user = database.GetUserConnected(cookie.Value)
 	} else {
-		if database.DeleteSession(cookie.Value) != nil {
-			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Ending Session", Page: "Home", Path: "/"})
-			return
-		}
 		user = &structs.Session{Status: "Disconnected"}
 	}
 	post, errLoadPost := database.GetPostByID(id_post)
@@ -44,6 +40,11 @@ func Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if r.Method == http.MethodPost {
+		if user == nil {
+			http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
+			Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Please Log in to add comment", Page: "Home", Path: "/"})
+			return
+		}
 		content := strings.TrimSpace(r.FormValue("content"))
 		if content == "" {
 			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Check your input", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})

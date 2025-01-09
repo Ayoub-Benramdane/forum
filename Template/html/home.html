@@ -9,20 +9,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 
-<body>
+<body id="homeContainer">
     <!-- Navbar -->
     <nav class="navbar">
         <div class="user-info">
             {{if eq .User.Status "Connected"}}
-            <form action="/profile" method="POST">
-                <button class="user-button">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    <span>{{.User.Username}}</span>
-                </button>
-            </form>
+            <a href="/profile" class="myLink"><button class="log-btn"><i class="fa-solid fa-user"></i>
+                    {{.User.Username}}</button></a>
             <a href="/logout" class="myLink"><button class="log-btn">Logout</button></a>
             {{else}}
             <a href="/login" class="myLink"><button class="log-btn">Log In</button></a>
@@ -58,7 +51,7 @@
         <!-- Posts Container -->
         {{range .Posts}}
         <!-- Sample Post -->
-        <div class="post">
+        <div id="post" class="post">
             <div class="post-header">
                 <span class="post-author">{{.Author}}</span>
                 <span class="post-date">{{.CreatedAt}}</span>
@@ -72,10 +65,12 @@
             </div>
             <div class="post-actions">
                 {{if eq $.User.Status "Connected"}}
-                <button class="action-btn"><a href="/like/{{.ID}}" class="myLink"><i class="fas fa-thumbs-up"></i>
-                        <span>{{.TotalLikes}}</span></a></button>
-                <button class="action-btn"><a href="/dislike/{{.ID}}" class="myLink"><i class="fas fa-thumbs-down"></i>
-                        <span>{{.TotalDislikes}}</span></a></button>
+                <button class="action-btn"><a href="/like/{{.ID}}" class="myLink" onclick="LikePost({{.ID}})"><i
+                            class="fas fa-thumbs-up"></i>
+                        <span id="like">{{.TotalLikes}}</span></a></button>
+                <button class="action-btn"><a href="/dislike/{{.ID}}" class="myLink" onclick="DislikePost({{.ID}})"><i
+                            class="fas fa-thumbs-down"></i>
+                        <span id="dislike">{{.TotalDislikes}}</span></a></button>
                 {{else}}
                 <button class="action-btn"><i class="fas fa-thumbs-up"></i>
                     <span>{{.TotalLikes}}</span></button>
@@ -101,6 +96,7 @@
             <!-- <button class="page-btn"><i class="fas fa-chevron-right"></i></button> -->
         </div>
     </div>
+    <script src="../Template/Script/script.js"></script>
 </body>
 
 </html>

@@ -36,11 +36,12 @@ func DeleteComment(w http.ResponseWriter, r *http.Request) {
 	var user *structs.Session
 	if err == nil {
 		user = database.GetUserConnected(cookie.Value)
-	} else {
-		if database.DeleteSession(cookie.Value) != nil {
-			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Ending Session", Page: "Home", Path: "/"})
+		if user == nil {
+			http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
+			Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
 			return
 		}
+	} else {
 		user = &structs.Session{Status: "Disconnected"}
 	}
 	post, errPost := database.GetPostByID(id_post)
@@ -55,7 +56,7 @@ func DeleteComment(w http.ResponseWriter, r *http.Request) {
 	}
 	if user.UserID == UserID || user.UserID == post.UserID {
 		if database.DeleteCommentId(id_post, id_comment) != nil {
-			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Comment", Path: fmt.Sprintf("/post/%d", id_post)})
+			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Comment", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 			return
 		}
 	} else {
@@ -101,7 +102,11 @@ func EditComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	user := database.GetUserConnected(cookie.Value)
-	if user.UserID != UserID {
+	if user == nil {
+		http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+		return
+	} else if user.UserID != UserID {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "you can't Updating Comment", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}

@@ -56,8 +56,7 @@ func LoginPost(w http.ResponseWriter, r *http.Request) {
 	token := string(tkn)
 	if errCreate := database.CreateSession(user.Username, user.ID, token); errCreate != nil {
 		if strings.Contains(errCreate.Error(), "UNIQUE constraint failed") {
-			user_id, err := GetUserFromToken(token)
-			if database.DeleteSessionNew(user_id) != nil {
+			if database.DeleteSession(username) != nil {
 				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Ending Session", Page: "Home", Path: "/"})
 				return
 			}

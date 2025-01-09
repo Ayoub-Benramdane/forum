@@ -16,11 +16,17 @@ func NewPost(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
 		return
 	}
+	user := database.GetUserConnected(cookie.Value)
+	if user == nil {
+		http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Please Log in to add post", Page: "Home", Path: "/"})
+			return
+	}
 	switch r.Method {
 	case http.MethodGet:
 		NewPostGet(w, r)
 	case http.MethodPost:
-		NewPostPost(w, r, cookie)
+		NewPostPost(w, r, cookie, user)
 	default:
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return
@@ -46,8 +52,7 @@ func NewPostGet(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, data)
 }
 
-func NewPostPost(w http.ResponseWriter, r *http.Request, cookie *http.Cookie) {
-	user := database.GetUserConnected(cookie.Value)
+func NewPostPost(w http.ResponseWriter, r *http.Request, cookie *http.Cookie, user *structs.Session) {
 	title := strings.TrimSpace(r.FormValue("title"))
 	content := strings.TrimSpace(r.FormValue("content"))
 	if title == "" || content == "" {

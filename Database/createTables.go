@@ -7,7 +7,6 @@ func CreateTables() error {
 	if err != nil {
 		return err
 	}
-
 	_, err = DB.Exec(`
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -16,15 +16,7 @@
         <a href="/" class="logo">Forum</a>
         {{if eq .User.Status "Connected"}}
         <div class="user-info">
-            <form action="/profile" method="POST">
-                <button class="user-button">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    <span>{{.User.Username}}</span>
-                </button>
-            </form>
+            <a href="/profile" class="myLink"><button class="log-btn"><i class="fa-solid fa-user"></i>  {{.User.Username}}</button></a>
             <a href="/logout" class="myLink"><button class="log-btn">Logout</button></a>
             {{else}}
             <a href="/login" class="myLink"><button class="log-btn">Log In</button></a>
@@ -119,7 +111,6 @@
             {{end}}
         </div>
     </div>
-    <script src="../Script/comment.js"></script>
 </body>
 
 </html>

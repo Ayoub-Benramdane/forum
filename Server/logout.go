@@ -17,7 +17,12 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "No cookies", Page: "Home", Path: "/"})
 		return
 	}
-	if database.DeleteSession(cookie.Value) != nil {
+	user_id, err := database.GetUserFromToken(cookie.Value)
+	if err != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "User not connected", Page: "Home", Path: "/"})
+		return
+	}
+	if database.DeleteSession(user_id) != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Ending Session", Page: "Home", Path: "/"})
 		return
 	}

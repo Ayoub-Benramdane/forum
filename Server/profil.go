@@ -14,20 +14,16 @@ import (
 
 func Profile(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("session")
-	var user *structs.Session
-	if err == nil {
-		user = database.GetUserConnected(cookie.Value)
-	} else {
-		if database.DeleteSession(cookie.Value) != nil {
-			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Ending Session", Page: "Home", Path: "/"})
-			return
-		}
-		user = &structs.Session{Status: "Disconnected"}
+	user := database.GetUserConnected(cookie.Value)
+	if user == nil {
+		http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
+		return
 	}
 	if r.URL.Path != "/profile" || err != nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
 		return
-	} else if r.Method != http.MethodPost && r.Method != http.MethodGet {
+	} else if r.Method != http.MethodGet {
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return
 	}
@@ -50,24 +46,29 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
 		return
 	}
+	user := database.GetUserConnected(cookie.Value)
+	if user == nil {
+		http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
+		return
+	}
 	switch r.Method {
 	case http.MethodGet:
-		EditProfileGet(w, r, cookie)
+		EditProfileGet(w, r, cookie, user)
 	case http.MethodPost:
-		EditProfilePost(w, r, cookie)
+		EditProfilePost(w, r, cookie, user)
 	default:
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Profile", Path: "/profile"})
 		return
 	}
 }
 
-func EditProfileGet(w http.ResponseWriter, r *http.Request, cookie *http.Cookie) {
+func EditProfileGet(w http.ResponseWriter, r *http.Request, cookie *http.Cookie, user *structs.Session) {
 	tmpl, tmplErr := template.ParseFiles("Template/html/profile-edit.html")
 	if tmplErr != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading profil edit page", Page: "Profile", Path: "/profile"})
 		return
 	}
-	user := database.GetUserConnected(cookie.Value)
 	info, errLoadInfo := database.GetInfoUser(user.UserID)
 	if errLoadInfo != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading Info for user", Page: "Profile", Path: "/profile"})
@@ -76,13 +77,12 @@ func EditProfileGet(w http.ResponseWriter, r *http.Request, cookie *http.Cookie)
 	tmpl.Execute(w, info)
 }
 
-func EditProfilePost(w http.ResponseWriter, r *http.Request, cookie *http.Cookie) {
+func EditProfilePost(w http.ResponseWriter, r *http.Request, cookie *http.Cookie, user *structs.Session) {
 	username := strings.TrimSpace(r.FormValue("username"))
 	email := strings.TrimSpace(r.FormValue("email"))
 	password := r.FormValue("password")
 	password1 := r.FormValue("new-password")
 	password2 := r.FormValue("confirm-password")
-	user := database.GetUserConnected(cookie.Value)
 	if password != "" {
 		user1, errData := database.GetUserByUsername(username)
 		if errData != nil || bcrypt.CompareHashAndPassword([]byte(user1.Password), []byte(password)) != nil {

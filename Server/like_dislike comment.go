@@ -37,7 +37,11 @@ func LikeComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	user := database.GetUserConnected(cookie.Value)
-	if !database.CheckLikeComment(user.UserID, id_post, id_comment) {
+	if user == nil {
+		http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Please log to Adding Like", Page: "Post", Path: "/post/" + ids[0]})
+		return
+	} else if !database.CheckLikeComment(user.UserID, id_post, id_comment) {
 		if err := database.AddLikeComment(user.UserID, id_post, id_comment); err != nil {
 			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Adding Like", Page: "Post", Path: "/post/" + ids[0]})
 			return
@@ -84,7 +88,11 @@ func DislikeComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	user := database.GetUserConnected(cookie.Value)
-	if !database.CheckDislikeComment(user.UserID, id_post, id_comment) {
+	if user == nil {
+		http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Please log to Adding Dislike", Page: "Post", Path: "/post/" + ids[0]})
+		return
+	} else if !database.CheckDislikeComment(user.UserID, id_post, id_comment) {
 		if err := database.AddDislikeComment(user.UserID, id_post, id_comment); err != nil {
 			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Adding Dislike", Page: "Post", Path: "/post/" + ids[0]})
 			return

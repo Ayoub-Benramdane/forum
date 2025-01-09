@@ -26,6 +26,9 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	var user *structs.Session
 	if err == nil {
 		user = database.GetUserConnected(cookie.Value)
+		if user == nil {
+			http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
+		}
 	} else {
 		user = &structs.Session{Status: "Disconnected"}
 	}

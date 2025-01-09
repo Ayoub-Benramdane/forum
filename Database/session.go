@@ -22,8 +22,14 @@ func GetUserConnected(token string) *structs.Session {
 	return &session
 }
 
-func DeleteSession(UserID int64) error {
-	_, err := DB.Exec("DELETE FROM session WHERE user_id = ?", UserID)
+func GetUserFromToken(token string) (string, error) {
+	var Username string
+	err := DB.QueryRow("SELECT username FROM session WHERE token = ?", token).Scan(&Username)
+	return Username, err
+}
+
+func DeleteSession(username string) error {
+	_, err := DB.Exec("DELETE FROM session WHERE username = ?", username)
 	return err
 }
 

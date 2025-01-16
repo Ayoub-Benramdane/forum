@@ -14,13 +14,13 @@ import (
 
 func Profile(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("session")
-	user := database.GetUserConnected(cookie.Value)
-	if user == nil {
-		http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
+	if err != nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
 		return
 	}
-	if r.URL.Path != "/profile" || err != nil {
+	user := database.GetUserConnected(cookie.Value)
+	if user == nil {
+		http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
 		return
 	} else if r.Method != http.MethodGet {

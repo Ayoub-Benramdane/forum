@@ -18,8 +18,8 @@ func main() {
 	fs := http.FileServer(http.Dir("./Template"))
 	http.Handle("/Template/", http.StripPrefix("/Template/", fs))
 
-	http.HandleFunc("/register", server.Register)
 	http.HandleFunc("/login", server.Login)
+	http.HandleFunc("/register", server.Register)
 	http.HandleFunc("/logout", server.Logout)
 	http.HandleFunc("/profile", server.Profile)
 	http.HandleFunc("/profile-edit", server.EditProfile)
@@ -37,6 +37,6 @@ func main() {
 	http.HandleFunc("/delete_comment/", server.DeleteComment)
 	http.HandleFunc("/edit_comment/", server.EditComment)
 	log.Println("Server is running...")
-	log.Println("Link: http://localhost:8666")
-	log.Fatal(http.ListenAndServe(":8666", nil))
+	log.Println("Link: http://localhost:8688")
+	log.Fatal(http.ListenAndServe(":8688", nil))
 }

@@ -21,7 +21,7 @@ body {
     top: 0;
     width: 100%;
     padding: 20px;
-    background: rgba(34, 49, 40, 0.5);
+    background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(8px);
     z-index: 1000;
 }
@@ -65,7 +65,7 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    background: rgba(34, 49, 40, 0.4);
+    background: rgba(0, 0, 0, 0.4);
     padding: 15px;
     border-radius: 8px;
     backdrop-filter: blur(8px);
@@ -113,7 +113,7 @@ body {
 
 /* Posts */
 .post {
-    background: rgba(34, 49, 40, 0.4);
+    background: rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(8px);
     border-radius: 8px;
     padding: 20px;

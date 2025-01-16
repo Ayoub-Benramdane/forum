@@ -9,10 +9,7 @@ import (
 )
 
 func Filter(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/filter" {
-		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
-		return
-	} else if r.Method != http.MethodPost {
+	if r.Method != http.MethodPost {
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return
 	}

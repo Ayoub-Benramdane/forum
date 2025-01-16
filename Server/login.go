@@ -16,10 +16,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	if _, err := r.Cookie("session"); err == nil {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
-	if r.URL.Path != "/login" {
-		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
-		return
-	}
 	switch r.Method {
 	case http.MethodGet:
 		LoginGet(w, r)
@@ -73,7 +69,7 @@ func LoginPost(w http.ResponseWriter, r *http.Request) {
 	cookie := &http.Cookie{
 		Name:     "session",
 		Value:    token,
-		Expires:  time.Now().Add(20 * time.Minute),
+		Expires:  time.Now().Add(5 * time.Minute),
 		HttpOnly: true,
 		Path:     "/",
 	}

@@ -17,10 +17,6 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	if _, err := r.Cookie("session"); err == nil {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
-	if r.URL.Path != "/register" {
-		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
-		return
-	}
 	switch r.Method {
 	case http.MethodGet:
 		RegisterGet(w, r)
@@ -33,7 +29,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 }
 
 func RegisterGet(w http.ResponseWriter, r *http.Request) {
-	tmpl, tmplErr := template.ParseFiles("Template/html/login.html")
+	tmpl, tmplErr := template.ParseFiles("Template/html/register.html")
 	if tmplErr != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load Register page template", Page: "Home", Path: "/"})
 		return

@@ -7,7 +7,6 @@
     <title>Forum - Post Details</title>
     <link rel="stylesheet" href="../Template/css/post.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
 </head>
 
 <body>
@@ -16,7 +15,8 @@
         <a href="/" class="logo">Forum</a>
         {{if eq .User.Status "Connected"}}
         <div class="user-info">
-            <a href="/profile" class="myLink"><button class="log-btn"><i class="fa-solid fa-user"></i>  {{.User.Username}}</button></a>
+            <a href="/profile" class="myLink"><button class="log-btn"><i class="fa-solid fa-user"></i>
+                    {{.User.Username}}</button></a>
             <a href="/logout" class="myLink"><button class="log-btn">Logout</button></a>
             {{else}}
             <a href="/login" class="myLink"><button class="log-btn">Log In</button></a>
@@ -61,21 +61,21 @@
                 <button class="action-btn"> <i class="fas fa-comment"></i> {{.Post.TotalComments}}
                     Comment</button>
             </div>
-        </div>
-
-        <!-- Comments Section -->
-        <div class="comments-section">
-            <h3>Comments</h3>
-            <!-- New Comment Form -->
             {{if eq .User.Status "Connected"}}
-            <form action="/post/{{$.Post.ID}}" method="POST">
-                <textarea name="content" id="content" placeholder="Write a comment..." required></textarea>
-                <button type="submit" class="btn"><i class="fas fa-paper-plane"></i> Post Comment</button>
+            <form id="commentForm">
+                <h3>Comments</h3>
+                <textarea id="content" name="content" placeholder="Write a comment..." required></textarea>
+                <button type="button" id="postCommentBtn" class="btn">
+                    <i class="fas fa-paper-plane"></i> Post Comment
+                </button>
             </form>
             {{else}}
             <a href="/login" class="myLink">Please log in to add a comment.</a>
             {{end}}
+        </div>
 
+        <!-- Comments Section -->
+        <div class="comments-section">
             <!-- Existing Comments -->
             {{range .Comments}}
             <div class="comments-list">
@@ -111,6 +111,83 @@
             {{end}}
         </div>
     </div>
+    <script>
+        document.getElementById("postCommentBtn").addEventListener("click", async function () {
+            const content = document.getElementById("content").value.trim();
+            if (content === "") {
+                alert("Comment cannot be empty.");
+                return;
+            }
+            const response = await fetch(window.location.pathname, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `content=${encodeURIComponent(content)}`,
+            });
+    
+            if (response.ok) {
+                const newComment = await response.json();
+    
+                const userStatus = "Connected";
+                const postId = window.location.pathname.split("/").pop();
+    
+                appendComment(newComment, userStatus, postId);
+    
+                document.getElementById("content").value = "";
+            } else {
+                alert("Failed to post comment. Please try again.");
+            }
+        });
+    
+        function appendComment(comment, userStatus, postId) {
+            const commentsSection = document.querySelector(".comments-section");
+    
+            const commentDiv = document.createElement("div");
+            commentDiv.classList.add("comments-list");
+    
+            const commentHeader = `
+                <div class="comment-header">
+                    <span class="comment-author">${comment.author}</span>
+                    <span class="comment-date">${comment.created_at}</span>
+                </div>`;
+    
+            const commentOptions = userStatus === "Connected" ? `
+                <div class="comment-options">
+                    <a class="myLink" href="/edit_comment/${postId}/${comment.id}">
+                        <button class="edit-btn"><i class="fas fa-edit"></i>Edit</button>
+                    </a>
+                    <a class="myLink" href="/delete_comment/${postId}/${comment.id}">
+                        <button class="delete-btn"><i class="fas fa-trash"></i>Delete</button>
+                    </a>
+                </div>` : "";
+    
+            const commentContent = `<p>${comment.content}</p>`;
+    
+            const likeDislike = `
+                <div class="like-dislike">
+                    ${userStatus === "Connected" ? `
+                        <button class="action-btn">
+                            <a href="/like_comment/${postId}/${comment.id}" class="myLink">
+                                <i class="fas fa-thumbs-up"></i><span> ${comment.totalLikes || 0}</span>
+                            </a>
+                        </button>
+                        <button class="action-btn">
+                            <a href="/dislike_comment/${postId}/${comment.id}" class="myLink">
+                                <i class="fas fa-thumbs-down"></i><span> ${comment.totalDislikes || 0}</span>
+                            </a>
+                        </button>` : `
+                        <button class="action-btn">
+                            <i class="fas fa-thumbs-up"></i><span> ${comment.totalLikes || 0}</span>
+                        </button>
+                        <button class="action-btn">
+                            <i class="fas fa-thumbs-down"></i><span> ${comment.totalDislikes || 0}</span>
+                        </button>`}
+                </div>`;
+            commentDiv.innerHTML = commentHeader + commentOptions + commentContent + likeDislike;
+            commentsSection.prepend(commentDiv);
+        }
+    </script>    
 </body>
 
 </html>

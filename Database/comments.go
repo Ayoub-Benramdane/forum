@@ -7,12 +7,16 @@ import (
 	structs "forum/Data"
 )
 
-func CreateComment(content string, userID, postID int64) error {
+func CreateComment(content string, userID, postID int64) (int64, error) {
 	if userID == 0 {
-		return fmt.Errorf("session closed")
+		return 0, fmt.Errorf("session closed")
 	}
-	_, err := DB.Exec("INSERT INTO comments (content, user_id, post_id, created_at) VALUES (?, ?, ?, ?)", content, userID, postID, time.Now())
-	return err
+	result, errInsert := DB.Exec("INSERT INTO comments (content, user_id, post_id, created_at) VALUES (?, ?, ?, ?)", content, userID, postID, time.Now())
+	if errInsert != nil {
+		return 0, errInsert
+	}
+	lastID, err := result.LastInsertId()
+	return lastID, err
 }
 
 func GetComment(commentID int64) (int64, error) {

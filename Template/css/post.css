@@ -19,6 +19,32 @@ body {
     background-attachment: fixed;
 }
 
+#commentForm {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    border-radius: 8px;
+    padding: 25px;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#commentForm h3 {
+    margin-bottom: 20px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+#commentForm  textarea {
+    width: 100%;
+    height: 100px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    padding: 12px;
+    color: #fff;
+    margin-bottom: 10px;
+    resize: none;
+}
+
 /* Navbar Styles */
 .navbar {
     position: fixed;
@@ -74,7 +100,7 @@ body {
 }
 
 .post {
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(8px);
     border-radius: 8px;
     padding: 25px;
@@ -159,29 +185,12 @@ body {
 
 /* Comments Section */
 .comments-section {
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(8px);
     border-radius: 8px;
     padding: 25px;
     color: #fff;
     border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.comments-section h3 {
-    margin-bottom: 20px;
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.comments-section textarea {
-    width: 100%;
-    height: 100px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-    padding: 12px;
-    color: #fff;
-    margin-bottom: 10px;
-    resize: none;
 }
 
 .btn {
@@ -202,8 +211,8 @@ body {
 
 .comments-list {
     margin: 10px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    gap: 15px;
+    border-bottom: 1px solid rgb(255, 255, 255);
+    gap: 50px;
     margin: 30px 0;
 }
 

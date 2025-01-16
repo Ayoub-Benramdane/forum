@@ -12,7 +12,7 @@ import (
 )
 
 func LikeComment(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost && r.Method != http.MethodGet {
+	if r.Method != http.MethodPost {
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return
 	}

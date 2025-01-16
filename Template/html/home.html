@@ -7,6 +7,13 @@
     <title>Forum - Home</title>
     <link rel="stylesheet" href="../Template/css/home.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        img {
+            width: 30px;
+            background-color: rgb(160, 163, 165);
+            border-radius: 10px;
+        }
+    </style>
 </head>
 
 <body id="homeContainer">
@@ -52,33 +59,45 @@
         {{range .Posts}}
         <!-- Sample Post -->
         <div id="post" class="post">
-            <div class="post-header">
-                <span class="post-author">{{.Author}}</span>
-                <span class="post-date">{{.CreatedAt}}</span>
-            </div>
-            <h3 class="post-title">{{.Title}}</h3>
-            <p class="post-content">{{.Content}}</p>
-            <div class="category-tags">
-                {{range .Categories}}
-                <span class="category-tag">#{{.}}</span>
-                {{end}}
-            </div>
+            <a href="/post/{{.ID}}" class="myLink">
+                <div class="post-header">
+                    <span><img src="../Template/user-png-icon-16.jpg"></span>
+                    <span class="post-author">{{.Author}}</span>
+                    <span class="post-date">{{.CreatedAt}}</span>
+                </div>
+                <h3 class="post-title">{{.Title}}</h3>
+                <p class="post-content">{{.Content}}</p>
+                <div class="category-tags">
+                    {{range .Categories}}
+                    <span class="category-tag">#{{.}}</span>
+                    {{end}}
+                </div>
+            </a>
             <div class="post-actions">
                 {{if eq $.User.Status "Connected"}}
-                <button class="action-btn"><a href="/like/{{.ID}}" class="myLink" onclick="LikePost({{.ID}})"><i
-                            class="fas fa-thumbs-up"></i>
-                        <span id="like">{{.TotalLikes}}</span></a></button>
-                <button class="action-btn"><a href="/dislike/{{.ID}}" class="myLink" onclick="DislikePost({{.ID}})"><i
-                            class="fas fa-thumbs-down"></i>
-                        <span id="dislike">{{.TotalDislikes}}</span></a></button>
+                <button id="like-btn-{{.ID}}" class="action-btn" onclick="updateLikeDislike({{.ID}}, 'like')">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span id="like-count-{{.ID}}">{{.TotalLikes}}</span>
+                </button>
+                <button id="dislike-btn-{{.ID}}" class="action-btn" onclick="updateLikeDislike({{.ID}}, 'dislike')">
+                    <i class="fas fa-thumbs-down"></i>
+                    <span id="dislike-count-{{.ID}}">{{.TotalDislikes}}</span>
+                </button>
                 {{else}}
-                <button class="action-btn"><i class="fas fa-thumbs-up"></i>
-                    <span>{{.TotalLikes}}</span></button>
-                <button class="action-btn"><i class="fas fa-thumbs-down"></i>
-                    <span>{{.TotalDislikes}}</span></button>
+                <button class="action-btn">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span>{{.TotalLikes}}</span>
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-thumbs-down"></i>
+                    <span>{{.TotalDislikes}}</span>
+                </button>
                 {{end}}
-                <a href="/post/{{.ID}}" class="myLink"><button class="comment-btn"><i class="fas fa-comment"></i>
-                        {{.TotalComments}} Comment</button></a>
+                <a href="/post/{{.ID}}" class="myLink">
+                    <button class="comment-btn">
+                        <i class="fas fa-comment"></i> {{.TotalComments}} Comment
+                    </button>
+                </a>
             </div>
         </div>
         {{end}}
@@ -96,7 +115,52 @@
             <!-- <button class="page-btn"><i class="fas fa-chevron-right"></i></button> -->
         </div>
     </div>
-    <script src="../Template/Script/script.js"></script>
+    <!-- <script src="../Template/Script/script.js"></script> -->
+    <script>
+        async function updateLikeDislike(postID, action) {
+            try {
+                const response = await fetch(`/${action}/${postID}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to update like/dislike');
+                }
+
+                const data = await response.json();
+
+                const likeCountElement = document.getElementById(`like-count-${postID}`);
+                const dislikeCountElement = document.getElementById(`dislike-count-${postID}`);
+
+                if (data.updatedLikes !== undefined) {
+                    likeCountElement.innerText = data.updatedLikes;
+                }
+                if (data.updatedDislikes !== undefined) {
+                    dislikeCountElement.innerText = data.updatedDislikes;
+                }
+
+                const likeButton = document.querySelector(`#like-btn-${postID}`);
+                const dislikeButton = document.querySelector(`#dislike-btn-${postID}`);
+
+                if (data.isLiked) {
+                    likeButton.classList.add('active');
+                } else {
+                    likeButton.classList.remove('active');
+                }
+
+                if (data.isDisliked) {
+                    dislikeButton.classList.add('active');
+                } else {
+                    dislikeButton.classList.remove('active');
+                }
+            } catch (error) {
+                console.error('Error updating like/dislike:', error);
+            }
+        }
+    </script>
 </body>
 
 </html>

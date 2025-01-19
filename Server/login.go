@@ -44,7 +44,12 @@ func LoginPost(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "Check Username Or Password", Page: "Login", Path: "/login"})
 		return
 	}
-	tkn, errToken := database.GenerateToken(user.Password)
+	hashedUser, errCrepting := bcrypt.GenerateFromPassword([]byte(username), bcrypt.DefaultCost)
+	if errCrepting != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error processing registration", Page: "Register", Path: "/register"})
+		return
+	}
+	tkn, errToken := database.GenerateToken(string(hashedUser))
 	if errToken != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Token not generated", Page: "Login", Path: "/login"})
 		return

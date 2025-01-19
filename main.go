@@ -37,6 +37,6 @@ func main() {
 	http.HandleFunc("/delete_comment/", server.DeleteComment)
 	http.HandleFunc("/edit_comment/", server.EditComment)
 	log.Println("Server is running...")
-	log.Println("Link: http://localhost:8688")
-	log.Fatal(http.ListenAndServe(":8688", nil))
+	log.Println("Link: http://localhost:8404")
+	log.Fatal(http.ListenAndServe(":8404", nil))
 }

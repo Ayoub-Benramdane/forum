@@ -1,6 +1,5 @@
 document.getElementById("postCommentBtn").addEventListener("click", async function () {
     const content = document.getElementById("content").value.trim();
-    document.getElementById("noCom").style.display = "none";
     if (content === "") {
         alert("Comment cannot be empty.");
         return;
@@ -12,7 +11,7 @@ document.getElementById("postCommentBtn").addEventListener("click", async functi
         },
         body: `content=${encodeURIComponent(content)}`,
     });
-    console.log(response)
+
     if (response.ok) {
         const newComment = await response.json();
 
@@ -32,7 +31,7 @@ function appendComment(comment, userStatus, postId) {
 
     const commentDiv = document.createElement("div");
     commentDiv.classList.add("comments-list");
-    commentDiv.id = `comment-${comment.id}`;  
+    commentDiv.id = `comment-${comment.id}`;
 
     const commentHeader = `
         <div class="comment-header">
@@ -42,9 +41,10 @@ function appendComment(comment, userStatus, postId) {
 
     const commentOptions = userStatus === "Connected" ? `
         <div class="comment-options">
-            <a class="myLink" href="/edit_comment/${postId}/${comment.id}">
-                <button class="edit-btn"><i class="fas fa-edit"></i>Edit</button>
-            </a>
+            <button id="edit-btn-comment-${postId}-${comment.id} class="edit-btn"
+                onclick="editComment(${postId}, ${comment.id}, 'edit_comment')">
+                <i class="fas fa-edit"></i>Edit
+            </button>
             <button id="delete-btn-comment-${comment.id}" class="delete-btn"
                 onclick="deleteComment(${postId}, ${comment.id}, 'delete_comment')">
                 <i class="fas fa-trash"></i>Delete
@@ -63,7 +63,7 @@ function appendComment(comment, userStatus, postId) {
                 </button>
                 <button id="dislike-btn-${postId}${comment.id}" class="action-btn"
                 onclick="updateLikeDislikeComment(${postId}, ${comment.id}, 'dislike_comment')">
-                        <i class="fas fa-thumbs-up"></i>
+                        <i class="fas fa-thumbs-down"></i>
                         <span id="dislike-count-${postId}${comment.id}"> ${comment.totalLikes || 0}</span>
                 </button>` : `
                 <button class="action-btn">

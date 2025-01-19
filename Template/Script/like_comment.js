@@ -6,8 +6,6 @@ async function updateLikeDislikeComment(PostID, CommentID, action) {
                 'Content-Type': 'application/json',
             },
         });
-        console.log(response);
-
 
         if (!response.ok) {
             throw new Error('Failed to update like/dislike');

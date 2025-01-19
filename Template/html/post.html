@@ -77,7 +77,8 @@
                 <button class="action-btn"><i class="fas fa-thumbs-down"></i>
                     <span>{{.Post.TotalDislikes}}</span></button>
                 {{end}}
-                <button class="action-btn"> <i class="fas fa-comment"></i> {{.Post.TotalComments}}
+                <button id="update-number-comment" class="action-btn"> <i class="fas fa-comment"></i>
+                    {{.Post.TotalComments}}
                     Comment</button>
             </div>
             {{if eq .User.Status "Connected"}}
@@ -96,7 +97,6 @@
         <!-- Comments Section -->
         <div class="comments-section">
             <!-- Existing Comments -->
-            {{if .Comments}}
             {{range .Comments}}
             <div class="comments-list" id="comment-{{.ID}}">
                 <div class="comment-header">
@@ -105,12 +105,14 @@
                 </div>
                 {{if eq $.User.Status "Connected"}}
                 <div class="comment-options">
-                    <button id="edit-btn-post" class="edit-btn" onclick="editComment({{.PostID}}, {{.ID}}, 'edit_comment')">
+                    <!-- <a class="myLink" href="/edit_comment/{{.PostID}}/{{.ID}}"> -->
+                    <button id="edit-btn-comment-{{.PostID}}-{{.ID}}" class="delete-btn"
+                        onclick="editComment({{.PostID}}, {{.ID}}, 'edit_comment')">
                         <i class="fas fa-edit"></i>Edit
                     </button>
                     <button id="delete-btn-comment-{{.ID}}" class="delete-btn"
                         onclick="deleteComment({{.PostID}}, {{.ID}}, 'delete_comment')">
-                        <i class="fas fa-trash"></i>Delete
+                        <i  class="fas fa-trash"></i>Delete
                     </button>
                 </div>
                 {{end}}
@@ -134,9 +136,6 @@
                 </div>
             </div>
             {{end}}
-            {{else}}
-            <h3 id="noCom">no comment yet</h3>
-            {{end}}
         </div>
     </div>
     <script src="../Template/Script/like_comment.js"></script>
@@ -144,6 +143,8 @@
     <script src="../Template/Script/like_dislike_post.js"></script>
     <script src="../Template/Script/delete_post.js"></script>
     <script src="../Template/Script/delete_comment.js"></script>
+    <script src="../Template/Script/edit_post.js"></script>
+    <script src="../Template/Script/edit_comment.js"></script>
 </body>
 
 </html>

@@ -53,7 +53,7 @@ func DeleteComment(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	} else if user.UserID != UserID && user.UserID != post.UserID {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "you can't Updating Comment", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "you can't Delete Comment", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
 	if database.DeleteCommentId(id_post, id_comment) != nil {
@@ -98,10 +98,9 @@ func EditComment(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	} else if user.UserID != UserID {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "you can't Updating Comment", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "you can't Updating Comment", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 	switch r.Method {
 	case http.MethodGet:
 		EditCommentGet(w, r, id_post, id_comment)
@@ -135,7 +134,6 @@ func EditCommentGet(w http.ResponseWriter, r *http.Request, id_post, id_comment 
 }
 
 func EditCommentPost(w http.ResponseWriter, r *http.Request, id_post, id_comment int64, cookie *http.Cookie) {
-	fmt.Println(id_post, id_comment)
 	content := strings.TrimSpace(r.FormValue("content"))
 	if content == "" {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Check your input", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})

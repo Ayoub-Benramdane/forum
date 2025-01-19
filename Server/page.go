@@ -35,8 +35,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		user = database.GetUserConnected(cookie.Value)
 		if user == nil {
 			http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
-			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Please log to Adding Like", Page: "Post", Path: "/"})
-			return
+			user = &structs.Session{Status: "Disconnected"}
 		}
 	} else {
 		user = &structs.Session{Status: "Disconnected"}

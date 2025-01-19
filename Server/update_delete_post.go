@@ -36,16 +36,15 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
-	} else if user.UserID == post.UserID {
-		if database.DeletePostId(id_post) != nil {
-			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-	} else {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "you can't Delete Post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+	} else if user.UserID != post.UserID {
+		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "you can't Delete Post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
+	if database.DeletePostId(id_post) != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 	cookie.Expires = time.Now().Add(5 * time.Minute)
 	http.SetCookie(w, cookie)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -73,10 +72,9 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	} else if user.UserID != post.UserID {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "you can't Updating Post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "you can't Updating Post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 	switch r.Method {
 	case http.MethodGet:
 		EditPostGet(w, r, id_post)

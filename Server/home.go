@@ -2,7 +2,6 @@ package server
 
 import (
 	"html/template"
-	"math"
 	"net/http"
 
 	structs "forum/Data"
@@ -28,6 +27,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		user = database.GetUserConnected(cookie.Value)
 		if user == nil {
 			http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
+			user = &structs.Session{Status: "Disconnected"}
 		}
 	} else {
 		user = &structs.Session{Status: "Disconnected"}
@@ -59,24 +59,4 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		Pagination: pagination,
 	}
 	tmpl.Execute(w, data)
-}
-
-func Pagination(categories []string, posts int) ([]int64, error) {
-	var totalPosts float64
-	var err error
-	var pagination []int64
-	for _, cat := range categories {
-		if cat == "All" {
-			totalPosts, err = database.CountPosts()
-			if err != nil {
-				return nil, err
-			}
-			break
-		}
-		totalPosts = float64(posts)
-	}
-	for i := int64(1); i <= int64(math.Ceil(totalPosts/10)); i++ {
-		pagination = append(pagination, i)
-	}
-	return pagination, nil
 }

@@ -120,14 +120,7 @@ func EditProfilePost(w http.ResponseWriter, r *http.Request, cookie *http.Cookie
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Updating user", Page: "Profile edit", Path: "/profile-edit"})
 		return
 	}
-	token := cookie.Value
-	cookie = &http.Cookie{
-		Name:     "session",
-		Value:    token,
-		Expires:  time.Now().Add(5 * time.Minute),
-		HttpOnly: true,
-		Path:     "/",
-	}
+	cookie.Expires = time.Now().Add(5 * time.Minute)
 	http.SetCookie(w, cookie)
 	http.Redirect(w, r, "/profile", http.StatusSeeOther)
 }

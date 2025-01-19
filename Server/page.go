@@ -2,6 +2,7 @@ package server
 
 import (
 	"html/template"
+	"math"
 	"net/http"
 	"strconv"
 
@@ -16,12 +17,10 @@ func Page(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid page ID", Page: "Home", Path: "/"})
 		return
-	}
-	if page > int64(len(*Posts)+9)/10 {
+	} else if page > int64(len(*Posts)+9)/10 {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page Not Found", Page: "Home", Path: "/"})
 		return
-	}
-	if r.Method != http.MethodPost && r.Method != http.MethodGet {
+	} else if r.Method != http.MethodGet {
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return
 	}
@@ -36,6 +35,8 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		user = database.GetUserConnected(cookie.Value)
 		if user == nil {
 			http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
+			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Please log to Adding Like", Page: "Post", Path: "/"})
+			return
 		}
 	} else {
 		user = &structs.Session{Status: "Disconnected"}
@@ -72,4 +73,24 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		Pagination: pagination,
 	}
 	tmpl.Execute(w, data)
+}
+
+func Pagination(categories []string, posts int) ([]int64, error) {
+	var totalPosts float64
+	var err error
+	var pagination []int64
+	for _, cat := range categories {
+		if cat == "All" {
+			totalPosts, err = database.CountPosts()
+			if err != nil {
+				return nil, err
+			}
+			break
+		}
+		totalPosts = float64(posts)
+	}
+	for i := int64(1); i <= int64(math.Ceil(totalPosts/10)); i++ {
+		pagination = append(pagination, i)
+	}
+	return pagination, nil
 }

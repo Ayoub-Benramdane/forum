@@ -7,9 +7,22 @@
     <title>Forum - Post Details</title>
     <link rel="stylesheet" href="../Template/css/post.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        .noscript-warning {
+            color: red;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 
 <body>
+    <noscript>
+        <div class="noscript-warning">
+            JavaScript is disabled in your browser. Please enable JavaScript to use this site properly.
+        </div>
+    </noscript>
     <!-- Navbar -->
     <nav class="navbar">
         <a href="/" class="logo">Forum</a>
@@ -32,10 +45,12 @@
             </div>
             {{if eq .User.Status "Connected"}}
             <div class="post-options">
-                <a class="myLink" href="/edit/{{.Post.ID}}"><button class="edit-btn"><i
-                            class="fas fa-edit"></i>Edit</button></a>
-                <a class="myLink" href="/delete/{{.Post.ID}}"><button class="delete-btn"><i
-                            class="fas fa-trash"></i>Delete</button></a>
+                <button id="edit-btn-post" class="edit-btn" onclick="editPost({{.Post.ID}}, 'edit')">
+                    <i class="fas fa-edit"></i>Edit
+                </button>
+                <button id="delete-btn-post" class="delete-btn" onclick="deletePost({{.Post.ID}}, 'delete')">
+                    <i class="fas fa-trash"></i>Delete
+                </button>
             </div>
             {{end}}
             <h1 class="post-title">{{.Post.Title}}</h1>
@@ -47,11 +62,15 @@
             </div>
             <div class="like-dislike">
                 {{if eq $.User.Status "Connected"}}
-                <a href="/like/{{.Post.ID}}" class="myLink"><button class="action-btn"><i class="fas fa-thumbs-up"></i>
-                        <span>{{.Post.TotalLikes}}</span></button></a>
-                <a href="/like/{{.Post.ID}}" class="myLink"><button class="action-btn"><a href="/dislike/{{.Post.ID}}"
-                            class="myLink"><i class="fas fa-thumbs-down"></i>
-                            <span>{{.Post.TotalDislikes}}</span></button></a>
+                <button id="like-{{.Post.ID}}" class="action-btn" onclick="updateLikeDislike({{.Post.ID}}, 'like')">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span id="count-like-{{.Post.ID}}">{{.Post.TotalLikes}}</span>
+                </button>
+                <button id="dislike-{{.Post.ID}}" class="action-btn"
+                    onclick="updateLikeDislike({{.Post.ID}}, 'dislike')">
+                    <i class="fas fa-thumbs-down"></i>
+                    <span id="count-dislike-{{.Post.ID}}">{{.Post.TotalDislikes}}</span>
+                </button>
                 {{else}}
                 <button class="action-btn"><i class="fas fa-thumbs-up"></i>
                     <span>{{.Post.TotalLikes}}</span></button>
@@ -77,29 +96,35 @@
         <!-- Comments Section -->
         <div class="comments-section">
             <!-- Existing Comments -->
+            {{if .Comments}}
             {{range .Comments}}
-            <div class="comments-list">
+            <div class="comments-list" id="comment-{{.ID}}">
                 <div class="comment-header">
                     <span class="comment-author">{{.Author}}</span>
                     <span class="comment-date">{{.CreatedAt}}</span>
                 </div>
                 {{if eq $.User.Status "Connected"}}
                 <div class="comment-options">
-                    <a class="myLink" href="/edit_comment/{{.PostID}}/{{.ID}}"><button class="edit-btn"><i
-                                class="fas fa-edit"></i>Edit</button></a>
-                    <a class="myLink" href="/delete_comment/{{.PostID}}/{{.ID}}"><button class="delete-btn"><i
-                                class="fas fa-trash"></i>Delete</button></a>
+                    <button id="edit-btn-post" class="edit-btn" onclick="editComment({{.PostID}}, {{.ID}}, 'edit_comment')">
+                        <i class="fas fa-edit"></i>Edit
+                    </button>
+                    <button id="delete-btn-comment-{{.ID}}" class="delete-btn"
+                        onclick="deleteComment({{.PostID}}, {{.ID}}, 'delete_comment')">
+                        <i class="fas fa-trash"></i>Delete
+                    </button>
                 </div>
                 {{end}}
                 <p>{{.Content}}</p>
                 <div class="like-dislike">
                     {{if eq $.User.Status "Connected"}}
-                    <button class="action-btn"><a href="/like_comment/{{.PostID}}/{{.ID}}" class="myLink"><i
-                                class="fas fa-thumbs-up"></i>
-                            <span>{{.TotalLikes}}</span></a></button>
-                    <button class="action-btn"><a href="/dislike_comment/{{.PostID}}/{{.ID}}" class="myLink"><i
-                                class="fas fa-thumbs-down"></i>
-                            <span>{{.TotalDislikes}}</span></a></button>
+                    <button id="like-btn-{{.PostID}}{{.ID}}" class="action-btn"
+                        onclick="updateLikeDislikeComment({{.PostID}}, {{.ID}}, 'like_comment')">
+                        <i class="fas fa-thumbs-up"></i>
+                        <span id="like-count-{{.PostID}}{{.ID}}">{{.TotalLikes}}</span></button>
+                    <button id="dislike-btn-{{.PostID}}{{.ID}}" class="action-btn"
+                        onclick="updateLikeDislikeComment({{.PostID}}, {{.ID}}, 'dislike_comment')">
+                        <i class="fas fa-thumbs-down"></i>
+                        <span id="dislike-count-{{.PostID}}{{.ID}}">{{.TotalDislikes}}</span></a></button>
                     {{else}}
                     <button class="action-btn"><i class="fas fa-thumbs-up"></i>
                         <span>{{.TotalLikes}}</span></button>
@@ -109,85 +134,16 @@
                 </div>
             </div>
             {{end}}
+            {{else}}
+            <h3 id="noCom">no comment yet</h3>
+            {{end}}
         </div>
     </div>
-    <script>
-        document.getElementById("postCommentBtn").addEventListener("click", async function () {
-            const content = document.getElementById("content").value.trim();
-            if (content === "") {
-                alert("Comment cannot be empty.");
-                return;
-            }
-            const response = await fetch(window.location.pathname, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-                body: `content=${encodeURIComponent(content)}`,
-            });
-    
-            if (response.ok) {
-                const newComment = await response.json();
-    
-                const userStatus = "Connected";
-                const postId = window.location.pathname.split("/").pop();
-    
-                appendComment(newComment, userStatus, postId);
-    
-                document.getElementById("content").value = "";
-            } else {
-                alert("Failed to post comment. Please try again.");
-            }
-        });
-    
-        function appendComment(comment, userStatus, postId) {
-            const commentsSection = document.querySelector(".comments-section");
-    
-            const commentDiv = document.createElement("div");
-            commentDiv.classList.add("comments-list");
-    
-            const commentHeader = `
-                <div class="comment-header">
-                    <span class="comment-author">${comment.author}</span>
-                    <span class="comment-date">${comment.created_at}</span>
-                </div>`;
-    
-            const commentOptions = userStatus === "Connected" ? `
-                <div class="comment-options">
-                    <a class="myLink" href="/edit_comment/${postId}/${comment.id}">
-                        <button class="edit-btn"><i class="fas fa-edit"></i>Edit</button>
-                    </a>
-                    <a class="myLink" href="/delete_comment/${postId}/${comment.id}">
-                        <button class="delete-btn"><i class="fas fa-trash"></i>Delete</button>
-                    </a>
-                </div>` : "";
-    
-            const commentContent = `<p>${comment.content}</p>`;
-    
-            const likeDislike = `
-                <div class="like-dislike">
-                    ${userStatus === "Connected" ? `
-                        <button class="action-btn">
-                            <a href="/like_comment/${postId}/${comment.id}" class="myLink">
-                                <i class="fas fa-thumbs-up"></i><span> ${comment.totalLikes || 0}</span>
-                            </a>
-                        </button>
-                        <button class="action-btn">
-                            <a href="/dislike_comment/${postId}/${comment.id}" class="myLink">
-                                <i class="fas fa-thumbs-down"></i><span> ${comment.totalDislikes || 0}</span>
-                            </a>
-                        </button>` : `
-                        <button class="action-btn">
-                            <i class="fas fa-thumbs-up"></i><span> ${comment.totalLikes || 0}</span>
-                        </button>
-                        <button class="action-btn">
-                            <i class="fas fa-thumbs-down"></i><span> ${comment.totalDislikes || 0}</span>
-                        </button>`}
-                </div>`;
-            commentDiv.innerHTML = commentHeader + commentOptions + commentContent + likeDislike;
-            commentsSection.prepend(commentDiv);
-        }
-    </script>    
+    <script src="../Template/Script/like_comment.js"></script>
+    <script src="../Template/Script/create_comment.js"></script>
+    <script src="../Template/Script/like_dislike_post.js"></script>
+    <script src="../Template/Script/delete_post.js"></script>
+    <script src="../Template/Script/delete_comment.js"></script>
 </body>
 
 </html>

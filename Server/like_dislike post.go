@@ -6,49 +6,51 @@ import (
 	"strconv"
 	"time"
 
+	structs "forum/Data"
 	database "forum/Database"
 )
 
 func LikePost(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
+		return
+	}
 	idPost, err := strconv.ParseInt(r.URL.Path[len("/like/"):], 10, 64)
 	if err != nil {
-		http.Error(w, "Invalid post ID", http.StatusBadRequest)
+		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid post ID", Page: "Home", Path: "/"})
 		return
 	}
-
-	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
 	cookie, err := r.Cookie("session")
 	if err != nil {
-		http.Error(w, "Session error", http.StatusUnauthorized)
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Adding Like", Page: "Post", Path: "/"})
 		return
 	}
-
 	user := database.GetUserConnected(cookie.Value)
 	if user == nil {
-		http.Error(w, "User not authenticated", http.StatusUnauthorized)
+		http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Please log to Adding Like", Page: "Post", Path: "/"})
+		return
+	} else if !database.CheckLike(user.UserID, idPost) {
+		if database.AddLike(user.UserID, idPost) != nil {
+			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Adding Like", Page: "Post", Path: "/"})
+			return
+		}
+	} else if database.DeleteLike(user.UserID, idPost) != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Like", Page: "Post", Path: "/"})
 		return
 	}
-
-	if !database.CheckLike(user.UserID, idPost) {
-		database.AddLike(user.UserID, idPost)
-	} else {
-		database.DeleteLike(user.UserID, idPost)
-	}
-	token := cookie.Value
-	cookie = &http.Cookie{
-		Name:     "session",
-		Value:    token,
-		Expires:  time.Now().Add(5 * time.Minute),
-		HttpOnly: true,
-		Path:     "/",
-	}
+	cookie.Expires = time.Now().Add(5 * time.Minute)
 	http.SetCookie(w, cookie)
-	updatedLikes, _ := database.CountLikes(idPost)
-	updatedDislikes, _ := database.CountDislikes(idPost)
+	updatedLikes, errLikesPost := database.CountLikes(idPost)
+	if errLikesPost != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error counting Like", Page: "Post", Path: "/"})
+		return
+	}
+	updatedDislikes, errDislikesPost := database.CountDislikes(idPost)
+	if errDislikesPost != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error counting Dislike", Page: "Post", Path: "/"})
+		return
+	}
 	response := map[string]interface{}{
 		"updatedLikes":    updatedLikes,
 		"updatedDislikes": updatedDislikes,
@@ -61,45 +63,46 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func DislikePost(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
+		return
+	}
 	idPost, err := strconv.ParseInt(r.URL.Path[len("/dislike/"):], 10, 64)
 	if err != nil {
-		http.Error(w, "Invalid post ID", http.StatusBadRequest)
+		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid post ID", Page: "Home", Path: "/"})
 		return
 	}
-
-	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
 	cookie, err := r.Cookie("session")
 	if err != nil {
 		http.Error(w, "Session error", http.StatusUnauthorized)
 		return
 	}
-
 	user := database.GetUserConnected(cookie.Value)
 	if user == nil {
-		http.Error(w, "User not authenticated", http.StatusUnauthorized)
+		http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Please log to Adding Dislike", Page: "Post", Path: "/"})
+		return
+	} else if !database.CheckDislike(user.UserID, idPost) {
+		if database.AddDislike(user.UserID, idPost) != nil {
+			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Adding Dislike", Page: "Post", Path: "/"})
+			return
+		}
+	} else if database.DeleteDislike(user.UserID, idPost) != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Dislike", Page: "Post", Path: "/"})
 		return
 	}
-
-	if !database.CheckDislike(user.UserID, idPost) {
-		database.AddDislike(user.UserID, idPost)
-	} else {
-		database.DeleteDislike(user.UserID, idPost)
-	}
-	token := cookie.Value
-	cookie = &http.Cookie{
-		Name:     "session",
-		Value:    token,
-		Expires:  time.Now().Add(5 * time.Minute),
-		HttpOnly: true,
-		Path:     "/",
-	}
+	cookie.Expires = time.Now().Add(5 * time.Minute)
 	http.SetCookie(w, cookie)
-	updatedLikes, _ := database.CountLikes(idPost)
-	updatedDislikes, _ := database.CountDislikes(idPost)
+	updatedLikes, errLikesPost := database.CountLikes(idPost)
+	if errLikesPost != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error counting Like", Page: "Post", Path: "/"})
+		return
+	}
+	updatedDislikes, errDislikesPost := database.CountDislikes(idPost)
+	if errDislikesPost != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error counting Dislike", Page: "Post", Path: "/"})
+		return
+	}
 	response := map[string]interface{}{
 		"updatedLikes":    updatedLikes,
 		"updatedDislikes": updatedDislikes,

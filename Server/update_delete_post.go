@@ -17,7 +17,7 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid post ID", Page: "Home", Path: "/"})
 		return
-	} else if r.Method != http.MethodGet {
+	} else if r.Method != http.MethodPost {
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
@@ -41,18 +41,12 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 			return
 		}
+		w.WriteHeader(http.StatusOK)
 	} else {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "you can't Delete Post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
-	token := cookie.Value
-	cookie = &http.Cookie{
-		Name:     "session",
-		Value:    token,
-		Expires:  time.Now().Add(5 * time.Minute),
-		HttpOnly: true,
-		Path:     "/",
-	}
+	cookie.Expires = time.Now().Add(5 * time.Minute)
 	http.SetCookie(w, cookie)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
@@ -82,6 +76,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "you can't Updating Post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
+	w.WriteHeader(http.StatusOK)
 	switch r.Method {
 	case http.MethodGet:
 		EditPostGet(w, r, id_post)
@@ -135,14 +130,7 @@ func EditPostPost(w http.ResponseWriter, r *http.Request, id_post int64, cookie 
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Updating post", Page: "Post", Path: fmt.Sprintf("/post/edit/%d", id_post)})
 		return
 	}
-	token := cookie.Value
-	cookie = &http.Cookie{
-		Name:     "session",
-		Value:    token,
-		Expires:  time.Now().Add(5 * time.Minute),
-		HttpOnly: true,
-		Path:     "/",
-	}
+	cookie.Expires = time.Now().Add(5 * time.Minute)
 	http.SetCookie(w, cookie)
 	http.Redirect(w, r, fmt.Sprintf("/post/%d", id_post), http.StatusSeeOther)
 }

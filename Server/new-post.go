@@ -12,7 +12,7 @@ import (
 
 func NewPost(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("session")
-	if r.URL.Path != "/new-post" || err != nil {
+	if err != nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
 		return
 	}
@@ -20,7 +20,7 @@ func NewPost(w http.ResponseWriter, r *http.Request) {
 	if user == nil {
 		http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Please Log in to add post", Page: "Home", Path: "/"})
-			return
+		return
 	}
 	switch r.Method {
 	case http.MethodGet:
@@ -39,17 +39,12 @@ func NewPostGet(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load new post page template", Page: "Home", Path: "/"})
 		return
 	}
-	categories, errLoadPost := database.GetAllCategorys()
+	Categories, errLoadPost := database.GetAllCategorys()
 	if errLoadPost != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading categories", Page: "New-Post", Path: "/new-post"})
 		return
 	}
-	data := struct {
-		Categories []structs.Category
-	}{
-		Categories: categories,
-	}
-	tmpl.Execute(w, data)
+	tmpl.Execute(w, Categories)
 }
 
 func NewPostPost(w http.ResponseWriter, r *http.Request, cookie *http.Cookie, user *structs.Session) {
@@ -58,8 +53,7 @@ func NewPostPost(w http.ResponseWriter, r *http.Request, cookie *http.Cookie, us
 	if title == "" || content == "" {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Check your input", Page: "New-Post", Path: "/new-post"})
 		return
-	}
-	if err := r.ParseForm(); err != nil {
+	} else if err := r.ParseForm(); err != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error parsing form", Page: "New-Post", Path: "/new-post"})
 		return
 	}
@@ -68,14 +62,7 @@ func NewPostPost(w http.ResponseWriter, r *http.Request, cookie *http.Cookie, us
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Creating post", Page: "New-Post", Path: "/new-post"})
 		return
 	}
-	token := cookie.Value
-	cookie = &http.Cookie{
-		Name:     "session",
-		Value:    token,
-		Expires:  time.Now().Add(5 * time.Minute),
-		HttpOnly: true,
-		Path:     "/",
-	}
+	cookie.Expires = time.Now().Add(5 * time.Minute)
 	http.SetCookie(w, cookie)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

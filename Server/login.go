@@ -44,7 +44,7 @@ func LoginPost(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "Check Username Or Password", Page: "Login", Path: "/login"})
 		return
 	}
-	tkn, errToken := database.GenerateToken(username)
+	tkn, errToken := database.GenerateToken(user.Password)
 	if errToken != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Token not generated", Page: "Login", Path: "/login"})
 		return

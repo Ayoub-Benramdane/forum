@@ -19,7 +19,7 @@
             </div>
             <label class="lbl">Post Categories</label>
             <select name="category" id="category" class="form-select" multiple required>
-                {{range .Categories}}
+                {{range .}}
                 <option value="{{.Name}}">{{.Name}}</option>
                 {{end}}
             </select>

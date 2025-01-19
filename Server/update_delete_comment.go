@@ -13,7 +13,7 @@ import (
 )
 
 func DeleteComment(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+	if r.Method != http.MethodPost {
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return
 	}
@@ -33,16 +33,9 @@ func DeleteComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	cookie, err := r.Cookie("session")
-	var user *structs.Session
-	if err == nil {
-		user = database.GetUserConnected(cookie.Value)
-		if user == nil {
-			http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
-			Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
-			return
-		}
-	} else {
-		user = &structs.Session{Status: "Disconnected"}
+	if err != nil {
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Home", Path: "/"})
+		return
 	}
 	post, errPost := database.GetPostByID(id_post)
 	if errPost != nil {
@@ -54,23 +47,21 @@ func DeleteComment(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Comment Not Found", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
-	if user.UserID == UserID || user.UserID == post.UserID {
-		if database.DeleteCommentId(id_post, id_comment) != nil {
-			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Comment", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
-			return
-		}
-	} else {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "you can't Delete Comment", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+	user := database.GetUserConnected(cookie.Value)
+	if user == nil {
+		http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+		return
+	} else if user.UserID != UserID && user.UserID != post.UserID {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "you can't Updating Comment", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
-	token := cookie.Value
-	cookie = &http.Cookie{
-		Name:     "session",
-		Value:    token,
-		Expires:  time.Now().Add(5 * time.Minute),
-		HttpOnly: true,
-		Path:     "/",
+	if database.DeleteCommentId(id_post, id_comment) != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Comment", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+		return
 	}
+	w.WriteHeader(http.StatusOK)
+	cookie.Expires = time.Now().Add(5 * time.Minute)
 	http.SetCookie(w, cookie)
 	http.Redirect(w, r, fmt.Sprintf("/post/%d", id_post), http.StatusSeeOther)
 }
@@ -110,6 +101,7 @@ func EditComment(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "you can't Updating Comment", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
+	w.WriteHeader(http.StatusOK)
 	switch r.Method {
 	case http.MethodGet:
 		EditCommentGet(w, r, id_post, id_comment)
@@ -143,6 +135,7 @@ func EditCommentGet(w http.ResponseWriter, r *http.Request, id_post, id_comment 
 }
 
 func EditCommentPost(w http.ResponseWriter, r *http.Request, id_post, id_comment int64, cookie *http.Cookie) {
+	fmt.Println(id_post, id_comment)
 	content := strings.TrimSpace(r.FormValue("content"))
 	if content == "" {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Check your input", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
@@ -151,14 +144,7 @@ func EditCommentPost(w http.ResponseWriter, r *http.Request, id_post, id_comment
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Updating post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
-	token := cookie.Value
-	cookie = &http.Cookie{
-		Name:     "session",
-		Value:    token,
-		Expires:  time.Now().Add(5 * time.Minute),
-		HttpOnly: true,
-		Path:     "/",
-	}
+	cookie.Expires = time.Now().Add(5 * time.Minute)
 	http.SetCookie(w, cookie)
 	http.Redirect(w, r, fmt.Sprintf("/post/%d", id_post), http.StatusSeeOther)
 }

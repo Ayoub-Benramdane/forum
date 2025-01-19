@@ -1,10 +1,8 @@
 package database
 
 import (
-	"time"
-
 	structs "forum/Data"
-
+	"time"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -33,6 +31,6 @@ func DeleteSession(username string) error {
 	return err
 }
 
-func GenerateToken(email string) ([]byte, error) {
-	return bcrypt.GenerateFromPassword([]byte(email), bcrypt.DefaultCost)
+func GenerateToken(user string) ([]byte, error) {
+	return bcrypt.GenerateFromPassword([]byte(user), bcrypt.DefaultCost)
 }

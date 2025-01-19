@@ -22,10 +22,8 @@ func Filter(w http.ResponseWriter, r *http.Request) {
 	var user *structs.Session
 	if err == nil {
 		user = database.GetUserConnected(cookie.Value)
-		if user == nil {
-			http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
-		}
 	} else {
+		http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
 		user = &structs.Session{Status: "Disconnected"}
 	}
 	if err := r.ParseForm(); err != nil {

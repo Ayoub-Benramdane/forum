@@ -1,0 +1,221 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@200;300;400;500;600;700&display=swap");
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Open Sans", sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: url("https://images.unsplash.com/photo-1489846986031-7cea03ab8fd0?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+}
+
+.user-info {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+
+.log-btn {
+    height: 40px;
+    background: transparent;
+    color: #e8e8e8;
+    border: 1px solid rgba(232, 232, 232, 0.5);
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.log-btn:hover {
+    background: rgba(232, 232, 232, 0.15);
+}
+
+.container {
+    max-width: 800px;
+    margin: 100px auto 40px;
+    padding: 20px;
+}
+
+.page-title {
+    color: #e8e8e8;
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 2rem;
+}
+
+.notification-filters {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.filter-btn {
+    background: rgba(232, 232, 232, 0.1);
+    color: #e8e8e8;
+    border: 1px solid rgba(232, 232, 232, 0.3);
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+    background: rgba(232, 232, 232, 0.9);
+    color: #223128;
+}
+
+.notifications-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.notification-card {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    border-radius: 8px;
+    padding: 15px;
+    color: #e8e8e8;
+    transition: 0.3s;
+}
+
+.notification-card.unread {
+    background: rgba(0, 0, 0, 0.6);
+    border-left: 4px solid #4a9eff;
+}
+
+.notification-header {
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+    position: relative;
+}
+
+.user-avatar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgb(160, 163, 165);
+}
+
+.notification-content {
+    flex-grow: 1;
+}
+
+.notification-text {
+    margin-bottom: 5px;
+    line-height: 1.4;
+}
+
+.comment-preview {
+    margin-top: 8px;
+    padding: 8px;
+    background: rgba(232, 232, 232, 0.1);
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.notification-time {
+    color: rgba(232, 232, 232, 0.6);
+    font-size: 0.8em;
+}
+
+.unread-indicator {
+    width: 8px;
+    height: 8px;
+    background-color: #4a9eff;
+    border-radius: 50%;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.notification-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(232, 232, 232, 0.2);
+}
+
+.view-post-btn,
+.mark-read-btn {
+    background: transparent;
+    color: #e8e8e8;
+    border: 1px solid rgba(232, 232, 232, 0.3);
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.3s;
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+.view-post-btn:hover,
+.mark-read-btn:hover {
+    background: rgba(232, 232, 232, 0.15);
+}
+
+.no-notifications {
+    text-align: center;
+    color: #e8e8e8;
+    padding: 40px;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    border-radius: 8px;
+}
+
+.no-notifications i {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    opacity: 0.7;
+}
+
+.myLink {
+    text-decoration: none;
+    color: inherit;
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 15px;
+    }
+
+    .notification-filters {
+        flex-wrap: wrap;
+    }
+
+    .filter-btn {
+        flex: 1 1 calc(50% - 5px);
+    }
+
+    .notification-actions {
+        flex-direction: column;
+    }
+
+    .view-post-btn,
+    .mark-read-btn {
+        width: 100%;
+        text-align: center;
+    }
+}

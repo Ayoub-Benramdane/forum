@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="../Template/css/profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        <h2>{{.Username}}</h2>
+        <p class="email">{{.Email}}</p>
+        <div class="section">
+            <h3>Personal Information</h3>
+            <div class="input-field">
+                <input type="text" value="{{.Username}}" readonly>
+                <label>Full Name</label>
+            </div>
+            <div class="input-field">
+                <input type="email" value="{{.Email}}" readonly>
+                <label>Email Address</label>
+            </div>
+            <div class="input-field">
+                <input type="text" value="{{.CreatedAt.Format `January 2, 2006 at 3:04 PM`}}" readonly>
+                <label>Joined On</label>
+            </div>
+            <h3>User Activity</h3>
+            <p>{{.Posts}} Posts | {{.Comments}} Comments | {{.Likes}} Likes | {{.Dislikes}} Dislikes</p>
+            <h3>Recent Activity</h3>
+            {{if .RecentActivity}}
+            <p>{{.RecentActivity.CreatedAt}}</p>
+            <div class="input-field">
+                <input type="text" value="{{.RecentActivity.Title}}" readonly />
+                <label>Title</label>
+            </div>
+            <div class="input-field">
+                <input type="text" value="{{.RecentActivity.Content}}" readonly />
+                <label>Content</label>
+            </div>
+            <div class="button-group">
+                <a href="/activity" class="myLink"><button class="save-btn">All Activities</button></a>
+            </div>
+            {{else}}
+            <p>No recent activity.</p>
+            {{end}}
+        </div>
+
+        <div class="button-group">
+            <a href="/profile_edit" class="myLink"><button class="save-btn">Edit Profile</button></a>
+            <a href="/" class="myLink"><button class="password-btn">Back To Home</button></a>
+        </div>
+    </div>
+    </div>
+</body>
+
+</html>

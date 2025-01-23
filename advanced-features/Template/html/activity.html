@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum - Activity Log</title>
+    <link rel="stylesheet" href="../Template/css/activity.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="user-info">
+            {{if eq .User.Status "Connected"}}
+            <a href="/profile" class="myLink"><button class="log-btn"><i class="fa-solid fa-user"></i>
+                    {{.User.Username}}</button></a>
+            <a href="/" class="myLink"><button class="log-btn">Home</button></a>
+            <a href="/logout" class="myLink"><button class="log-btn">Logout</button></a>
+            {{else}}
+            <a href="/login" class="myLink"><button class="log-btn">Log In</button></a>
+            {{end}}
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h2 class="page-title">Activity Log</h2>
+
+        <!-- Activity Stats -->
+        <div class="activity-stats">
+            <div class="stat-card">
+                <i class="fas fa-pencil-alt"></i>
+                <div class="stat-info">
+                    <h3>{{.Posts.TotalPosts}}</h3>
+                    <p>Posts Created</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-comment"></i>
+                <div class="stat-info">
+                    <h3>{{.Comments.TotalComments}}</h3>
+                    <p>Comments Made</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-thumbs-up"></i>
+                <div class="stat-info">
+                    <h3>{{.ReactedPosts.TotalLikes}}</h3>
+                    <p>Likes Given</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Filters -->
+        <div class="activity-filters">
+            <button class="filter-btn active" data-filter="all">All Activity</button>
+            <button class="filter-btn" data-filter="posts">Posts</button>
+            <button class="filter-btn" data-filter="comments">Comments</button>
+            <button class="filter-btn" data-filter="reactions">Reactions</button>
+        </div>
+
+        <!-- Activity Timeline -->
+        {{if .Activities}}
+        <div class="activity-timeline">
+            {{range .Activities}}
+            <div class="activity-card" data-type="{{.Type}}">
+                <div class="activity-icon">
+                    {{if eq .Type "post"}}
+                    <i class="fas fa-pencil-alt"></i>
+                    {{else if eq .Type "comment"}}
+                    <i class="fas fa-comment"></i>
+                    {{else if eq .Type "like"}}
+                    <i class="fas fa-thumbs-up"></i>
+                    {{else if eq .Type "dislike"}}
+                    <i class="fas fa-thumbs-down"></i>
+                    {{end}}
+                </div>
+                <div class="activity-content">
+                    <div class="activity-header">
+                        <span class="activity-type">
+                            {{if eq .Type "post"}}
+                            Created a new post
+                            {{else if eq .Type "comment"}}
+                            Commented on a post
+                            {{else if eq .Type "like"}}
+                            Liked a post
+                            {{else if eq .Type "dislike"}}
+                            Disliked a post
+                            {{end}}
+                        </span>
+                        <span class="activity-time">{{.CreatedAt}}</span>
+                    </div>
+                    {{if eq .Type "post"}}
+                    <h4 class="post-title">{{.Title}}</h4>
+                    <p class="post-excerpt">{{.Content}}</p>
+                    {{else if eq .Type "comment"}}
+                    <div class="comment-context">
+                        <span class="context-label">On post:</span>
+                        <span class="context-title">"{{.PostTitle}}"</span>
+                    </div>
+                    <p class="comment-content">{{.Content}}</p>
+                    {{else}}
+                    <div class="reaction-context">
+                        <span class="context-label">On post:</span>
+                        <span class="context-title">"{{.PostTitle}}"</span>
+                    </div>
+                    {{end}}
+
+                    {{if .Categories}}
+                    <div class="activity-categories">
+                        {{range .Categories}}
+                        <span class="category-tag">#{{.}}</span>
+                        {{end}}
+                    </div>
+                    {{end}}
+                </div>
+                <div class="activity-actions">
+                    <a href="/post/{{.PostID}}" class="view-btn">View Post</a>
+                </div>
+            </div>
+            {{end}}
+        </div>
+
+        <!-- Load More Button -->
+        {{if .HasMoreActivities}}
+        <button class="load-more-btn" onclick="loadMoreActivities()">
+            Load More
+            <i class="fas fa-chevron-down"></i>
+        </button>
+        {{end}}
+
+        {{else}}
+        <div class="no-activity">
+            <i class="fas fa-history"></i>
+            <p>No activity yet</p>
+            <a href="/new-post" class="create-post-btn">Create Your First Post</a>
+        </div>
+        {{end}}
+    </div>
+
+    <script>
+        let currentPage = 1;
+
+        function loadMoreActivities() {
+            currentPage++;
+            fetch(`/api/activities?page=${currentPage}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.activities.length > 0) {
+                        appendActivities(data.activities);
+                    }
+                    if (!data.hasMore) {
+                        document.querySelector('.load-more-btn').style.display = 'none';
+                    }
+                });
+        }
+
+        function appendActivities(activities) {
+            const container = document.querySelector('.activity-timeline');
+            activities.forEach(activity => {
+                // Create and append new activity cards
+                // Implementation depends on your activity card structure
+            });
+        }
+
+        // Filter activities
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                // Update active button
+                document.querySelector('.filter-btn.active').classList.remove('active');
+                button.classList.add('active');
+
+                const filter = button.dataset.filter;
+                const activities = document.querySelectorAll('.activity-card');
+
+                activities.forEach(activity => {
+                    if (filter === 'all') {
+                        activity.style.display = 'flex';
+                    } else {
+                        activity.style.display = activity.dataset.type === filter ? 'flex' : 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

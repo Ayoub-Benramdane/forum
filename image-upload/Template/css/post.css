@@ -1,0 +1,282 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@200;300;400;500;600;700&display=swap");
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Open Sans", sans-serif;
+    scrollbar-width: none;
+}
+
+body {
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100%;
+    background: url("https://images.unsplash.com/photo-1489846986031-7cea03ab8fd0?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+#commentForm {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    border-radius: 8px;
+    padding: 25px;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#commentForm h3 {
+    margin-bottom: 20px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+#commentForm  textarea {
+    width: 100%;
+    height: 100px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    padding: 12px;
+    color: #fff;
+    margin-bottom: 10px;
+    resize: none;
+}
+
+/* Navbar Styles */
+.navbar {
+    position: fixed;
+    top: 0;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+}
+
+.logo {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+    margin-left: auto;
+}
+
+.log-btn,
+.user-button {
+    height: 40px;
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.log-btn:hover,
+.user-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.container {
+    max-width: 40%;
+    margin: 80px auto 0;
+    padding: 20px;
+}
+
+.post {
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(8px);
+    border-radius: 8px;
+    padding: 25px;
+    color: #fff;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.post-author {
+    font-weight: 600;
+    color: #fff;
+    background: transparent;
+}
+
+.post-date {
+    font-size: 0.9em;
+    color: rgba(255, 255, 255, 0.7);
+    background: transparent;
+}
+
+.post-title {
+    margin-bottom: 15px;
+    font-size: 1.8em;
+    color: #fff;
+    background: transparent;
+}
+
+.post-content {
+    line-height: 1.6;
+    margin-bottom: 20px;
+    overflow: scroll;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.category-tags {
+    overflow: scroll;
+    display: flex;
+    gap: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.like-dislike {
+    margin: 10px 0;
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.9);
+    border: none;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.action-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.myLink,
+.myLink:hover,
+.myLink:active,
+.myLink:visited,
+.myLink:focus {
+    text-decoration: none;
+    color: #fff;
+}
+
+/* Comments Section */
+.comments-section {
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(8px);
+    border-radius: 8px;
+    padding: 25px;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn {
+    background: rgba(255, 255, 255, 0.9);
+    color: #000;
+    border: none;
+    padding: 8px 16px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.3s;
+    align-items: center;
+}
+
+.btn:hover {
+    background: #fff;
+}
+
+.comments-list {
+    margin: 10px 0;
+    border-bottom: 1px solid rgb(255, 255, 255);
+    gap: 50px;
+    margin: 30px 0;
+}
+
+.comments-list p {
+    overflow: scroll;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.comment-author {
+    font-weight: 600;
+    color: #fff;
+}
+
+.comment-date {
+    font-size: 0.9em;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.comment-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.post-options,
+.comment-options {
+    display: flex;
+    margin: 20px 0;
+    gap: 10px;
+}
+
+.edit-btn,
+.delete-btn {
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.edit-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.delete-btn:hover {
+    background: rgba(255, 0, 0, 0.1);
+    border-color: rgba(255, 0, 0, 0.3);
+}
+
+@media (max-width: 1300px) {
+    .container {
+        max-width: 75%;
+    }
+}

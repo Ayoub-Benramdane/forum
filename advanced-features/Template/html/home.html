@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum - Home</title>
+    <link rel="stylesheet" href="../Template/css/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        img {
+            width: 30px;
+            background-color: rgb(160, 163, 165);
+            border-radius: 10px;
+        }
+
+        .noscript-warning {
+            color: white;
+            font-size: 14px;
+            text-align: center;
+            margin: 20px;
+        }
+    </style>
+</head>
+
+<body id="homeContainer">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="user-info">
+            {{if eq .User.Status "Connected"}}
+            <a href="/profile" class="myLink"><button class="log-btn"><i class="fa-solid fa-user"></i>
+                    {{.User.Username}}</button></a>
+            <a href="/logout" class="myLink"><button class="log-btn">Logout</button></a>
+            {{else}}
+            <a href="/login" class="myLink"><button class="log-btn">Log In</button></a>
+            {{end}}
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <noscript>
+            <div class="noscript-warning">
+                JavaScript is disabled in your browser. Please enable JavaScript to use this site properly.
+            </div>
+        </noscript>
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <form action="/filter" method="POST" class="filterForm">
+                <select name="category" class="filter-select" multiple>
+                    {{if eq .User.Status "Connected"}}
+                    <option value="All">All Posts</option>
+                    <option value="MyPosts">My Posts</option>
+                    <option value="MyLikes">My Likes</option>
+                    {{end}}
+                    {{range .Categories}}
+                    <option value="{{.Name}}">{{.Name}}</option>
+                    {{end}}
+                </select>
+                <button type="submit" class="filter-post-btn">Apply Filters</button>
+            </form>
+            {{if eq .User.Status "Connected"}}
+            <a href="/new-post" class="myLink"><button class="new-post-btn"><i class="fas fa-plus"></i> New
+                    Post</button></a>
+            {{else}}
+            <a href="/login" class="myLink">Please log in to add a Post.</a>
+            {{end}}
+        </div>
+
+        <!-- Posts Container -->
+        {{if .Posts}}
+        {{range .Posts}}
+        <!-- Sample Post -->
+        <div id="post" class="post">
+            <a href="/post/{{.ID}}" class="myLink">
+                <div class="post-header">
+                    <span><img src="../Template/images/user-png-icon-16.jpg"></span>
+                    <span class="post-author">{{.Author}}</span>
+                    <span class="post-date">{{.CreatedAt}}</span>
+                </div>
+                <h3 class="post-title">{{.Title}}</h3>
+                <p class="post-content">{{.Content}}</p>
+                <div class="category-tags">
+                    {{range .Categories}}
+                    <span class="category-tag">#{{.}}</span>
+                    {{end}}
+                </div>
+            </a>
+            <div class="post-actions">
+                {{if eq $.User.Status "Connected"}}
+                <button id="like-btn-{{.ID}}" class="action-btn" onclick="updateLikeDislike({{.ID}}, 'like')">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span id="like-count-{{.ID}}">{{.TotalLikes}}</span>
+                </button>
+                <button id="dislike-btn-{{.ID}}" class="action-btn" onclick="updateLikeDislike({{.ID}}, 'dislike')">
+                    <i class="fas fa-thumbs-down"></i>
+                    <span id="dislike-count-{{.ID}}">{{.TotalDislikes}}</span>
+                </button>
+                {{else}}
+                <button class="action-btn">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span>{{.TotalLikes}}</span>
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-thumbs-down"></i>
+                    <span>{{.TotalDislikes}}</span>
+                </button>
+                {{end}}
+                <a href="/post/{{.ID}}" class="myLink">
+                    <button class="comment-btn">
+                        <i class="fas fa-comment"></i> {{.TotalComments}} Comment
+                    </button>
+                </a>
+            </div>
+        </div>
+        {{end}}
+        {{else}}
+        <h3 style="color: white; text-align: center;">No Post</h3>
+        {{end}}
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <!-- <button class="page-btn"><i class="fas fa-chevron-left"></i></button> -->
+            {{range .Pagination}}
+            <form action="/page/{{.}}" method="GET">
+                <button type="submit" class="page-btn">
+                    {{.}}
+                </button>
+            </form>
+            {{end}}
+            <!-- <button class="page-btn"><i class="fas fa-chevron-right"></i></button> -->
+        </div>
+    </div>
+    <script src="../Template/Script/like_post.js"></script>
+</body>
+
+</html>

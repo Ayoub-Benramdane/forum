@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum - Notifications</title>
+    <link rel="stylesheet" href="../Template/css/notification.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="user-info">
+            {{if eq .User.Status "Connected"}}
+            <a href="/profile" class="myLink"><button class="log-btn"><i class="fa-solid fa-user"></i>
+                    {{.User.Username}}</button></a>
+            <a href="/" class="myLink"><button class="log-btn">Home</button></a>
+            <a href="/logout" class="myLink"><button class="log-btn">Logout</button></a>
+            {{else}}
+            <a href="/login" class="myLink"><button class="log-btn">Log In</button></a>
+            {{end}}
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h2 class="page-title">Notifications</h2>
+
+        <!-- Notification Filters -->
+        <div class="notification-filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="comments">Comments</button>
+            <button class="filter-btn" data-filter="reactions">Reactions</button>
+            <button class="filter-btn" data-filter="unread">Unread</button>
+        </div>
+
+        <!-- Notifications Container -->
+        {{if .Notifications}}
+        <div class="notifications-container">
+            {{range .Notifications}}
+            <div class="notification-card {{if not .IsRead}}unread{{end}}" data-type="{{.Type}}">
+                <div class="notification-header">
+                    <div class="user-avatar">
+                        <img src="../Template/images/user-png-icon-16.jpg" alt="User Avatar">
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-text">
+                            <strong>{{.Username}}</strong>
+                            {{if eq .Type "comment"}}
+                            commented on your post "{{.PostTitle}}"
+                            <p class="comment-preview">{{.Content}}</p>
+                            {{else if eq .Type "like"}}
+                            liked your post "{{.PostTitle}}"
+                            {{else if eq .Type "dislike"}}
+                            disliked your post "{{.PostTitle}}"
+                            {{end}}
+                        </div>
+                        <span class="notification-time">{{.CreatedAt}}</span>
+                    </div>
+                    {{if not .IsRead}}
+                    <div class="unread-indicator"></div>
+                    {{end}}
+                </div>
+                <div class="notification-actions">
+                    <a href="/post/{{.PostID}}" class="view-post-btn">View Post</a>
+                    {{if not .IsRead}}
+                    <button class="mark-read-btn" onclick="markAsRead({{.ID}})">Mark as Read</button>
+                    {{end}}
+                </div>
+            </div>
+            {{end}}
+        </div>
+        {{else}}
+        <div class="no-notifications">
+            <i class="fas fa-bell-slash"></i>
+            <p>No notifications yet</p>
+        </div>
+        {{end}}
+    </div>
+
+    <script>
+        function markAsRead(notificationId) {
+            fetch(`/api/notifications/${notificationId}/mark-read`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Update UI to reflect the read status
+                        const notification = document.querySelector(`[data-notification-id="${notificationId}"]`);
+                        notification.classList.remove('unread');
+                        notification.querySelector('.mark-read-btn').remove();
+                        notification.querySelector('.unread-indicator').remove();
+                    }
+                });
+        }
+
+        // Filter notifications
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                // Update active button
+                document.querySelector('.filter-btn.active').classList.remove('active');
+                button.classList.add('active');
+
+                const filter = button.dataset.filter;
+                const notifications = document.querySelectorAll('.notification-card');
+
+                notifications.forEach(notification => {
+                    if (filter === 'all') {
+                        notification.style.display = 'block';
+                    } else if (filter === 'unread') {
+                        notification.style.display = notification.classList.contains('unread') ? 'block' : 'none';
+                    } else {
+                        notification.style.display = notification.dataset.type === filter ? 'block' : 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

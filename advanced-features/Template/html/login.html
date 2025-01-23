@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Forum</title>
+    <link rel="stylesheet" href="../Template/css/login.css">
+    <style>
+        .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        .noscript-warning {
+            color: white;
+            font-size: 14px;
+            text-align: center;
+            margin: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <noscript>
+        <div class="noscript-warning">
+            JavaScript is disabled in your browser. Please enable JavaScript to use this site properly.
+        </div>
+    </noscript>
+    <div class="wrapper">
+        <form id="loginForm" action="/login" method="post">
+            <h2>Login</h2>
+            <div class="input-field">
+                <input type="text" id="username" name="username" required>
+                <label>Username</label>
+                <small id="usernameError" class="error-message"></small>
+            </div>
+            <div class="input-field">
+                <input type="password" id="password" name="password" required>
+                <label>Password</label>
+                <small id="passwordError" class="error-message"></small>
+            </div>
+            <button type="submit" id="loginButton">Log In</button>
+            <p class="register">Don't have an account? <a href="/register">Register</a></p>
+            <small id="generalError" class="error-message"></small>
+        </form>
+    </div>
+    <script src="../Template/Script/login.js"></script>
+</body>
+
+</html>

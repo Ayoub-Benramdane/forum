@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <link rel="stylesheet" href="../Template/css/profile-edit.css">
+    <style>
+        .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .general-error {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .noscript-warning {
+            color: white;
+            font-size: 14px;
+            text-align: center;
+            margin: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <noscript>
+        <div class="noscript-warning">
+            JavaScript is disabled in your browser. Please enable JavaScript to use this site properly.
+        </div>
+    </noscript>
+    <div class="wrapper">
+        <form action="/profile_edit" method="POST">
+            <h2>Edit Profile</h2>
+            <div class="input-field">
+                <input type="text" id="username" name="username" value="{{.Username}}" required>
+                <label>Username</label>
+            </div>
+            <div class="input-field">
+                <input type="email" id="email" name="email" value="{{.Email}}" required>
+                <label>Email Address</label>
+            </div>
+            <div class="input-field">
+                <input type="password" id="password" name="password">
+                <label>Current Password</label>
+                <small id="generalError" class="general-error"></small>
+            </div>
+            <div class="input-field">
+                <input type="password" id="new-password" name="new-password">
+                <label>New Password</label>
+            </div>
+            <div class="input-field">
+                <input type="password" id="confirm-password" name="confirm-password">
+                <label>Confirm Password</label>
+            </div>
+            <div class="button-group">
+                <button type="submit">Save Changes</button>
+                <a href="/profile" class="myLink">
+                    <button type="button" class="cancel-btn">Cancel</button>
+                </a>
+            </div>
+        </form>
+    </div>
+    <script src="../Template/Script/profile_edit.js"></script>
+</body>
+
+</html>

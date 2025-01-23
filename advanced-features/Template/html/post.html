@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum - Post Details</title>
+    <link rel="stylesheet" href="../Template/css/post.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        .noscript-warning {
+            color: white;
+            font-size: 14px;
+            text-align: center;
+            margin: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="/" class="logo">Forum</a>
+        {{if eq .User.Status "Connected"}}
+        <div class="user-info">
+            <a href="/profile" class="myLink"><button class="log-btn"><i class="fa-solid fa-user"></i>
+                    {{.User.Username}}</button></a>
+            <a href="/logout" class="myLink"><button class="log-btn">Logout</button></a>
+            {{else}}
+            <a href="/login" class="myLink"><button class="log-btn">Log In</button></a>
+            {{end}}
+        </div>
+    </nav>
+    <div class="container">
+        <noscript>
+            <div class="noscript-warning">
+                JavaScript is disabled in your browser. Please enable JavaScript to use this site properly.
+            </div>
+        </noscript>
+        <!-- Post Content -->
+        <div class="post">
+            <div class="post-header">
+                <span class="post-author">{{.Post.Author}}</span>
+                <span class="post-date">{{.Post.CreatedAt}}</span>
+            </div>
+            {{if eq .User.Status "Connected"}}
+            <div class="post-options">
+                <button id="edit-btn-post" class="edit-btn" onclick="editPost({{.Post.ID}}, 'edit')">
+                    <i class="fas fa-edit"></i>Edit
+                </button>
+                <button id="delete-btn-post" class="delete-btn" onclick="deletePost({{.Post.ID}}, 'delete')">
+                    <i class="fas fa-trash"></i>Delete
+                </button>
+            </div>
+            {{end}}
+            <h1 class="post-title">{{.Post.Title}}</h1>
+            <p class="post-content">{{.Post.Content}}</p>
+            <div class="category-tags">
+                {{range .Post.Categories}}
+                <span class="category-tag">#{{.}}</span>
+                {{end}}
+            </div>
+            <div class="like-dislike">
+                {{if eq $.User.Status "Connected"}}
+                <button id="like-{{.Post.ID}}" class="action-btn" onclick="updateLikeDislike({{.Post.ID}}, 'like')">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span id="count-like-{{.Post.ID}}">{{.Post.TotalLikes}}</span>
+                </button>
+                <button id="dislike-{{.Post.ID}}" class="action-btn"
+                    onclick="updateLikeDislike({{.Post.ID}}, 'dislike')">
+                    <i class="fas fa-thumbs-down"></i>
+                    <span id="count-dislike-{{.Post.ID}}">{{.Post.TotalDislikes}}</span>
+                </button>
+                {{else}}
+                <button class="action-btn"><i class="fas fa-thumbs-up"></i>
+                    <span>{{.Post.TotalLikes}}</span></button>
+                <button class="action-btn"><i class="fas fa-thumbs-down"></i>
+                    <span>{{.Post.TotalDislikes}}</span></button>
+                {{end}}
+                <button id="update-number-comment" class="action-btn">
+                    <i class="fas fa-comment"></i>
+                    <span>{{.Post.TotalComments}}</span> Comment
+                </button>                
+            </div>
+            {{if eq .User.Status "Connected"}}
+            <form id="commentForm">
+                <h3>Comments</h3>
+                <textarea id="content" name="content" placeholder="Write a comment..." required></textarea>
+                <button type="button" id="postCommentBtn" class="btn">
+                    <i class="fas fa-paper-plane"></i> Post Comment
+                </button>
+            </form>
+            {{else}}
+            <a href="/login" class="myLink">Please log in to add a comment.</a>
+            {{end}}
+        </div>
+
+        <!-- Comments Section -->
+        <div class="comments-section">
+            <!-- Existing Comments -->
+            {{if .Comments}}
+            {{range .Comments}}
+            <div class="comments-list" id="comment-{{.ID}}">
+                <div class="comment-header">
+                    <span class="comment-author">{{.Author}}</span>
+                    <span class="comment-date">{{.CreatedAt}}</span>
+                </div>
+                {{if eq $.User.Status "Connected"}}
+                <div class="comment-options">
+                    <!-- <a class="myLink" href="/edit_comment/{{.PostID}}/{{.ID}}"> -->
+                    <button id="edit-btn-comment-{{.PostID}}-{{.ID}}" class="delete-btn"
+                        onclick="editComment({{.PostID}}, {{.ID}}, 'edit_comment')">
+                        <i class="fas fa-edit"></i>Edit
+                    </button>
+                    <button id="delete-btn-comment-{{.ID}}" class="delete-btn"
+                        onclick="deleteComment({{.PostID}}, {{.ID}}, 'delete_comment')">
+                        <i  class="fas fa-trash"></i>Delete
+                    </button>
+                </div>
+                {{end}}
+                <p>{{.Content}}</p>
+                <div class="like-dislike">
+                    {{if eq $.User.Status "Connected"}}
+                    <button id="like-btn-{{.PostID}}{{.ID}}" class="action-btn"
+                        onclick="updateLikeDislikeComment({{.PostID}}, {{.ID}}, 'like_comment')">
+                        <i class="fas fa-thumbs-up"></i>
+                        <span id="like-count-{{.PostID}}{{.ID}}">{{.TotalLikes}}</span></button>
+                    <button id="dislike-btn-{{.PostID}}{{.ID}}" class="action-btn"
+                        onclick="updateLikeDislikeComment({{.PostID}}, {{.ID}}, 'dislike_comment')">
+                        <i class="fas fa-thumbs-down"></i>
+                        <span id="dislike-count-{{.PostID}}{{.ID}}">{{.TotalDislikes}}</span></a></button>
+                    {{else}}
+                    <button class="action-btn"><i class="fas fa-thumbs-up"></i>
+                        <span>{{.TotalLikes}}</span></button>
+                    <button class="action-btn"><i class="fas fa-thumbs-down"></i>
+                        <span>{{.TotalDislikes}}</span></button>
+                    {{end}}
+                </div>
+            </div>
+            {{end}}
+            {{else}}
+            <h3 id="noCom">No Comment Yet</h3>
+            {{end}}
+        </div>
+    </div>
+    <script src="../Template/Script/like_comment.js"></script>
+    <script src="../Template/Script/create_comment.js"></script>
+    <script src="../Template/Script/like_dislike_post.js"></script>
+    <script src="../Template/Script/delete_post.js"></script>
+    <script src="../Template/Script/delete_comment.js"></script>
+    <script src="../Template/Script/edit_post.js"></script>
+    <script src="../Template/Script/edit_comment.js"></script>
+</body>
+
+</html>

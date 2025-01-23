@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - {{.Code}}</title>
+    <link rel="stylesheet" href="../../../Template/css/errors.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="/" class="logo">Forum</a>
+    </nav>
+
+    <div class="container">
+        <img src="https://media.istockphoto.com/id/155384933/photo/computer-showing-an-error-message.jpg?s=612x612&w=0&k=20&c=sNTu9BAo58HO2FNIjsEsnMf5_dtKfOIUhPccW4u6itg="
+            width="100%">
+        <div class="error-code">Error {{.Code}}</div>
+        <h1 class="error-message">{{.Message}}</h1>
+        <a href="{{.Path}}" class="home-button">Return {{.Page}}</a>
+    </div>
+</body>
+
+</html>

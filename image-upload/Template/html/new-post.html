@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Post</title>
+    <link rel="stylesheet" href="../Template/css/new-post.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .input-error {
+            border-color: red;
+            outline-color: red;
+        }
+
+        .noscript-warning {
+            color: white;
+            font-size: 14px;
+            text-align: center;
+            margin: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <noscript>
+        <div class="noscript-warning">
+            JavaScript is disabled in your browser. Please enable JavaScript to use this site properly.
+        </div>
+    </noscript>
+    <div class="wrapper">
+        <form id="new-post-form" action="/new-post" method="post" enctype="multipart/form-data">
+            <h2>Create New Post</h2>
+            <div class="input-field">
+                <input type="text" name="title" id="title" required>
+                <label>Post Title</label>
+            </div>
+            <label class="lbl">Post Categories</label>
+            <select name="category" id="category" class="form-select" multiple required>
+                {{range .}}
+                <option value="{{.Name}}">{{.Name}}</option>
+                {{end}}
+            </select>
+            <div class="textarea-field">
+                <textarea name="content" id="content" placeholder="What's on your mind?" required></textarea>
+                <label>Post Content</label>
+            </div>
+            <label for="file">Filename:</label>
+            <input type="file" name="file" id="file"><br>
+            <div class="button-group">
+                <button type="submit"><i class="fas fa-paper-plane"></i>
+                    <pre> </pre>Post
+                </button>
+                <a href="/" class="myLink">
+                    <button type="button" class="cancel-btn"><i class="fas fa-times"></i>
+                        <pre> </pre>Cancel
+                    </button>
+                </a>
+            </div>
+        </form>
+    </div>
+    <script src="../Template/Script/new_post.js"></script>
+    <script src="..Template/Script/generate_img.js"></script>
+</body>
+
+</html>

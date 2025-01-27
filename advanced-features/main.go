@@ -14,7 +14,6 @@ func main() {
 	} else if err := database.ConnectDatabase(); err != nil {
         log.Fatalf("Failed to initialize database: %v", err)
     }
-
 	fs := http.FileServer(http.Dir("./Template"))
 	http.Handle("/Template/", http.StripPrefix("/Template/", fs))
 	http.HandleFunc("/login", server.Login)
@@ -38,6 +37,6 @@ func main() {
 	http.HandleFunc("/delete_comment/", server.DeleteComment)
 	http.HandleFunc("/edit_comment/", server.EditComment)
 	log.Println("Server is running...")
-	log.Println("Link: http://localhost:8444")
-	log.Fatal(http.ListenAndServe(":8444", nil))
+	log.Println("Link: http://localhost:8404")
+	log.Fatal(http.ListenAndServe(":8404", nil))
 }

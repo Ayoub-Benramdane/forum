@@ -7,7 +7,6 @@ function markAsRead(notificationId) {
     })
         .then(response => {
             if (response.ok) {
-                // Update UI to reflect the read status
                 const notification = document.querySelector(`[data-notification-id="${notificationId}"]`);
                 notification.classList.remove('unread');
                 notification.querySelector('.mark-read-btn').remove();
@@ -16,10 +15,8 @@ function markAsRead(notificationId) {
         });
 }
 
-// Filter notifications
 document.querySelectorAll('.filter-btn').forEach(button => {
     button.addEventListener('click', () => {
-        // Update active button
         document.querySelector('.filter-btn.active').classList.remove('active');
         button.classList.add('active');
 

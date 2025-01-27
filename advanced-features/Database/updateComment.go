@@ -11,7 +11,7 @@ func DeleteCommentId(PostID, CommentID int64) error {
 
 func GetCommentByID(id_post, id_comment int64) (*structs.Comment, error) {
 	comment := &structs.Comment{}
-	err := DB.QueryRow("SELECT content FROM comments WHERE id == ? AND post_id = ?", id_comment, id_post).Scan(&comment.Content)
+	err := DB.QueryRow("SELECT user_id, content FROM comments WHERE id == ? AND post_id = ?", id_comment, id_post).Scan(&comment.UserID, &comment.Content)
 	comment.ID = id_comment
 	comment.PostID = id_post
 	return comment, err

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 
@@ -39,6 +40,7 @@ func NotificationGet(w http.ResponseWriter, r *http.Request, user *structs.User)
 	}
 	notifications, err := database.GetNotification(user.ID)
 	if err != nil {
+		fmt.Println(err)
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error geting notification", Page: "Home", Path: "/"})
 		return
 	}
@@ -53,6 +55,5 @@ func NotificationGet(w http.ResponseWriter, r *http.Request, user *structs.User)
 }
 
 func NotificationPost(w http.ResponseWriter, r *http.Request) {
-
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

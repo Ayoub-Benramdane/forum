@@ -11,9 +11,7 @@ document.querySelectorAll('.filter-btn').forEach(button => {
                 activity.style.display = 'flex';
             } else {
                 activity.style.display =
-                    (filter === 'posts' && activity.dataset.type === 'post') ||
-                        (filter === 'comments' && activity.dataset.type === 'comment') ||
-                        (filter === 'reactions' && activity.dataset.type === 'reactions') ? 'flex' : 'none';
+                    (filter === 'posts' && activity.dataset.type === 'post') || (filter === 'comments' && activity.dataset.type === 'comment') ||  (filter === 'reactions' && activity.dataset.type === 'reactions') ? 'flex' : 'none';
             }
         });
     });

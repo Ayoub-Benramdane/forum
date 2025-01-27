@@ -40,7 +40,7 @@ func Post(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		PostGet(w, post, user)
 	case http.MethodPost:
-		PostComment(w, r, id_post, user, cookie)
+		PostComment(w, r, post, user, cookie)
 	default:
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return
@@ -70,15 +70,15 @@ func PostGet(w http.ResponseWriter, post *structs.Post, user *structs.User) {
 	tmpl.Execute(w, data)
 }
 
-func PostComment(w http.ResponseWriter, r *http.Request, id_post int64, user *structs.User, cookie *http.Cookie) {
+func PostComment(w http.ResponseWriter, r *http.Request, post *structs.Post, user *structs.User, cookie *http.Cookie) {
 	if user.Status != "Connected" {
 		http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
-		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Please Log in to add Comment", Page: "Home", Path: fmt.Sprintf("/post/%d", id_post)})
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Please Log in to add Comment", Page: "Post", Path: fmt.Sprintf("/post/%d", post.ID)})
 		return
 	}
 	content := strings.TrimSpace(r.FormValue("content"))
 	if content == "" {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Check your input", Page: "New-Post", Path: fmt.Sprintf("/post/%d", id_post)})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Check your input", Page: "Post", Path: fmt.Sprintf("/post/%d", post.ID)})
 		return
 	}
 	newComment := structs.Comment{
@@ -88,14 +88,20 @@ func PostComment(w http.ResponseWriter, r *http.Request, id_post int64, user *st
 		TotalLikes:    0,
 		TotalDislikes: 0,
 		UserID:        user.ID,
-		PostID:        id_post,
+		PostID:        post.ID,
 	}
-	comment_id, err := database.CreateComment(content, user.ID, id_post)
+	comment_id, err := database.CreateComment(content, user.ID, post.ID)
 	if err != nil {
-		http.Error(w, "Failed to create comment", http.StatusInternalServerError)
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to create comment", Page: "Post", Path: fmt.Sprintf("/post/%d", post.ID)})
 		return
 	}
 	newComment.ID = comment_id
+	if post.UserID != user.ID {
+		if database.CreateNotification("comment", "post", post.UserID, post.ID, -1, post.Title, user.Username) != nil {
+			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to create notification", Page: "Post", Path: fmt.Sprintf("/post/%d", post.ID)})
+			return
+		}
+	}
 	cookie.Expires = time.Now().Add(5 * time.Minute)
 	http.SetCookie(w, cookie)
 	w.Header().Set("Content-Type", "application/json")

@@ -12,6 +12,7 @@ func GetFilterPosts(user int64, categories []string) ([]structs.Post, error) {
 	var posts []structs.Post
 	var rows *sql.Rows
 	var err error
+	ids := make(map[int64]bool)
 	for _, Category := range categories {
 		switch Category {
 		case "All":
@@ -50,7 +51,8 @@ func GetFilterPosts(user int64, categories []string) ([]structs.Post, error) {
 			if err != nil {
 				return nil, err
 			}
-			if NotExist(post.ID, posts) {
+			if !ids[post.ID] {
+				ids[post.ID] = true
 				posts = append(posts, post)
 			}
 		}
@@ -90,13 +92,4 @@ func SelectLike(UserID int64) (*sql.Rows, error) {
 			ORDER BY p.created_at DESC
 		`, UserID)
 	return rows, err
-}
-
-func NotExist(PostID int64, Posts []structs.Post) bool {
-	for _, post := range Posts {
-		if post.ID == PostID {
-			return false
-		}
-	}
-	return true
 }

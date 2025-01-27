@@ -45,13 +45,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
                 },
-                body: `password=${encodeURIComponent(passwordInput.value)}`,
+                body: `password=${encodeURIComponent(passwordInput.value)}&username=${encodeURIComponent(usernameInput.value)}&email=${encodeURIComponent(emailInput.value)}&new-password=${encodeURIComponent(newPasswordInput.value)}&confirm-password=${encodeURIComponent(confirmPasswordInput.value)}`,
             });
 
             if (response.ok) {
                 window.location.href = "/profile";
             } else if (response.status === 401) {
                 generalError.textContent = "Invalid password.";
+            } else if (response.status === 409) {
+                generalError.textContent = "Password not matched.";
+            } else if (response.status === 400) {
+                generalError.textContent = "Password not matched.";
             } else {
                 generalError.textContent = "An unexpected error occurred. Please try again.";
             }

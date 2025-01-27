@@ -60,6 +60,10 @@ func DeleteComment(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Comment", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
+	if database.DeleteNotification("comment", id_post, -1, user.Username) != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to Delete Notification", Page: "Post", Path: "/post/" + ids[0]})
+		return
+	}
 	w.WriteHeader(http.StatusOK)
 	cookie.Expires = time.Now().Add(5 * time.Minute)
 	http.SetCookie(w, cookie)

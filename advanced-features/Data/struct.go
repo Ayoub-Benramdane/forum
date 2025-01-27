@@ -50,11 +50,15 @@ type Notification struct {
 	Content   string `sqlite:"content" json:"content"`
 	UserID    int64  `sqlite:"user_id" json:"user_id"`
 	PostID    int64  `sqlite:"post_id" json:"post_id"`
-	CreatedAt string `sqlite:"created_at" json:"created_at"`
+	CommentID int64  `sqlite:"comment_id" json:"comment_id"`
+	Title     string `sqlite:"title" json:"title"`
+	Type      string `sqlite:"type" json:"type"`
 	Author    string `sqlite:"author" json:"author"`
+	CreatedAt string `sqlite:"created_at" json:"created_at"`
+	Status    string `sqlite:"status" json:"status"`
 }
 
-type All struct {
+type Activity struct {
 	Posts           []Post
 	ReactedPosts    []Post
 	Comments        []Comment

@@ -36,6 +36,11 @@ func LikeComment(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Adding Like", Page: "Post", Path: "/post/" + ids[0]})
 		return
 	}
+	comment, errLoadComment := database.GetCommentByID(id_post, id_comment)
+	if errLoadComment != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to Geting Comments", Page: "Post", Path: "/post/" + ids[0]})
+		return
+	}
 	user, err := database.GetUserConnected(cookie.Value)
 	if err != nil {
 		http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
@@ -46,9 +51,23 @@ func LikeComment(w http.ResponseWriter, r *http.Request) {
 			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Adding Like", Page: "Post", Path: "/post/" + ids[0]})
 			return
 		}
-	} else if database.DeleteLikeComment(user.ID, id_post, id_comment) != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Like", Page: "Post", Path: "/post/" + ids[0]})
-		return
+		if comment.UserID != user.ID {
+			if database.CreateNotification("like", "comment", comment.UserID, id_post, comment.ID, comment.Content, user.Username) != nil {
+				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to create Notification", Page: "Post", Path: "/post/" + ids[0]})
+				return
+			}
+		}
+	} else {
+		if database.DeleteLikeComment(user.ID, id_post, id_comment) != nil {
+			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Like", Page: "Post", Path: "/post/" + ids[0]})
+			return
+		}
+		if comment.UserID != user.ID {
+			if database.DeleteNotification("like", id_post, comment.ID, user.Username) != nil {
+				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to Delete Notification", Page: "Post", Path: "/post/" + ids[0]})
+				return
+			}
+		}
 	}
 	cookie.Expires = time.Now().Add(5 * time.Minute)
 	http.SetCookie(w, cookie)
@@ -98,6 +117,11 @@ func DislikeComment(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Adding Dislike", Page: "Post", Path: "/post/" + ids[0]})
 		return
 	}
+	comment, errLoadComment := database.GetCommentByID(id_post, id_comment)
+	if errLoadComment != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to Geting Comments", Page: "Post", Path: "/post/" + ids[0]})
+		return
+	}
 	user, err := database.GetUserConnected(cookie.Value)
 	if err != nil {
 		http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
@@ -108,9 +132,23 @@ func DislikeComment(w http.ResponseWriter, r *http.Request) {
 			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Adding Dislike", Page: "Post", Path: "/post/" + ids[0]})
 			return
 		}
-	} else if database.DeleteDislikeComment(user.ID, id_post, id_comment) != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Dislike", Page: "Post", Path: "/post/" + ids[0]})
-		return
+		if comment.UserID != user.ID {
+			if database.CreateNotification("dislike", "comment", comment.UserID, id_post, comment.ID, comment.Content, user.Username) != nil {
+				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to create Notification", Page: "Post", Path: "/post/" + ids[0]})
+				return
+			}
+		}
+	} else {
+		if database.DeleteDislikeComment(user.ID, id_post, id_comment) != nil {
+			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Dislike", Page: "Post", Path: "/post/" + ids[0]})
+			return
+		}
+		if comment.UserID != user.ID {
+			if database.DeleteNotification("dislike", id_post, comment.ID, user.Username) != nil {
+				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to Delete Notification", Page: "Post", Path: "/post/" + ids[0]})
+				return
+			}
+		}
 	}
 	cookie.Expires = time.Now().Add(5 * time.Minute)
 	http.SetCookie(w, cookie)

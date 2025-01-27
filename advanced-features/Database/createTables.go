@@ -35,19 +35,6 @@ func CreateTables() error {
 		return err
 	}
 	_, err = DB.Exec(`
-        CREATE TABLE IF NOT EXISTS notifications (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
-            content TEXT NOT NULL,
-            user_id INTEGER NOT NULL,
-            created_at DATETIME NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-        )
-    `)
-	if err != nil {
-		return err
-	}
-	_, err = DB.Exec(`
         CREATE TABLE IF NOT EXISTS comments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             content TEXT NOT NULL,
@@ -56,6 +43,27 @@ func CreateTables() error {
             created_at DATETIME NOT NULL,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
             FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+        )
+    `)
+	if err != nil {
+		return err
+	}
+	_, err = DB.Exec(`
+        CREATE TABLE IF NOT EXISTS notifications (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            content TEXT NOT NULL,
+            user_id INTEGER NOT NULL,
+            post_id INTEGER NOT NULL,
+            comment_id INTEGER NOT NULL,
+            title TEXT NOT NULL,
+            type TEXT NOT NULL,
+			notif_by TEXT NOT NULL,
+            created_at DATETIME NOT NULL,
+			status TEXT NOT NULL,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+            FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE,
+			UNIQUE (user_id, post_id, comment_id)
         )
     `)
 	if err != nil {

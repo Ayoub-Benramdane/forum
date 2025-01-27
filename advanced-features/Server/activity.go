@@ -36,18 +36,10 @@ func Activity(w http.ResponseWriter, r *http.Request) {
 	}
 	data := struct {
 		User            *structs.User
-		All             *structs.All
-		Posts           []structs.Post
-		Comments        []structs.Comment
-		ReactedPosts    []structs.Post
-		ReactedComments []structs.Comment
+		Activities      *structs.Activity
 	}{
-		User:            user,
-		All:             all_data,
-		Posts:           all_data.Posts,
-		Comments:        all_data.Comments,
-		ReactedPosts:    all_data.ReactedPosts,
-		ReactedComments: all_data.ReactedComments,
+		User:       user,
+		Activities: all_data,
 	}
 	tmpl.Execute(w, data)
 }

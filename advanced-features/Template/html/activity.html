@@ -33,22 +33,19 @@
             <div class="stat-card">
                 <i class="fas fa-pencil-alt"></i>
                 <div class="stat-info">
-                    <h3>{{.All.TotalPosts}}</h3>
-                    <p>Posts Created</p>
+                    <h3>{{.Activities.TotalPosts}} Posts Created</h3>
                 </div>
             </div>
             <div class="stat-card">
                 <i class="fas fa-comment"></i>
                 <div class="stat-info">
-                    <h3>{{.All.TotalComments}}</h3>
-                    <p>Comments Made</p>
+                    <h3>{{.Activities.TotalComments}} Comments Made</h3>
                 </div>
             </div>
             <div class="stat-card">
                 <i class="fas fa-thumbs-up"></i>
                 <div class="stat-info">
-                    <h3>{{.All.TotalLikes}}</h3>
-                    <p>Likes Given</p>
+                    <h3>{{.Activities.TotalLikes}} Reacteds Given</h3>
                 </div>
             </div>
         </div>
@@ -64,113 +61,110 @@
         <!-- Activity Timeline -->
         <div class="activity-timeline">
             <!-- User's Own Posts -->
-            {{range .Posts}}
+            {{range .Activities.Posts}}
             <div class="activity-card" data-type="post">
-                <div class="activity-icon">
-                    <i class="fas fa-pencil-alt"></i>
-                </div>
-                <div class="activity-content">
-                    <div class="activity-header">
-                        <span class="activity-type">Created a new post</span>
-                        <span class="activity-time">{{.CreatedAt}}</span>
+                <a href="/post/{{.ID}}"  class="view-btn">
+                    <div class="activity-icon">
+                        <i class="fas fa-pencil-alt"></i>
                     </div>
-                    <h4 class="post-title">{{.Title}}</h4>
-                    <p class="post-excerpt">{{.Content}}</p>
+                    <div class="activity-content">
+                        <div class="activity-header">
+                            <span class="activity-type">Created a new post</span>
+                            <span class="activity-time">{{.CreatedAt}}</span>
+                        </div>
+                        <h4 class="post-title">{{.Title}}</h4>
+                        <p class="post-excerpt">{{.Content}}</p>
 
-                    {{if .Categories}}
-                    <div class="activity-categories">
-                        {{range .Categories}}
-                        <span class="category-tag">#{{.}}</span>
+                        {{if .Categories}}
+                        <div class="activity-categories">
+                            {{range .Categories}}
+                            <span class="category-tag">#{{.}}</span>
+                            {{end}}
+                        </div>
                         {{end}}
-                    </div>
-                    {{end}}
 
-                    <div class="post-stats">
-                        <span><i class="fas fa-thumbs-up"></i> {{.TotalLikes}}</span>
-                        <span><i class="fas fa-thumbs-down"></i> {{.TotalDislikes}}</span>
-                        <span><i class="fas fa-comment"></i> {{.TotalComments}}</span>
+                        <div class="post-stats">
+                            <span><i class="fas fa-thumbs-up"></i> {{.TotalLikes}}</span>
+                            <span><i class="fas fa-thumbs-down"></i> {{.TotalDislikes}}</span>
+                            <span><i class="fas fa-comment"></i> {{.TotalComments}}</span>
+                        </div>
                     </div>
-                </div>
-                <div class="activity-actions">
-                    <a href="/post/{{.ID}}" class="view-btn">View Post</a>
-                </div>
+                </a>
             </div>
             {{end}}
 
             <!-- User's Comments -->
-            {{range .Comments}}
+            {{range .Activities.Comments}}
             <div class="activity-card" data-type="comment">
-                <div class="activity-icon">
-                    <i class="fas fa-comment"></i>
-                </div>
-                <div class="activity-content">
-                    <div class="activity-header">
-                        <span class="activity-type">Commented on a post</span>
-                        <span class="activity-time">{{.CreatedAt}}</span>
+                <a href="/post/{{.ID}}"  class="view-btn">
+                    <div class="activity-icon">
+                        <i class="fas fa-comment"></i>
                     </div>
-                    <p class="comment-content">{{.Content}}</p>
+                    <div class="activity-content">
+                        <div class="activity-header">
+                            <span class="activity-type">Commented on a post</span>
+                            <span class="activity-time">{{.CreatedAt}}</span>
+                        </div>
+                        <p class="comment-content">{{.Content}}</p>
 
-                    <div class="comment-stats">
-                        <span><i class="fas fa-thumbs-up"></i> {{.TotalLikes}}</span>
-                        <span><i class="fas fa-thumbs-down"></i> {{.TotalDislikes}}</span>
+                        <div class="comment-stats">
+                            <span><i class="fas fa-thumbs-up"></i> {{.TotalLikes}}</span>
+                            <span><i class="fas fa-thumbs-down"></i> {{.TotalDislikes}}</span>
+                        </div>
                     </div>
-                </div>
-                <div class="activity-actions">
-                    <a href="/post/{{.PostID}}" class="view-btn">View Post</a>
-                </div>
+                </a>
             </div>
             {{end}}
-
+            
             <!-- Reacted Posts -->
-            {{range .ReactedPosts}}
+            {{range .Activities.ReactedPosts}}
             <div class="activity-card" data-type="reactions">
-                <div class="activity-icon">
-                    <i class="fas fa-thumbs-up"></i>
-                </div>
-                <div class="activity-content">
-                    <div class="activity-header">
-                        <span class="activity-type">Reacted to a post</span>
-                        <span class="activity-time">{{.CreatedAt}}</span>
+                <a href="/post/{{.ID}}"  class="view-btn">
+                    <div class="activity-icon">
+                        <i class="fas fa-thumbs-up"></i>
                     </div>
-                    <h4 class="post-title">{{.Title}}</h4>
-                    <p class="post-excerpt">{{.Content}}</p>
+                    <div class="activity-content">
+                        <div class="activity-header">
+                            <span class="activity-type">Reacted to a post</span>
+                            <span class="activity-time">{{.CreatedAt}}</span>
+                        </div>
+                        <h4 class="post-title">{{.Title}}</h4>
+                        <p class="post-excerpt">{{.Content}}</p>
 
-                    {{if .Categories}}
-                    <div class="activity-categories">
-                        {{range .Categories}}
-                        <span class="category-tag">#{{.}}</span>
+                        {{if .Categories}}
+                        <div class="activity-categories">
+                            {{range .Categories}}
+                            <span class="category-tag">#{{.}}</span>
+                            {{end}}
+                        </div>
                         {{end}}
                     </div>
-                    {{end}}
-                </div>
-                <div class="activity-actions">
-                    <a href="/post/{{.ID}}" class="view-btn">View Post</a>
-                </div>
+                </a>
             </div>
             {{end}}
 
             <!-- Reacted Comments -->
-            {{range .ReactedComments}}
+            {{range .Activities.ReactedComments}}
             <div class="activity-card" data-type="reactions">
-                <div class="activity-icon">
-                    <i class="fas fa-thumbs-up"></i>
-                </div>
-                <div class="activity-content">
-                    <div class="activity-header">
-                        <span class="activity-type">Reacted to a comment</span>
-                        <span class="activity-time">{{.CreatedAt}}</span>
+                <a href="/post/{{.ID}}"  class="view-btn">
+                    <div class="activity-icon">
+                        <i class="fas fa-thumbs-up"></i>
                     </div>
-                    <p class="comment-content">{{.Content}}</p>
-                </div>
-                <div class="activity-actions">
-                    <a href="/post/{{.PostID}}" class="view-btn">View Post</a>
-                </div>
+                    <div class="activity-content">
+                        <div class="activity-header">
+                            <span class="activity-type">Reacted to a comment</span>
+                            <span class="activity-time">{{.CreatedAt}}</span>
+                        </div>
+                        <p class="comment-content">{{.Content}}</p>
+                    </div>
+                </a>
             </div>
             {{end}}
         </div>
 
         <!-- No Activity Message -->
-        {{if and (eq (len .Posts) 0) (eq (len .Comments) 0) (eq (len .ReactedPosts) 0) (eq (len .ReactedComments) 0)}}
+        {{if and (eq (len .Activities.Posts) 0) (eq (len .Activities.Comments) 0) (eq (len .Activities.ReactedPosts) 0)
+        (eq (len .Activities.ReactedComments) 0)}}
         <div class="no-activity">
             <i class="fas fa-history"></i>
             <p>No activity yet</p>

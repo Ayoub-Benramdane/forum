@@ -20,6 +20,19 @@ body {
     background-attachment: fixed;
 }
 
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.noscript-warning {
+    color: white;
+    font-size: 14px;
+    text-align: center;
+    margin: 20px;
+}
+
 .wrapper {
     width: 400px;
     border-radius: 8px;

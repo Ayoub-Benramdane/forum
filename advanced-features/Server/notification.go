@@ -6,8 +6,6 @@ import (
 
 	structs "forum/Data"
 	database "forum/Database"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 func Notification(w http.ResponseWriter, r *http.Request) {
@@ -39,27 +37,22 @@ func NotificationGet(w http.ResponseWriter, r *http.Request, user *structs.User)
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load login page template", Page: "Home", Path: "/"})
 		return
 	}
+	notifications, err := database.GetNotification(user.ID)
+	if err != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error geting notification", Page: "Home", Path: "/"})
+		return
+	}
 	data := struct {
 		User          *structs.User
-		Notifications []structs.Post
-		Categories    []structs.Category
-		Pagination    []int64
+		Notifications []structs.Notification
 	}{
 		User:          user,
-		Notifications: nil,
-		Categories:    nil,
-		Pagination:    nil,
+		Notifications: notifications,
 	}
 	tmpl.Execute(w, data)
 }
 
 func NotificationPost(w http.ResponseWriter, r *http.Request) {
-	username := r.FormValue("username")
-	password := r.FormValue("password")
-	user, errData := database.GetUserByUsername(username)
-	if errData != nil || bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)) != nil {
-		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "Check Username Or Password", Page: "Login", Path: "/login"})
-		return
-	}
+
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

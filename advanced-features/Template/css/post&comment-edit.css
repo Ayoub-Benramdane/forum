@@ -19,6 +19,24 @@ body {
     background-attachment: fixed;
 }
 
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.input-error {
+    border-color: red;
+    outline-color: red;
+}
+
+.noscript-warning {
+    color: white;
+    font-size: 14px;
+    text-align: center;
+    margin: 100px 0 20px 0;
+}
+
 .navbar {
     position: fixed;
     top: 0;

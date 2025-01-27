@@ -35,6 +35,19 @@ body {
     margin-left: auto;
 }
 
+img {
+    width: 30px;
+    background-color: rgb(160, 163, 165);
+    border-radius: 10px;
+}
+
+.noscript-warning {
+    color: white;
+    font-size: 14px;
+    text-align: center;
+    margin: 20px;
+}
+
 .log-btn,
 .user-button {
     height: 40px;

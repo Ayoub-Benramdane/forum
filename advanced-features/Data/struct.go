@@ -59,6 +59,9 @@ type All struct {
 	ReactedPosts    []Post
 	Comments        []Comment
 	ReactedComments []Comment
+	TotalPosts      int64
+	TotalComments   int64
+	TotalLikes      int64
 }
 
 type Category struct {

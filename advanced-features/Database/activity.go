@@ -27,6 +27,9 @@ func GetData(Id int64) (*structs.All, error) {
 	all.Comments = comments
 	all.ReactedPosts = reacted_posts
 	all.ReactedComments = reacted_comments
+	all.TotalPosts = int64(len(all.Posts))
+	all.TotalComments = int64(len(all.Comments))
+	all.TotalLikes = int64(len(all.ReactedPosts)+len(reacted_comments))
 	return &all, err
 }
 

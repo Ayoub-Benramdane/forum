@@ -33,21 +33,21 @@
             <div class="stat-card">
                 <i class="fas fa-pencil-alt"></i>
                 <div class="stat-info">
-                    <h3>{{.Posts.TotalPosts}}</h3>
+                    <h3>{{.All.TotalPosts}}</h3>
                     <p>Posts Created</p>
                 </div>
             </div>
             <div class="stat-card">
                 <i class="fas fa-comment"></i>
                 <div class="stat-info">
-                    <h3>{{.Comments.TotalComments}}</h3>
+                    <h3>{{.All.TotalComments}}</h3>
                     <p>Comments Made</p>
                 </div>
             </div>
             <div class="stat-card">
                 <i class="fas fa-thumbs-up"></i>
                 <div class="stat-info">
-                    <h3>{{.ReactedPosts.TotalLikes}}</h3>
+                    <h3>{{.All.TotalLikes}}</h3>
                     <p>Likes Given</p>
                 </div>
             </div>
@@ -62,51 +62,78 @@
         </div>
 
         <!-- Activity Timeline -->
-        {{if .Activities}}
         <div class="activity-timeline">
-            {{range .Activities}}
-            <div class="activity-card" data-type="{{.Type}}">
+            <!-- User's Own Posts -->
+            {{range .Posts}}
+            <div class="activity-card" data-type="post">
                 <div class="activity-icon">
-                    {{if eq .Type "post"}}
                     <i class="fas fa-pencil-alt"></i>
-                    {{else if eq .Type "comment"}}
-                    <i class="fas fa-comment"></i>
-                    {{else if eq .Type "like"}}
-                    <i class="fas fa-thumbs-up"></i>
-                    {{else if eq .Type "dislike"}}
-                    <i class="fas fa-thumbs-down"></i>
-                    {{end}}
                 </div>
                 <div class="activity-content">
                     <div class="activity-header">
-                        <span class="activity-type">
-                            {{if eq .Type "post"}}
-                            Created a new post
-                            {{else if eq .Type "comment"}}
-                            Commented on a post
-                            {{else if eq .Type "like"}}
-                            Liked a post
-                            {{else if eq .Type "dislike"}}
-                            Disliked a post
-                            {{end}}
-                        </span>
+                        <span class="activity-type">Created a new post</span>
                         <span class="activity-time">{{.CreatedAt}}</span>
                     </div>
-                    {{if eq .Type "post"}}
                     <h4 class="post-title">{{.Title}}</h4>
                     <p class="post-excerpt">{{.Content}}</p>
-                    {{else if eq .Type "comment"}}
-                    <div class="comment-context">
-                        <span class="context-label">On post:</span>
-                        <span class="context-title">"{{.PostTitle}}"</span>
-                    </div>
-                    <p class="comment-content">{{.Content}}</p>
-                    {{else}}
-                    <div class="reaction-context">
-                        <span class="context-label">On post:</span>
-                        <span class="context-title">"{{.PostTitle}}"</span>
+
+                    {{if .Categories}}
+                    <div class="activity-categories">
+                        {{range .Categories}}
+                        <span class="category-tag">#{{.}}</span>
+                        {{end}}
                     </div>
                     {{end}}
+
+                    <div class="post-stats">
+                        <span><i class="fas fa-thumbs-up"></i> {{.TotalLikes}}</span>
+                        <span><i class="fas fa-thumbs-down"></i> {{.TotalDislikes}}</span>
+                        <span><i class="fas fa-comment"></i> {{.TotalComments}}</span>
+                    </div>
+                </div>
+                <div class="activity-actions">
+                    <a href="/post/{{.ID}}" class="view-btn">View Post</a>
+                </div>
+            </div>
+            {{end}}
+
+            <!-- User's Comments -->
+            {{range .Comments}}
+            <div class="activity-card" data-type="comment">
+                <div class="activity-icon">
+                    <i class="fas fa-comment"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-header">
+                        <span class="activity-type">Commented on a post</span>
+                        <span class="activity-time">{{.CreatedAt}}</span>
+                    </div>
+                    <p class="comment-content">{{.Content}}</p>
+
+                    <div class="comment-stats">
+                        <span><i class="fas fa-thumbs-up"></i> {{.TotalLikes}}</span>
+                        <span><i class="fas fa-thumbs-down"></i> {{.TotalDislikes}}</span>
+                    </div>
+                </div>
+                <div class="activity-actions">
+                    <a href="/post/{{.PostID}}" class="view-btn">View Post</a>
+                </div>
+            </div>
+            {{end}}
+
+            <!-- Reacted Posts -->
+            {{range .ReactedPosts}}
+            <div class="activity-card" data-type="reactions">
+                <div class="activity-icon">
+                    <i class="fas fa-thumbs-up"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-header">
+                        <span class="activity-type">Reacted to a post</span>
+                        <span class="activity-time">{{.CreatedAt}}</span>
+                    </div>
+                    <h4 class="post-title">{{.Title}}</h4>
+                    <p class="post-excerpt">{{.Content}}</p>
 
                     {{if .Categories}}
                     <div class="activity-categories">
@@ -117,21 +144,33 @@
                     {{end}}
                 </div>
                 <div class="activity-actions">
+                    <a href="/post/{{.ID}}" class="view-btn">View Post</a>
+                </div>
+            </div>
+            {{end}}
+
+            <!-- Reacted Comments -->
+            {{range .ReactedComments}}
+            <div class="activity-card" data-type="reactions">
+                <div class="activity-icon">
+                    <i class="fas fa-thumbs-up"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-header">
+                        <span class="activity-type">Reacted to a comment</span>
+                        <span class="activity-time">{{.CreatedAt}}</span>
+                    </div>
+                    <p class="comment-content">{{.Content}}</p>
+                </div>
+                <div class="activity-actions">
                     <a href="/post/{{.PostID}}" class="view-btn">View Post</a>
                 </div>
             </div>
             {{end}}
         </div>
 
-        <!-- Load More Button -->
-        {{if .HasMoreActivities}}
-        <button class="load-more-btn" onclick="loadMoreActivities()">
-            Load More
-            <i class="fas fa-chevron-down"></i>
-        </button>
-        {{end}}
-
-        {{else}}
+        <!-- No Activity Message -->
+        {{if and (eq (len .Posts) 0) (eq (len .Comments) 0) (eq (len .ReactedPosts) 0) (eq (len .ReactedComments) 0)}}
         <div class="no-activity">
             <i class="fas fa-history"></i>
             <p>No activity yet</p>
@@ -140,51 +179,7 @@
         {{end}}
     </div>
 
-    <script>
-        let currentPage = 1;
-
-        function loadMoreActivities() {
-            currentPage++;
-            fetch(`/api/activities?page=${currentPage}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.activities.length > 0) {
-                        appendActivities(data.activities);
-                    }
-                    if (!data.hasMore) {
-                        document.querySelector('.load-more-btn').style.display = 'none';
-                    }
-                });
-        }
-
-        function appendActivities(activities) {
-            const container = document.querySelector('.activity-timeline');
-            activities.forEach(activity => {
-                // Create and append new activity cards
-                // Implementation depends on your activity card structure
-            });
-        }
-
-        // Filter activities
-        document.querySelectorAll('.filter-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                // Update active button
-                document.querySelector('.filter-btn.active').classList.remove('active');
-                button.classList.add('active');
-
-                const filter = button.dataset.filter;
-                const activities = document.querySelectorAll('.activity-card');
-
-                activities.forEach(activity => {
-                    if (filter === 'all') {
-                        activity.style.display = 'flex';
-                    } else {
-                        activity.style.display = activity.dataset.type === filter ? 'flex' : 'none';
-                    }
-                });
-            });
-        });
-    </script>
+    <script src="../Template/Script/activity.js"></script>
 </body>
 
 </html>

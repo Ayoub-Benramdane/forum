@@ -47,3 +47,8 @@ func DeleteNotification(content, Type string, post_id, comment_id int64, author 
 	_, err := DB.Exec("DELETE FROM notifications WHERE content = ? AND type = ? AND post_id = ? AND comment_id = ? AND notif_by = ?", content, Type, post_id, comment_id, author)
 	return err
 }
+
+func ReadNotification(user_id, id_notification int64) error {
+	_, err := DB.Exec("UPDATE notifications SET status = ? WHERE id = ? AND user_id = ?", "Read", id_notification, user_id)
+	return err
+}

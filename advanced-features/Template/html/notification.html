@@ -31,43 +31,38 @@
         <!-- Notification Filters -->
         <div class="notification-filters">
             <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="comments">Comments</button>
-            <button class="filter-btn" data-filter="reactions">Reactions</button>
-            <button class="filter-btn" data-filter="unread">Unread</button>
+            <button class="filter-btn" data-filter="comment">Comments</button>
+            <button class="filter-btn" data-filter="like">Reactions</button>
         </div>
 
         <!-- Notifications Container -->
         {{if .Notifications}}
         <div class="notifications-container">
             {{range .Notifications}}
-            <div class="notification-card {{if eq .Status "Unread"}}unread{{end}}" data-type="{{.Content}}">
+            <div class="notification-card {{if eq .Status " Unread"}}unread{{end}}" data-type="{{.Content}}"
+                data-notification-id="{{.ID}}">
                 <div class="notification-header">
-                    <div class="user-avatar">
-                        <img src="../Template/images/user-png-icon-16.jpg" alt="User Avatar">
-                    </div>
-                    <div class="notification-content">
-                        <div class="notification-text">
-                            <strong>{{.Author}}</strong>
-                            {{if eq .Content "comment"}}
-                            commented on your post "{{.Title}}"
-                            <p class="comment-preview">{{.Content}}</p>
-                            {{else if eq .Content "like"}}
-                            liked your post "{{.Title}}"
-                            {{else if eq .Content "dislike"}}
-                            disliked your post "{{.Title}}"
-                            {{end}}
+                    <a href="/post/{{.PostID}}"  onclick="markAsRead({{.ID}})" class="myLink notification-link">
+                        <div class="user-avatar">
+                            <img src="../Template/images/user-png-icon-16.jpg" alt="User Avatar">
                         </div>
-                        <span class="notification-time">{{.CreatedAt}}</span>
-                    </div>
-                    {{if eq .Status "Unread"}}
-                    <div class="unread-indicator"></div>
-                    {{end}}
-                </div>
-                <div class="notification-actions">
-                    <a href="/post/{{.PostID}}" class="view-post-btn">View Post</a>
-                    {{if eq .Status "Unread"}}
-                    <button class="mark-read-btn" onclick="markAsRead({{.ID}})">Mark as Read</button>
-                    {{end}}
+                        <div class="notification-content">
+                            <div class="notification-text">
+                                <strong>{{.Author}}</strong>
+                                {{if eq .Content "comment"}}
+                                commented on your post "{{.Title}}"
+                                {{else if eq .Content "like"}}
+                                liked your post "{{.Title}}"
+                                {{else if eq .Content "dislike"}}
+                                disliked your post "{{.Title}}"
+                                {{end}}
+                            </div>
+                            <span class="notification-time">{{.CreatedAt}}</span>
+                        </div>
+                        {{if eq .Status "Unread"}}
+                        <div class="unread-indicator" style="width: 20px; height: 20px;"></div>
+                        {{end}}
+                    </a>
                 </div>
             </div>
             {{end}}

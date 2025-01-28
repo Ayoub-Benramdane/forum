@@ -88,8 +88,7 @@ func LikeComment(w http.ResponseWriter, r *http.Request) {
 	response := map[string]interface{}{
 		"updatedLikes":    updatedLikes,
 		"updatedDislikes": updatedDislikes,
-	}
-
+	}	
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }

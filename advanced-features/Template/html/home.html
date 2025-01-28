@@ -17,6 +17,9 @@
             <a href="/profile" class="myLink"><button class="log-btn"><i class="fa-solid fa-user"></i>
                     {{.User.Username}}</button></a>
             <a href="/logout" class="myLink"><button class="log-btn">Logout</button></a>
+            <a href="/notifications" class="myLink">
+                <button class="log-btn"><i class="fa-solid fa-bell"></i> Notifications</button>
+            </a>
             {{else}}
             <a href="/login" class="myLink"><button class="log-btn">Log In</button></a>
             {{end}}

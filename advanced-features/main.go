@@ -22,7 +22,7 @@ func main() {
 	http.HandleFunc("/", server.Home)
 	http.HandleFunc("/profile", server.Profile)
 	http.HandleFunc("/profile_edit", server.EditProfile)
-	http.HandleFunc("/notification", server.Notification)
+	http.HandleFunc("/notifications", server.Notification)
 	http.HandleFunc("/activity", server.Activity)
 	http.HandleFunc("/post/", server.Post)
 	http.HandleFunc("/delete/", server.DeletePost)
@@ -37,6 +37,6 @@ func main() {
 	http.HandleFunc("/delete_comment/", server.DeleteComment)
 	http.HandleFunc("/edit_comment/", server.EditComment)
 	log.Println("Server is running...")
-	log.Println("Link: http://localhost:8404")
-	log.Fatal(http.ListenAndServe(":8404", nil))
+	log.Println("Link: http://localhost:8888")
+	log.Fatal(http.ListenAndServe(":8888", nil))
 }

@@ -99,8 +99,7 @@
                 </div>
                 {{if eq $.User.Status "Connected"}}
                 <div class="comment-options">
-                    <!-- <a class="myLink" href="/edit_comment/{{.PostID}}/{{.ID}}"> -->
-                    <button id="edit-btn-comment-{{.PostID}}-{{.ID}}" class="delete-btn"
+                    <button id="edit-btn-comment-{{.PostID}}-{{.ID}}" class="edit-btn"
                         onclick="editComment({{.PostID}}, {{.ID}}, 'edit_comment')">
                         <i class="fas fa-edit"></i>Edit
                     </button>

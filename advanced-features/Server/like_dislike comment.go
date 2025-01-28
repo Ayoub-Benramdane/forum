@@ -52,6 +52,10 @@ func LikeComment(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if comment.UserID != user.ID {
+			if database.DeleteNotification("dislike", "comment", id_post, comment.ID, user.Username) != nil {
+				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to Delete Notification", Page: "Post", Path: "/post/" + ids[0]})
+				return
+			}
 			if database.CreateNotification("like", "comment", comment.UserID, id_post, comment.ID, comment.Content, user.Username) != nil {
 				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to create Notification", Page: "Post", Path: "/post/" + ids[0]})
 				return
@@ -63,7 +67,7 @@ func LikeComment(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if comment.UserID != user.ID {
-			if database.DeleteNotification("like", id_post, comment.ID, user.Username) != nil {
+			if database.DeleteNotification("like", "comment", id_post, comment.ID, user.Username) != nil {
 				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to Delete Notification", Page: "Post", Path: "/post/" + ids[0]})
 				return
 			}
@@ -84,8 +88,6 @@ func LikeComment(w http.ResponseWriter, r *http.Request) {
 	response := map[string]interface{}{
 		"updatedLikes":    updatedLikes,
 		"updatedDislikes": updatedDislikes,
-		"isLiked":         database.CheckLikeComment(user.ID, id_post, id_comment),
-		"isDisliked":      database.CheckDislikeComment(user.ID, id_post, id_comment),
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -133,6 +135,10 @@ func DislikeComment(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if comment.UserID != user.ID {
+			if database.DeleteNotification("like", "comment", id_post, comment.ID, user.Username) != nil {
+				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to Delete Notification", Page: "Post", Path: "/post/" + ids[0]})
+				return
+			}
 			if database.CreateNotification("dislike", "comment", comment.UserID, id_post, comment.ID, comment.Content, user.Username) != nil {
 				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to create Notification", Page: "Post", Path: "/post/" + ids[0]})
 				return
@@ -144,7 +150,7 @@ func DislikeComment(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if comment.UserID != user.ID {
-			if database.DeleteNotification("dislike", id_post, comment.ID, user.Username) != nil {
+			if database.DeleteNotification("dislike", "comment", id_post, comment.ID, user.Username) != nil {
 				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to Delete Notification", Page: "Post", Path: "/post/" + ids[0]})
 				return
 			}
@@ -165,8 +171,6 @@ func DislikeComment(w http.ResponseWriter, r *http.Request) {
 	response := map[string]interface{}{
 		"updatedLikes":    updatedLikes,
 		"updatedDislikes": updatedDislikes,
-		"isLiked":         database.CheckLikeComment(user.ID, id_post, id_comment),
-		"isDisliked":      database.CheckDislikeComment(user.ID, id_post, id_comment),
 	}
 
 	w.Header().Set("Content-Type", "application/json")

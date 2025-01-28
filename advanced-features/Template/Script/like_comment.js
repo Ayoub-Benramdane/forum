@@ -7,6 +7,7 @@ async function updateLikeDislikeComment(PostID, CommentID, action) {
             },
         });
 
+        console.log(response.status, "121");
         if (!response.ok) {
             throw new Error('Failed to update like/dislike');
         }
@@ -21,21 +22,6 @@ async function updateLikeDislikeComment(PostID, CommentID, action) {
         }
         if (data.updatedDislikes !== undefined) {
             dislikeCountElement.innerText = data.updatedDislikes;
-        }
-
-        const likeButton = document.querySelector(`#like-btn-${PostID}${CommentID}`);
-        const dislikeButton = document.querySelector(`#dislike-btn-${PostID}${CommentID}`);
-
-        if (data.isLiked) {
-            likeButton.classList.add('active');
-        } else {
-            likeButton.classList.remove('active');
-        }
-
-        if (data.isDisliked) {
-            dislikeButton.classList.add('active');
-        } else {
-            dislikeButton.classList.remove('active');
         }
     } catch (error) {
         console.error('Error updating like/dislike:', error);

@@ -1,7 +1,6 @@
 package database
 
 import (
-	"fmt"
 	"strings"
 	"time"
 
@@ -14,7 +13,6 @@ func CreateNotification(content, Type string, user_id, post_id, comment_id int64
 		return err
 	}
 	_, err := DB.Exec("INSERT INTO notifications (content, user_id, post_id, title, type, notif_by, created_at, status, comment_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", content, user_id, post_id, title, Type, author, time.Now(), "Unread", comment_id)
-	fmt.Println(user_id, post_id, comment_id, err)
 	return err
 }
 
@@ -41,11 +39,11 @@ func GetNotification(id int64) ([]structs.Notification, error) {
 	return notifications, nil
 }
 
-func DeleteNotification(content string, post_id, comment_id int64, author string) error {
+func DeleteNotification(content, Type string, post_id, comment_id int64, author string) error {
 	if comment_id == -1 {
-		_, err := DB.Exec("DELETE FROM notifications WHERE content = ? AND post_id = ? AND notif_by = ?", content, post_id, author)
+		_, err := DB.Exec("DELETE FROM notifications WHERE content = ? AND type = ? AND post_id = ? AND notif_by = ?", content, Type, post_id, author)
 		return err
 	}
-	_, err := DB.Exec("DELETE FROM notifications WHERE content = ? AND post_id = ? AND comment_id = ? AND notif_by = ?", content, post_id, comment_id, author)
+	_, err := DB.Exec("DELETE FROM notifications WHERE content = ? AND type = ? AND post_id = ? AND comment_id = ? AND notif_by = ?", content, Type, post_id, comment_id, author)
 	return err
 }

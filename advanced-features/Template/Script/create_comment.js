@@ -21,7 +21,6 @@ document.getElementById("postCommentBtn").addEventListener("click", async functi
         },
         body: `content=${encodeURIComponent(content)}`,
     });
-    console.log(response);
     
 
     if (response.ok) {
@@ -34,8 +33,8 @@ document.getElementById("postCommentBtn").addEventListener("click", async functi
 
         updateCommentCount(true);
 
-        document.getElementById("noCom").style.display = "none";
         document.getElementById("content").value = "";
+        document.getElementById("noCom").value = "";
     } else {
         alert("Failed to post comment. Please try again.");
     }
@@ -54,7 +53,7 @@ function appendComment(comment, userStatus, postId) {
             <span class="comment-date">${comment.created_at}</span>
         </div>`;
 
-    const commentOptions = userStatus === "Connected" ? `
+    const commentOptions = `
         <div class="comment-options">
             <button id="edit-btn-comment-${postId}-${comment.id} class="edit-btn"
                 onclick="editComment(${postId}, ${comment.id}, 'edit_comment')">
@@ -64,13 +63,12 @@ function appendComment(comment, userStatus, postId) {
                 onclick="deleteComment(${postId}, ${comment.id}, 'delete_comment')">
                 <i class="fas fa-trash"></i>Delete
             </button>
-        </div>` : "";
+        </div>`
 
     const commentContent = `<p>${comment.content}</p>`;
 
     const likeDislike = `
         <div class="like-dislike">
-            ${userStatus === "Connected" ? `
                 <button id="like-btn-${postId}${comment.id}" class="action-btn"
                 onclick="updateLikeDislikeComment(${postId}, ${comment.id}, 'like_comment')">
                         <i class="fas fa-thumbs-up"></i>
@@ -80,13 +78,7 @@ function appendComment(comment, userStatus, postId) {
                 onclick="updateLikeDislikeComment(${postId}, ${comment.id}, 'dislike_comment')">
                         <i class="fas fa-thumbs-down"></i>
                         <span id="dislike-count-${postId}${comment.id}"> ${comment.totalLikes || 0}</span>
-                </button>` : `
-                <button class="action-btn">
-                    <i class="fas fa-thumbs-up"></i><span> ${comment.totalLikes || 0}</span>
                 </button>
-                <button class="action-btn">
-                    <i class="fas fa-thumbs-down"></i><span> ${comment.totalDislikes || 0}</span>
-                </button>`}
         </div>`;
     commentDiv.innerHTML = commentHeader + commentOptions + commentContent + likeDislike;
     commentsSection.prepend(commentDiv);

@@ -22,21 +22,6 @@ async function updateLikeDislike(postID, action) {
         if (data.updatedDislikes !== undefined) {
             dislikeCountElement.innerText = data.updatedDislikes;
         }
-
-        const likeButton = document.querySelector(`#like-${postID}`);
-        const dislikeButton = document.querySelector(`#dislike-${postID}`);
-
-        if (data.isLiked) {
-            likeButton.classList.add('active');
-        } else {
-            likeButton.classList.remove('active');
-        }
-
-        if (data.isDisliked) {
-            dislikeButton.classList.add('active');
-        } else {
-            dislikeButton.classList.remove('active');
-        }
     } catch (error) {
         console.error('Error updating like/dislike:', error);
     }

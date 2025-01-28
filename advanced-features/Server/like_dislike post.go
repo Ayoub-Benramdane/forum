@@ -42,12 +42,12 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if post.UserID != user.ID {
-			if database.CreateNotification("like", "post", post.UserID, post.ID, -1, post.Title, user.Username) != nil {
-				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to create Notification", Page: "Post", Path: fmt.Sprintf("/post/%d", idPost)})
+			if database.DeleteNotification("dislike", "post", post.ID, -1, user.Username) != nil {
+				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to delete Notification", Page: "Post", Path: fmt.Sprintf("/post/%d", idPost)})
 				return
 			}
-			if database.DeleteNotification("dislike", post.ID, -1, user.Username) != nil {
-				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to delete Notification", Page: "Post", Path: fmt.Sprintf("/post/%d", idPost)})
+			if database.CreateNotification("like", "post", post.UserID, post.ID, -1, post.Title, user.Username) != nil {
+				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to create Notification", Page: "Post", Path: fmt.Sprintf("/post/%d", idPost)})
 				return
 			}
 		}
@@ -57,7 +57,7 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if post.UserID != user.ID {
-			if database.DeleteNotification("like", post.ID, -1, user.Username) != nil {
+			if database.DeleteNotification("like", "post", post.ID, -1, user.Username) != nil {
 				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to delete Notification", Page: "Post", Path: fmt.Sprintf("/post/%d", idPost)})
 				return
 			}
@@ -78,8 +78,6 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 	response := map[string]interface{}{
 		"updatedLikes":    updatedLikes,
 		"updatedDislikes": updatedDislikes,
-		"isLiked":         database.CheckLike(user.ID, idPost),
-		"isDisliked":      database.CheckDislike(user.ID, idPost),
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -117,12 +115,12 @@ func DislikePost(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if post.UserID != user.ID {
-			if database.CreateNotification("dislike", "post", post.UserID, post.ID, -1, post.Title, user.Username) != nil {
-				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to create Notification", Page: "Post", Path: fmt.Sprintf("/post/%d", idPost)})
+			if database.DeleteNotification("like", "post", post.ID, -1, user.Username) != nil {
+				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to delete Notification", Page: "Post", Path: fmt.Sprintf("/post/%d", idPost)})
 				return
 			}
-			if database.DeleteNotification("like", post.ID, -1, user.Username) != nil {
-				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to delete Notification", Page: "Post", Path: fmt.Sprintf("/post/%d", idPost)})
+			if database.CreateNotification("dislike", "post", post.UserID, post.ID, -1, post.Title, user.Username) != nil {
+				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to create Notification", Page: "Post", Path: fmt.Sprintf("/post/%d", idPost)})
 				return
 			}
 		}
@@ -132,7 +130,7 @@ func DislikePost(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if post.UserID != user.ID {
-			if database.DeleteNotification("dislike", post.ID, -1, user.Username) != nil {
+			if database.DeleteNotification("dislike", "post", post.ID, -1, user.Username) != nil {
 				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to create Notification", Page: "Post", Path: fmt.Sprintf("/post/%d", idPost)})
 				return
 			}
@@ -153,8 +151,6 @@ func DislikePost(w http.ResponseWriter, r *http.Request) {
 	response := map[string]interface{}{
 		"updatedLikes":    updatedLikes,
 		"updatedDislikes": updatedDislikes,
-		"isLiked":         database.CheckLike(user.ID, idPost),
-		"isDisliked":      database.CheckDislike(user.ID, idPost),
 	}
 
 	w.Header().Set("Content-Type", "application/json")

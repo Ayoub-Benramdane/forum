@@ -45,6 +45,7 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 	cookie.Expires = time.Now().Add(5 * time.Minute)
+	cookie.Path = "/"
 	http.SetCookie(w, cookie)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
@@ -128,6 +129,7 @@ func EditPostPost(w http.ResponseWriter, r *http.Request, id_post int64, cookie 
 		return
 	}
 	cookie.Expires = time.Now().Add(5 * time.Minute)
+	cookie.Path = "/"
 	http.SetCookie(w, cookie)
 	http.Redirect(w, r, fmt.Sprintf("/post/%d", id_post), http.StatusSeeOther)
 }

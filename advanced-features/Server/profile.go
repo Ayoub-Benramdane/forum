@@ -121,6 +121,7 @@ func EditProfilePost(w http.ResponseWriter, r *http.Request, cookie *http.Cookie
 		return
 	}
 	cookie.Expires = time.Now().Add(5 * time.Minute)
+	cookie.Path = "/"
 	http.SetCookie(w, cookie)
 	http.Redirect(w, r, "/profile", http.StatusSeeOther)
 }

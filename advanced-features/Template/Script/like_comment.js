@@ -7,7 +7,6 @@ async function updateLikeDislikeComment(PostID, CommentID, action) {
             },
         });
 
-        console.log(response.status, "121");
         if (!response.ok) {
             throw new Error('Failed to update like/dislike');
         }

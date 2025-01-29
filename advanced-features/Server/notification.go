@@ -24,8 +24,6 @@ func Notification(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		NotificationGet(w, r, user)
-	case http.MethodPost:
-		NotificationPost(w, r)
 	default:
 		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Home", Path: "/"})
 		return
@@ -51,10 +49,6 @@ func NotificationGet(w http.ResponseWriter, r *http.Request, user *structs.User)
 		Notifications: notifications,
 	}
 	tmpl.Execute(w, data)
-}
-
-func NotificationPost(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func ReadNotification(w http.ResponseWriter, r *http.Request) {

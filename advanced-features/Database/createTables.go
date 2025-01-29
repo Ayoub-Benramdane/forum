@@ -54,6 +54,7 @@ func CreateTables() error {
             content TEXT NOT NULL,
             user_id INTEGER NOT NULL,
             post_id INTEGER NOT NULL,
+			posted_by INTEGER NOT NULL,
             title TEXT NOT NULL,
             type TEXT NOT NULL,
 			notif_by TEXT NOT NULL,

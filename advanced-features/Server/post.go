@@ -97,12 +97,13 @@ func PostComment(w http.ResponseWriter, r *http.Request, post *structs.Post, use
 	}
 	newComment.ID = comment_id
 	if post.UserID != user.ID {
-		if database.CreateNotification("comment", "post", post.UserID, post.ID, -1, post.Title, user.Username) != nil {
+		if database.CreateNotification("comment", "post", user.ID, post.ID, post.UserID, -1, post.Title, user.Username) != nil {
 			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to create notification", Page: "Post", Path: fmt.Sprintf("/post/%d", post.ID)})
 			return
 		}
 	}
 	cookie.Expires = time.Now().Add(5 * time.Minute)
+	cookie.Path = "/"
 	http.SetCookie(w, cookie)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(newComment)

@@ -50,6 +50,7 @@ type Notification struct {
 	Content   string `sqlite:"content" json:"content"`
 	UserID    int64  `sqlite:"user_id" json:"user_id"`
 	PostID    int64  `sqlite:"post_id" json:"post_id"`
+	PostBy    int64  `sqlite:"post_by" json:"post_by"`
 	CommentID int64  `sqlite:"comment_id" json:"comment_id"`
 	Title     string `sqlite:"title" json:"title"`
 	Type      string `sqlite:"type" json:"type"`

@@ -56,7 +56,7 @@ func LikeComment(w http.ResponseWriter, r *http.Request) {
 				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to Delete Notification", Page: "Post", Path: "/post/" + ids[0]})
 				return
 			}
-			if database.CreateNotification("like", "comment", comment.UserID, id_post, comment.ID, comment.Content, user.Username) != nil {
+			if database.CreateNotification("like", "comment", user.ID, id_post, comment.UserID, comment.ID, comment.Content, user.Username) != nil {
 				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to create Notification", Page: "Post", Path: "/post/" + ids[0]})
 				return
 			}
@@ -74,6 +74,7 @@ func LikeComment(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	cookie.Expires = time.Now().Add(5 * time.Minute)
+	cookie.Path = "/"
 	http.SetCookie(w, cookie)
 	updatedLikes, errLikesComment := database.CountLikesComment(id_post, id_comment)
 	if errLikesComment != nil {
@@ -88,8 +89,9 @@ func LikeComment(w http.ResponseWriter, r *http.Request) {
 	response := map[string]interface{}{
 		"updatedLikes":    updatedLikes,
 		"updatedDislikes": updatedDislikes,
-	}	
+	}
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
 
@@ -138,7 +140,7 @@ func DislikeComment(w http.ResponseWriter, r *http.Request) {
 				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to Delete Notification", Page: "Post", Path: "/post/" + ids[0]})
 				return
 			}
-			if database.CreateNotification("dislike", "comment", comment.UserID, id_post, comment.ID, comment.Content, user.Username) != nil {
+			if database.CreateNotification("dislike", "comment", user.ID, id_post, comment.UserID, comment.ID, comment.Content, user.Username) != nil {
 				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to create Notification", Page: "Post", Path: "/post/" + ids[0]})
 				return
 			}
@@ -156,6 +158,7 @@ func DislikeComment(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	cookie.Expires = time.Now().Add(5 * time.Minute)
+	cookie.Path = "/"
 	http.SetCookie(w, cookie)
 	updatedLikes, errLikesComment := database.CountLikesComment(id_post, id_comment)
 	if errLikesComment != nil {

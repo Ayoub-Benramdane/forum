@@ -39,10 +39,10 @@
         {{if .Notifications}}
         <div class="notifications-container">
             {{range .Notifications}}
-            <div class="notification-card {{if eq .Status " Unread"}}unread{{end}}" data-type="{{.Content}}"
-                data-notification-id="{{.ID}}">
-                <div class="notification-header">
-                    <a href="/post/{{.PostID}}"  onclick="markAsRead({{.ID}})" class="myLink notification-link">
+            <a href="/post/{{.PostID}}" onclick="markAsRead({{.ID}})" class="myLink notification-link">
+                <div class="notification-card {{if eq .Status " Unread"}}unread{{end}}" data-type="{{.Content}}"
+                    data-notification-id="{{.ID}}">
+                    <div class="notification-header">
                         <div class="user-avatar">
                             <img src="../Template/images/user-png-icon-16.jpg" alt="User Avatar">
                         </div>
@@ -62,9 +62,9 @@
                         {{if eq .Status "Unread"}}
                         <div class="unread-indicator" style="width: 20px; height: 20px;"></div>
                         {{end}}
-                    </a>
+                    </div>
                 </div>
-            </div>
+            </a>
             {{end}}
         </div>
         {{else}}

@@ -7,18 +7,18 @@ import (
 	structs "forum/Data"
 )
 
-func CreateNotification(content, Type string, user_id, post_id, comment_id int64, title, author string) error {
+func CreateNotification(content, Type string, user_id, post_id, post_by, comment_id int64, title, author string) error {
 	if comment_id == -1 {
-		_, err := DB.Exec("INSERT INTO notifications (content, user_id, post_id, title, type, notif_by, created_at, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", content, user_id, post_id, title, Type, author, time.Now(), "Unread")
+		_, err := DB.Exec("INSERT INTO notifications (content, user_id, post_id, posted_by, title, type, notif_by, created_at, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", content, user_id, post_id, post_by, title, Type, author, time.Now(), "Unread")
 		return err
 	}
-	_, err := DB.Exec("INSERT INTO notifications (content, user_id, post_id, title, type, notif_by, created_at, status, comment_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", content, user_id, post_id, title, Type, author, time.Now(), "Unread", comment_id)
+	_, err := DB.Exec("INSERT INTO notifications (content, user_id, post_id, posted_by, title, type, notif_by, created_at, status, comment_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", content, user_id, post_id, post_by, title, Type, author, time.Now(), "Unread", comment_id)
 	return err
 }
 
 func GetNotification(id int64) ([]structs.Notification, error) {
 	var notifications []structs.Notification
-	rows, err := DB.Query("SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC", id)
+	rows, err := DB.Query("SELECT * FROM notifications WHERE posted_by = ? ORDER BY created_at DESC", id)
 	if err != nil {
 		return nil, err
 	}
@@ -26,7 +26,7 @@ func GetNotification(id int64) ([]structs.Notification, error) {
 	var date time.Time
 	for rows.Next() {
 		var notification structs.Notification
-		if err := rows.Scan(&notification.ID, &notification.Content, &notification.UserID, &notification.PostID, &notification.Title, &notification.Type, &notification.Author, &date, &notification.Status, &notification.CommentID); err != nil {
+		if err := rows.Scan(&notification.ID, &notification.Content, &notification.UserID, &notification.PostID, &notification.PostBy, &notification.Title, &notification.Type, &notification.Author, &date, &notification.Status, &notification.CommentID); err != nil {
 			if strings.Contains(err.Error(), "converting NULL to int64") {
 				notification.CommentID = -1
 			} else {

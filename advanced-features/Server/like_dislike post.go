@@ -46,7 +46,7 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to delete Notification", Page: "Post", Path: fmt.Sprintf("/post/%d", idPost)})
 				return
 			}
-			if database.CreateNotification("like", "post", post.UserID, post.ID, -1, post.Title, user.Username) != nil {
+			if database.CreateNotification("like", "post", user.ID, post.ID, post.UserID, -1, post.Title, user.Username) != nil {
 				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to create Notification", Page: "Post", Path: fmt.Sprintf("/post/%d", idPost)})
 				return
 			}
@@ -64,6 +64,7 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	cookie.Expires = time.Now().Add(5 * time.Minute)
+	cookie.Path = "/"
 	http.SetCookie(w, cookie)
 	updatedLikes, errLikesPost := database.CountLikes(idPost)
 	if errLikesPost != nil {
@@ -119,7 +120,7 @@ func DislikePost(w http.ResponseWriter, r *http.Request) {
 				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to delete Notification", Page: "Post", Path: fmt.Sprintf("/post/%d", idPost)})
 				return
 			}
-			if database.CreateNotification("dislike", "post", post.UserID, post.ID, -1, post.Title, user.Username) != nil {
+			if database.CreateNotification("dislike", "post", user.ID, post.ID, post.UserID, -1, post.Title, user.Username) != nil {
 				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to create Notification", Page: "Post", Path: fmt.Sprintf("/post/%d", idPost)})
 				return
 			}
@@ -137,6 +138,7 @@ func DislikePost(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	cookie.Expires = time.Now().Add(5 * time.Minute)
+	cookie.Path = "/"
 	http.SetCookie(w, cookie)
 	updatedLikes, errLikesPost := database.CountLikes(idPost)
 	if errLikesPost != nil {

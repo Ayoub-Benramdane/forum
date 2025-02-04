@@ -69,11 +69,10 @@ func NewPostPost(w http.ResponseWriter, r *http.Request, cookie *http.Cookie, us
 		defer file.Close()
 
 		slice := strings.Split(header.Filename, ".")
-		if len(slice) < 2 || !isValidImageExtension(slice[1]) {
+		if len(slice) != 2 || !isValidImageExtension(slice[1]) {
 			Errors(w, structs.Error{Code: http.StatusNotAcceptable, Message: "Only image files are allowed", Page: "New-Post", Path: "/new-post"})
 			return
-		}
-		if header.Size > 1024*1024*20 {
+		} else if header.Size > 1024*1024*20 {
 			Errors(w, structs.Error{Code: http.StatusNotAcceptable, Message: "File size is too larg", Page: "New-Post", Path: "/new-post"})
 		}
 		uploadDir := "./Template/uploads"
@@ -103,8 +102,8 @@ func NewPostPost(w http.ResponseWriter, r *http.Request, cookie *http.Cookie, us
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error creating post", Page: "New-Post", Path: "/new-post"})
 		return
 	}
-
 	cookie.Expires = time.Now().Add(5 * time.Minute)
+	cookie.Path = "/"
 	http.SetCookie(w, cookie)
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)

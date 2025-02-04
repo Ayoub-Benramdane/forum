@@ -62,6 +62,7 @@ func DeleteComment(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 	cookie.Expires = time.Now().Add(5 * time.Minute)
+	cookie.Path = "/"
 	http.SetCookie(w, cookie)
 	http.Redirect(w, r, fmt.Sprintf("/post/%d", id_post), http.StatusSeeOther)
 }
@@ -143,6 +144,7 @@ func EditCommentPost(w http.ResponseWriter, r *http.Request, id_post, id_comment
 		return
 	}
 	cookie.Expires = time.Now().Add(5 * time.Minute)
+	cookie.Path = "/"
 	http.SetCookie(w, cookie)
 	http.Redirect(w, r, fmt.Sprintf("/post/%d", id_post), http.StatusSeeOther)
 }

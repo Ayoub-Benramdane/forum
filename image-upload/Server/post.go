@@ -93,6 +93,7 @@ func PostComment(w http.ResponseWriter, r *http.Request, id_post int64, user *st
 	}
 	newComment.ID = comment_id
 	cookie.Expires = time.Now().Add(5 * time.Minute)
+	cookie.Path = "/"
 	http.SetCookie(w, cookie)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(newComment)

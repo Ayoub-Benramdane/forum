@@ -40,6 +40,7 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	cookie.Expires = time.Now().Add(5 * time.Minute)
+	cookie.Path = "/"
 	http.SetCookie(w, cookie)
 	updatedLikes, errLikesPost := database.CountLikes(idPost)
 	if errLikesPost != nil {
@@ -92,6 +93,7 @@ func DislikePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	cookie.Expires = time.Now().Add(5 * time.Minute)
+	cookie.Path = "/"
 	http.SetCookie(w, cookie)
 	updatedLikes, errLikesPost := database.CountLikes(idPost)
 	if errLikesPost != nil {

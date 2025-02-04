@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum - Admin Dashboard</title>
+    <link rel="stylesheet" href="../Template/css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="user-info">
+            {{if eq .User.Role "admin"}}
+            <a href="/" class="myLink"><button class="log-btn">Home</button></a>
+            <a href="/profile" class="myLink"><button class="log-btn"><i class="fa-solid fa-user"></i>
+                    {{.User.Username}}</button></a>
+            <a href="/logout" class="myLink"><button class="log-btn">Logout</button></a>
+            {{else}}
+            <script>window.location.href = "/";</script>
+            {{end}}
+        </div>
+    </nav>
+
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-shield-alt"></i>
+                <span>Admin Panel</span>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-panel="dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button class="nav-item" data-panel="users">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </button>
+                <button class="nav-item" data-panel="posts">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Posts</span>
+                </button>
+                <button class="nav-item" data-panel="categories">
+                    <i class="fas fa-tags"></i>
+                    <span>Categories</span>
+                </button>
+                <button class="nav-item" data-panel="reports">
+                    <i class="fas fa-flag"></i>
+                    <span>Reports</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Dashboard Panel -->
+            <div class="panel active" id="dashboard">
+                <h2>Dashboard Overview</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <div class="stat-info">
+                            <span class="stat-value">{{.Stats.TotalUsers}}</span>
+                            <span class="stat-label">Total Users</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-file-alt"></i>
+                        <div class="stat-info">
+                            <span class="stat-value">{{.Stats.TotalPosts}}</span>
+                            <span class="stat-label">Total Posts</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-comments"></i>
+                        <div class="stat-info">
+                            <span class="stat-value">{{.Stats.TotalComments}}</span>
+                            <span class="stat-label">Total Comments</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-flag"></i>
+                        <div class="stat-info">
+                            <span class="stat-value">{{.Stats.TotalReports}}</span>
+                            <span class="stat-label">Pending Reports</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-activity">
+                    <h3>Recent Activity</h3>
+                    <div class="activity-list">
+                        {{range .RecentActivities}}
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                {{if eq .Type "user"}}<i class="fas fa-user-plus"></i>
+                                {{else if eq .Type "post"}}<i class="fas fa-file-alt"></i>
+                                {{else if eq .Type "report"}}<i class="fas fa-flag"></i>
+                                {{end}}
+                            </div>
+                            <div class="activity-details">
+                                <p>{{.Description}}</p>
+                                <span class="activity-time">{{.CreatedAt.Format `January 2, 2006 at 3:04 PM`}}</span>
+                            </div>
+                        </div>
+                        {{end}}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Panel -->
+            <div class="panel" id="users">
+                <h2>User Management</h2>
+                <div class="panel-actions">
+                    <div class="search-box">
+                        <input type="text" placeholder="Search users...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                </div>
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Joined Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{range .Users}}
+                            <tr>
+                                <td>{{.Username}}</td>
+                                <td>{{.Email}}</td>
+                                <td>{{.Role}}</td>
+                                <td><span class="status-badge {{.Status}}">{{.Status}}</span></td>
+                                <td>{{.CreatedAt.Format `January 2, 2006 at 3:04 PM`}}</td>
+                                <td class="actions">
+                                    <button class="action-btn" onclick="editUser({{.ID}})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="action-btn" onclick="toggleUserStatus({{.ID}})">
+                                        {{if eq .Status "Connected"}}
+                                        <i class="fas fa-ban"></i>
+                                        {{else}}
+                                        <i class="fas fa-check"></i>
+                                        {{end}}
+                                    </button>
+                                </td>
+                            </tr>
+                            {{end}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Posts Panel -->
+            <div class="panel" id="posts">
+                <h2>Post Management</h2>
+                <div class="panel-actions">
+                    <div class="search-box">
+                        <input type="text" placeholder="Search posts...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <select class="filter-select">
+                        <option value="all">All Posts</option>
+                        <option value="reported">Reported Posts</option>
+                        <option value="flagged">Flagged Posts</option>
+                    </select>
+                </div>
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Category</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{range .Posts}}
+                            <tr>
+                                <td>{{.Title}}</td>
+                                <td>{{.Author}}</td>
+                                <td>{{range .Categories}}
+                                    <span class="category-tag">#{{.}} </span>
+                                    {{end}}
+                                </td>
+                                <td>{{.CreatedAt}}</td>
+                                <td class="actions">
+                                    <button class="action-btn" onclick="viewPost({{.ID}})">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="action-btn" onclick="deletePost({{.ID}})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {{end}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Categories Panel -->
+            <div class="panel" id="categories">
+                <h2>Category Management</h2>
+                <div class="panel-actions">
+                    <button class="add-btn" onclick="showAddCategoryModal()">
+                        <i class="fas fa-plus"></i> Add Category
+                    </button>
+                </div>
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Category Name</th>
+                                <th>Posts Count</th>
+                                <th>Created Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{range .Categories}}
+                            <tr>
+                                <td>{{.Name}}</td>
+                                <td>{{.PostCount}}</td>
+                                <td>{{.CreatedAt.Format `January 2, 2006 at 3:04 PM`}}</td>
+                                <td class="actions">
+                                    <button class="action-btn" onclick="editCategory({{.ID}})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="action-btn" onclick="deleteCategory({{.ID}})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {{end}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Reports Panel -->
+            <div class="panel" id="reports">
+                <h2>Report Management</h2>
+                <div class="panel-actions">
+                    <select class="filter-select">
+                        <option value="all">All Reports</option>
+                        <option value="pending">Pending</option>
+                        <option value="resolved">Resolved</option>
+                    </select>
+                </div>
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Reported Item</th>
+                                <th>Reporter</th>
+                                <th>Reason</th>
+                                <th>Reported At</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{range .Reports}}
+                            <tr>
+                                <td>{{.Title}}</td>
+                                <td>{{.ReportedBy}}</td>
+                                <td>{{.Description}}</td>
+                                <td>{{.ReportedAt.Format `January 2, 2006 at 3:04 PM`}}</td>
+                                <td class="actions">
+                                    <button class="action-btn" onclick="viewReportedItem({{.PostID}})">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="action-btn" onclick="resolveReport({{.ID}})">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {{end}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Panel switching
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                // Update active nav item
+                document.querySelector('.nav-item.active').classList.remove('active');
+                item.classList.add('active');
+
+                // Show corresponding panel
+                const panelId = item.dataset.panel;
+                document.querySelector('.panel.active').classList.remove('active');
+                document.getElementById(panelId).classList.add('active');
+            });
+        });
+
+        // User management functions
+        function editUser(userId) {
+            // Implementation for editing user
+        }
+
+        function toggleUserStatus(userId) {
+            // Implementation for toggling user status
+        }
+
+        // Post management functions
+        function viewPost(postId) {
+            // Implementation for viewing post
+        }
+
+        function deletePost(postId) {
+            // Implementation for deleting post
+        }
+
+        // Category management functions
+        function showAddCategoryModal() {
+            // Implementation for showing add category modal
+        }
+
+        function editCategory(categoryId) {
+            // Implementation for editing category
+        }
+
+        function deleteCategory(categoryId) {
+            // Implementation for deleting category
+        }
+
+        // Report management functions
+        function viewReportedItem(itemId) {
+            // Implementation for viewing reported item
+        }
+
+        function resolveReport(reportId) {
+            // Implementation for resolving report
+        }
+    </script>
+</body>
+
+</html>

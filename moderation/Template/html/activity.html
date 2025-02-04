@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum - Activity Log</title>
+    <link rel="stylesheet" href="../Template/css/activity.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="user-info">
+            {{if eq .User.Status "Connected"}}
+            <a href="/profile" class="myLink"><button class="log-btn"><i class="fa-solid fa-user"></i>
+                    {{.User.Username}}</button></a>
+            <a href="/" class="myLink"><button class="log-btn">Home</button></a>
+            <a href="/logout" class="myLink"><button class="log-btn">Logout</button></a>
+            {{else}}
+            <a href="/login" class="myLink"><button class="log-btn">Log In</button></a>
+            {{end}}
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h2 class="page-title">Activity Log</h2>
+
+        <!-- Activity Stats -->
+        <div class="activity-stats">
+            <div class="stat-card">
+                <i class="fas fa-pencil-alt"></i>
+                <div class="stat-info">
+                    <h3>{{.Activities.TotalPosts}} Posts Created</h3>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-comment"></i>
+                <div class="stat-info">
+                    <h3>{{.Activities.TotalComments}} Comments Made</h3>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-thumbs-up"></i>
+                <div class="stat-info">
+                    <h3>{{.Activities.TotalLikes}} Reacteds Given</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Filters -->
+        <div class="activity-filters">
+            <button class="filter-btn active" data-filter="all">All Activity</button>
+            <button class="filter-btn" data-filter="posts">Posts</button>
+            <button class="filter-btn" data-filter="comments">Comments</button>
+            <button class="filter-btn" data-filter="reactions">Reactions</button>
+        </div>
+
+        <!-- Activity Timeline -->
+        <div class="activity-timeline">
+            <!-- User's Own Posts -->
+            {{range .Activities.Posts}}
+            <div class="activity-card" data-type="post">
+                <a href="/post/{{.ID}}"  class="view-btn">
+                    <div class="activity-icon">
+                        <i class="fas fa-pencil-alt"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-header">
+                            <span class="activity-type">Created a new post</span>
+                            <span class="activity-time">{{.CreatedAt}}</span>
+                        </div>
+                        <h4 class="post-title">{{.Title}}</h4>
+                        <p class="post-excerpt">{{.Content}}</p>
+
+                        {{if .Categories}}
+                        <div class="activity-categories">
+                            {{range .Categories}}
+                            <span class="category-tag">#{{.}}</span>
+                            {{end}}
+                        </div>
+                        {{end}}
+
+                        <div class="post-stats">
+                            <span><i class="fas fa-thumbs-up"></i> {{.TotalLikes}}</span>
+                            <span><i class="fas fa-thumbs-down"></i> {{.TotalDislikes}}</span>
+                            <span><i class="fas fa-comment"></i> {{.TotalComments}}</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {{end}}
+
+            <!-- User's Comments -->
+            {{range .Activities.Comments}}
+            <div class="activity-card" data-type="comment">
+                <a href="/post/{{.ID}}"  class="view-btn">
+                    <div class="activity-icon">
+                        <i class="fas fa-comment"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-header">
+                            <span class="activity-type">Commented on a post</span>
+                            <span class="activity-time">{{.CreatedAt}}</span>
+                        </div>
+                        <p class="comment-content">{{.Content}}</p>
+
+                        <div class="comment-stats">
+                            <span><i class="fas fa-thumbs-up"></i> {{.TotalLikes}}</span>
+                            <span><i class="fas fa-thumbs-down"></i> {{.TotalDislikes}}</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {{end}}
+            
+            <!-- Reacted Posts -->
+            {{range .Activities.ReactedPosts}}
+            <div class="activity-card" data-type="reactions">
+                <a href="/post/{{.ID}}"  class="view-btn">
+                    <div class="activity-icon">
+                        <i class="fas fa-thumbs-up"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-header">
+                            <span class="activity-type">Reacted to a post</span>
+                            <span class="activity-time">{{.CreatedAt}}</span>
+                        </div>
+                        <h4 class="post-title">{{.Title}}</h4>
+                        <p class="post-excerpt">{{.Content}}</p>
+
+                        {{if .Categories}}
+                        <div class="activity-categories">
+                            {{range .Categories}}
+                            <span class="category-tag">#{{.}}</span>
+                            {{end}}
+                        </div>
+                        {{end}}
+                    </div>
+                </a>
+            </div>
+            {{end}}
+
+            <!-- Reacted Comments -->
+            {{range .Activities.ReactedComments}}
+            <div class="activity-card" data-type="reactions">
+                <a href="/post/{{.ID}}"  class="view-btn">
+                    <div class="activity-icon">
+                        <i class="fas fa-thumbs-up"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-header">
+                            <span class="activity-type">Reacted to a comment</span>
+                            <span class="activity-time">{{.CreatedAt}}</span>
+                        </div>
+                        <p class="comment-content">{{.Content}}</p>
+                    </div>
+                </a>
+            </div>
+            {{end}}
+        </div>
+
+        <!-- No Activity Message -->
+        {{if and (eq (len .Activities.Posts) 0) (eq (len .Activities.Comments) 0) (eq (len .Activities.ReactedPosts) 0)
+        (eq (len .Activities.ReactedComments) 0)}}
+        <div class="no-activity">
+            <i class="fas fa-history"></i>
+            <p>No activity yet</p>
+            <a href="/new-post" class="create-post-btn">Create Your First Post</a>
+        </div>
+        {{end}}
+    </div>
+
+    <script src="../Template/Script/activity.js"></script>
+</body>
+
+</html>

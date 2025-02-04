@@ -1,0 +1,101 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@200;300;400;500;600;700&display=swap");
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Open Sans", sans-serif;
+    scrollbar-width: none;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100%;
+    background: url("https://images.unsplash.com/photo-1489846986031-7cea03ab8fd0?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 20px;
+    background: rgba(130, 130, 130, 0.5);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+}
+
+.logo {
+    color: #eac988;
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.container {
+    max-width: 60%;
+    margin: 80px auto 0;
+    padding: 2rem;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: rgba(130, 130, 130, 0.5);
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
+}
+
+.error-code {
+    font-size: 4rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: #ff4444;
+}
+
+.error-code span {
+    border-bottom: ridge red 1px;
+}
+
+.error-message {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    background: linear-gradient(72deg, rgba(255, 255, 255, 1) 0%, rgba(68, 243, 255, 1) 28%, rgba(28, 142, 255, 1) 49%, rgba(4, 83, 255, 1) 100%);
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.home-button {
+    display: inline-block;
+    padding: 0.75rem 2rem;
+    background: #fff;
+    color: #000;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.home-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+}
+
+@media (max-width: 1000px) {
+    .container {
+        max-width: 55%;
+        padding: 2rem;
+    }
+
+    .error-code {
+        font-size: 3rem;
+    }
+
+    .error-message {
+        font-size: 1.25rem;
+    }
+}

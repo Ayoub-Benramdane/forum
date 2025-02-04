@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit {{if .Post}}Post{{else}}Comment{{end}}</title>
+    <link rel="stylesheet" href="../../../Template/css/post&comment-edit.css">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="/" class="logo">Forum</a>
+    </nav>
+    <noscript>
+        <div class="noscript-warning">
+            JavaScript is disabled in your browser. Please enable JavaScript to use this site properly.
+        </div>
+    </noscript>
+    <div {{if .Post}}class="container" {{else}}class="container1" {{end}}>
+        <h1 class="page-title">Edit {{if .Post}}Post{{else}}Comment{{end}}</h1>
+
+        <form action="{{if .Post}}/edit/{{.Post.ID}}{{else}}/edit_comment/{{.Comment.PostID}}/{{.Comment.ID}}{{end}}"
+            method="POST">
+            {{if .Post}}
+            <label for="title" class="form-label">Title</label>
+            <input type="text" id="title" name="title" class="form-input" value="{{.Post.Title}}" required>
+            <label for="category" class="form-label">Categories</label>
+            <select id="category" name="category" class="form-select" multiple>
+                {{range .Categories}}
+                <option value="{{.Name}}">{{.Name}}</option>
+                {{end}}
+            </select>
+            {{end}}
+            <label for="content" class="form-label">Content</label>
+            <textarea id="content" name="content" class="form-textarea"
+                required>{{if .Post}}{{.Post.Content}}{{else}}{{.Comment.Content}}{{end}}</textarea>
+            <div class="button-group">
+                <button type="submit" class="btn-primary">Save Changes</button>
+                <a href="{{if .Post}}/post/{{.Post.ID}}{{else}}/post/{{.Comment.PostID}}{{end}}"
+                    class="btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+    <script src="../Template/Script/rule_edit.js"></script>
+</body>
+
+</html>

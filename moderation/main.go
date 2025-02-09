@@ -1,8 +1,8 @@
 package main
 
 import (
-	"forum/Database"
-	"forum/Server"
+	database "forum/Database"
+	server "forum/Server"
 	"log"
 	"net/http"
 	"os"
@@ -12,17 +12,17 @@ func main() {
 	if len(os.Args) != 1 {
 		return
 	} else if err := database.ConnectDatabase(); err != nil {
-        log.Fatalf("Failed to initialize database: %v", err)
-    }
+		log.Fatalf("Failed to initialize database: %v", err)
+	}
 	fs := http.FileServer(http.Dir("./Template"))
 	http.Handle("/Template/", http.StripPrefix("/Template/", fs))
 	http.HandleFunc("/login", server.Login)
 	http.HandleFunc("/register", server.Register)
 	http.HandleFunc("/logout", server.Logout)
 	http.HandleFunc("/admin", server.Admin)
-	// http.HandleFunc("/users", server.Users)
-	// http.HandleFunc("/categoties", server.Categories)
-	// http.HandleFunc("/reports", server.Reports)
+	http.HandleFunc("/user/", server.User)
+	http.HandleFunc("/categories/", server.Categories)
+	http.HandleFunc("/report/", server.Report)
 	http.HandleFunc("/", server.Home)
 	http.HandleFunc("/profile", server.Profile)
 	http.HandleFunc("/profile_edit", server.EditProfile)

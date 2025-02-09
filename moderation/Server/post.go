@@ -35,6 +35,9 @@ func Post(w http.ResponseWriter, r *http.Request) {
 	if errLoadPost != nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Post not found", Page: "Home", Path: "/"})
 		return
+	} else if post.Status == "blocked" {
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Post blocked", Page: "Home", Path: "/"})
+		return
 	}
 	switch r.Method {
 	case http.MethodGet:
@@ -74,6 +77,9 @@ func PostComment(w http.ResponseWriter, r *http.Request, post *structs.Post, use
 	if user.Status != "Connected" {
 		http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Please Log in to add Comment", Page: "Post", Path: fmt.Sprintf("/post/%d", post.ID)})
+		return
+	} else if user.Role == "guest" {
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Your account is blocked", Page: "Post", Path: fmt.Sprintf("/post/%d", post.ID)})
 		return
 	}
 	content := strings.TrimSpace(r.FormValue("content"))

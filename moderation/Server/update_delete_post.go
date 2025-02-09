@@ -38,6 +38,9 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 	} else if user.ID != post.UserID {
 		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "you can't Delete Post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
+	} else if user.Role == "guest" {
+		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "Your account is blocked", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+		return
 	}
 	if database.DeletePostId(id_post) != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
@@ -56,17 +59,17 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid post ID", Page: "Home", Path: "/"})
 		return
 	}
+	post, errLoadPost := database.GetPostByID(id_post)
+	if errLoadPost != nil {
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Post not found", Page: "Home", Path: "/"})
+		return
+	}
 	cookie, err := r.Cookie("session")
 	if err != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Updating Post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
 	user, err := database.GetUserConnected(cookie.Value)
-	post, errPost := database.GetPostByID(id_post)
-	if errPost != nil {
-		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Post Not Found", Path: fmt.Sprintf("/post/%d", id_post)})
-		return
-	}
 	if err != nil {
 		http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
@@ -74,10 +77,13 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 	} else if user.ID != post.UserID {
 		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "you can't Updating Post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
+	} else if user.Role == "guest" {
+		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "Your account is blocked", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+		return
 	}
 	switch r.Method {
 	case http.MethodGet:
-		EditPostGet(w, r, id_post)
+		EditPostGet(w, r, post)
 	case http.MethodPost:
 		EditPostPost(w, r, id_post, cookie)
 	default:
@@ -86,20 +92,15 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func EditPostGet(w http.ResponseWriter, r *http.Request, id_post int64) {
-	post, errLoadPost := database.GetPostByID(id_post)
-	if errLoadPost != nil {
-		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Post not found", Page: "Home", Path: "/"})
-		return
-	}
+func EditPostGet(w http.ResponseWriter, r *http.Request, post *structs.Post) {
 	tmpl, err := template.ParseFiles("Template/html/post&comment_edit.html")
 	if err != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load edit post page template", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load edit post page template", Page: "Post", Path: fmt.Sprintf("/post/%d", post.ID)})
 		return
 	}
 	categories, errLoadPost := database.GetAllCategories()
 	if errLoadPost != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading categories", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading categories", Page: "Post", Path: fmt.Sprintf("/post/%d", post.ID)})
 		return
 	}
 	data := struct {
@@ -124,7 +125,7 @@ func EditPostPost(w http.ResponseWriter, r *http.Request, id_post int64, cookie 
 		return
 	}
 	categories := r.Form["category"]
-	if errUpdtPost := database.UpdatePost(title, content, categories, id_post); errUpdtPost != nil {
+	if database.UpdatePost(title, content, categories, id_post, "") != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Updating post", Page: "Post", Path: fmt.Sprintf("/post/edit/%d", id_post)})
 		return
 	}

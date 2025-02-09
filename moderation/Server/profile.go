@@ -112,7 +112,7 @@ func EditProfilePost(w http.ResponseWriter, r *http.Request, cookie *http.Cookie
 		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: errSigne.Error(), Page: "Profile edit", Path: "/profile-edit"})
 		return
 	}
-	if errUpdate := database.UpdateInfo(user.ID, username, email); errUpdate != nil {
+	if errUpdate := database.UpdateInfo(user.ID, username, email, ""); errUpdate != nil {
 		if strings.Contains(errUpdate.Error(), "UNIQUE constraint failed") {
 			Errors(w, structs.Error{Code: http.StatusConflict, Message: "Username already taken", Page: "Profile edit", Path: "/profile-edit"})
 			return

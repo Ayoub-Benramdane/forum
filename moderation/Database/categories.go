@@ -18,13 +18,30 @@ func CreateCategories() error {
 	return nil
 }
 
-func CreateCategory(category string) error {
-	_, err := DB.Exec("INSERT INTO categories (name, created_at) VALUES (?, ?)", category, time.Now())
-	return err
+func CreateCategory(category string) (*structs.Category, error) {
+	result, err := DB.Exec("INSERT INTO categories (name, created_at) VALUES (?, ?)", category, time.Now())
+	if err != nil {
+		return nil, err
+	}
+	categoryID, err := result.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+	return &structs.Category{
+		ID:        categoryID,
+		Name:      category,
+		CreatedAt: time.Now(),
+		PostCount: 0,
+	}, nil
 }
 
 func UpdateCategory(id int64, category string) error {
 	_, err := DB.Exec("UPDATE categories SET name = ? WHERE id = ?", category, id)
+	return err
+}
+
+func DeleteCategory(id int64, category string) error {
+	_, err := DB.Exec("DELETE FROM categories WHERE id = ? AND name = ?", id, category)
 	return err
 }
 
@@ -38,7 +55,7 @@ func CheckCategory() *structs.Category {
 }
 
 func GetAllCategories() ([]structs.Category, error) {
-	rows, err := DB.Query("SELECT id, name, created_at FROM categories")
+	rows, err := DB.Query("SELECT id, name, created_at FROM categories ORDER BY created_at DESC")
 	if err != nil {
 		return nil, err
 	}

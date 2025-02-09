@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 
@@ -34,6 +35,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	}
 	posts, errLoadPost := database.GetAllPosts()
 	if errLoadPost != nil {
+		fmt.Println(errLoadPost)
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading posts", Page: "Home", Path: "/"})
 		return
 	}

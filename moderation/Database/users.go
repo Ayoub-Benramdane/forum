@@ -34,3 +34,8 @@ func GetAllUsers() ([]structs.User, error) {
 	}
 	return users, nil
 }
+
+func UpdateRole(role string, id int64) error {
+	_, err := DB.Exec("UPDATE users SET role = ? WHERE id = ?", role, id)
+	return err
+}

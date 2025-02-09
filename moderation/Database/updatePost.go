@@ -5,7 +5,11 @@ func DeletePostId(PostID int64) error {
 	return err
 }
 
-func UpdatePost(title, content string, categories []string, PostID int64) error {
+func UpdatePost(title, content string, categories []string, PostID int64, status string) error {
+	if status != "" {
+		_, err := DB.Exec("UPDATE posts SET status = ? WHERE id = ?", status, PostID)
+		return err
+	}
 	_, err := DB.Exec("UPDATE posts SET title = ?, content = ? WHERE id = ?", title, content, PostID)
 	if err != nil {
 		return err

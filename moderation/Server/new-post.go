@@ -21,6 +21,10 @@ func NewPost(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Please Log in to add post", Page: "Home", Path: "/"})
 		return
+	} else if user.Role == "guest" {
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Your account is blocked", Page: "Home", Path: "/"})
+		return
+	
 	}
 	switch r.Method {
 	case http.MethodGet:

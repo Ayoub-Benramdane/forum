@@ -21,9 +21,8 @@ document.getElementById("postCommentBtn").addEventListener("click", async functi
     });
     if (response.ok) {
         const newComment = await response.json();
-        const userStatus = "Connected";
         const postId = window.location.pathname.split("/").pop();
-        appendComment(newComment, userStatus, postId);
+        appendComment(newComment, postId);
         updateCommentCount(true);
         document.getElementById("content").value = "";
         document.getElementById("noCom").style.display = "none"
@@ -32,7 +31,7 @@ document.getElementById("postCommentBtn").addEventListener("click", async functi
     }
 });
 
-function appendComment(comment, userStatus, postId) {
+function appendComment(comment, postId) {
     const commentsSection = document.querySelector(".comments-section");
     const commentDiv = document.createElement("div");
     commentDiv.classList.add("comments-list");

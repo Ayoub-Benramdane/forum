@@ -46,32 +46,37 @@ func LikeComment(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Please log to Adding Like", Page: "Post", Path: "/post/" + ids[0]})
 		return
-	} else if !database.CheckLikeComment(user.ID, id_post, id_comment) {
-		if database.AddLikeComment(user.ID, id_post, id_comment) != nil {
-			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Adding Like", Page: "Post", Path: "/post/" + ids[0]})
-			return
-		}
-		if comment.UserID != user.ID {
-			if database.DeleteNotification("dislike", "comment", id_post, comment.ID, user.Username) != nil {
-				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to Delete Notification", Page: "Post", Path: "/post/" + ids[0]})
+	} else if user.Role != "guest" {
+		if !database.CheckLikeComment(user.ID, id_post, id_comment) {
+			if database.AddLikeComment(user.ID, id_post, id_comment) != nil {
+				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Adding Like", Page: "Post", Path: "/post/" + ids[0]})
 				return
 			}
-			if database.CreateNotification("like", "comment", user.ID, id_post, comment.UserID, comment.ID, comment.Content, user.Username) != nil {
-				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to create Notification", Page: "Post", Path: "/post/" + ids[0]})
+			if comment.UserID != user.ID {
+				if database.DeleteNotification("dislike", "comment", id_post, comment.ID, user.Username) != nil {
+					Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to Delete Notification", Page: "Post", Path: "/post/" + ids[0]})
+					return
+				}
+				if database.CreateNotification("like", "comment", user.ID, id_post, comment.UserID, comment.ID, comment.Content, user.Username) != nil {
+					Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to create Notification", Page: "Post", Path: "/post/" + ids[0]})
+					return
+				}
+			}
+		} else {
+			if database.DeleteLikeComment(user.ID, id_post, id_comment) != nil {
+				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Like", Page: "Post", Path: "/post/" + ids[0]})
 				return
+			}
+			if comment.UserID != user.ID {
+				if database.DeleteNotification("like", "comment", id_post, comment.ID, user.Username) != nil {
+					Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to Delete Notification", Page: "Post", Path: "/post/" + ids[0]})
+					return
+				}
 			}
 		}
 	} else {
-		if database.DeleteLikeComment(user.ID, id_post, id_comment) != nil {
-			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Like", Page: "Post", Path: "/post/" + ids[0]})
-			return
-		}
-		if comment.UserID != user.ID {
-			if database.DeleteNotification("like", "comment", id_post, comment.ID, user.Username) != nil {
-				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to Delete Notification", Page: "Post", Path: "/post/" + ids[0]})
-				return
-			}
-		}
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Your account is blocked", Page: "Post", Path: "/post/" + ids[0]})
+		return
 	}
 	cookie.Expires = time.Now().Add(5 * time.Minute)
 	cookie.Path = "/"
@@ -130,32 +135,37 @@ func DislikeComment(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Please log to Adding Dislike", Page: "Post", Path: "/post/" + ids[0]})
 		return
-	} else if !database.CheckDislikeComment(user.ID, id_post, id_comment) {
-		if database.AddDislikeComment(user.ID, id_post, id_comment) != nil {
-			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Adding Dislike", Page: "Post", Path: "/post/" + ids[0]})
-			return
-		}
-		if comment.UserID != user.ID {
-			if database.DeleteNotification("like", "comment", id_post, comment.ID, user.Username) != nil {
-				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to Delete Notification", Page: "Post", Path: "/post/" + ids[0]})
+	} else if user.Role != "guest" {
+		if !database.CheckDislikeComment(user.ID, id_post, id_comment) {
+			if database.AddDislikeComment(user.ID, id_post, id_comment) != nil {
+				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Adding Dislike", Page: "Post", Path: "/post/" + ids[0]})
 				return
 			}
-			if database.CreateNotification("dislike", "comment", user.ID, id_post, comment.UserID, comment.ID, comment.Content, user.Username) != nil {
-				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to create Notification", Page: "Post", Path: "/post/" + ids[0]})
+			if comment.UserID != user.ID {
+				if database.DeleteNotification("like", "comment", id_post, comment.ID, user.Username) != nil {
+					Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to Delete Notification", Page: "Post", Path: "/post/" + ids[0]})
+					return
+				}
+				if database.CreateNotification("dislike", "comment", user.ID, id_post, comment.UserID, comment.ID, comment.Content, user.Username) != nil {
+					Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to create Notification", Page: "Post", Path: "/post/" + ids[0]})
+					return
+				}
+			}
+		} else {
+			if database.DeleteDislikeComment(user.ID, id_post, id_comment) != nil {
+				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Dislike", Page: "Post", Path: "/post/" + ids[0]})
 				return
+			}
+			if comment.UserID != user.ID {
+				if database.DeleteNotification("dislike", "comment", id_post, comment.ID, user.Username) != nil {
+					Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to Delete Notification", Page: "Post", Path: "/post/" + ids[0]})
+					return
+				}
 			}
 		}
 	} else {
-		if database.DeleteDislikeComment(user.ID, id_post, id_comment) != nil {
-			Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Dislike", Page: "Post", Path: "/post/" + ids[0]})
-			return
-		}
-		if comment.UserID != user.ID {
-			if database.DeleteNotification("dislike", "comment", id_post, comment.ID, user.Username) != nil {
-				Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to Delete Notification", Page: "Post", Path: "/post/" + ids[0]})
-				return
-			}
-		}
+	Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Your account is blocked", Page: "Post", Path: "/post/" + ids[0]})
+		return
 	}
 	cookie.Expires = time.Now().Add(5 * time.Minute)
 	cookie.Path = "/"

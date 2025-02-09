@@ -55,6 +55,9 @@ func DeleteComment(w http.ResponseWriter, r *http.Request) {
 	} else if user.ID != UserID && user.ID != post.UserID {
 		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "you can't Delete Comment", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
+	} else if user.Role == "guest" {
+		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "Your account is blocked", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+		return
 	}
 	if database.DeleteCommentId(id_post, id_comment) != nil {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Deleting Comment", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
@@ -104,6 +107,9 @@ func EditComment(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if user.ID != UserID {
 		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "you can't Updating Comment", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+		return
+	} else if user.Role == "guest" {
+		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "Your account is blocked", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	}
 	switch r.Method {

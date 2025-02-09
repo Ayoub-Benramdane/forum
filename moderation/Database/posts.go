@@ -7,7 +7,7 @@ import (
 )
 
 func CreatePost(title, content string, categories []string, userID int64) error {
-	result, err := DB.Exec("INSERT INTO posts (title, content, user_id, created_at) VALUES (?, ?, ?, ?)", title, content, userID, time.Now())
+	result, err := DB.Exec("INSERT INTO posts (title, content, user_id, created_at, status) VALUES (?, ?, ?, ?, ?)", title, content, userID, time.Now(), "")
 	if err != nil {
 		return err
 	}
@@ -30,7 +30,7 @@ func CreatePost(title, content string, categories []string, userID int64) error 
 }
 
 func GetAllPosts() ([]structs.Post, error) {
-	rows, err := DB.Query("SELECT p.id, p.title, p.content, p.created_at, u.username FROM posts p JOIN users u ON p.user_id = u.id ORDER BY p.created_at DESC")
+	rows, err := DB.Query("SELECT p.id, p.title, p.content, p.created_at, p.status, u.username FROM posts p JOIN users u ON p.user_id = u.id ORDER BY p.created_at DESC")
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +39,7 @@ func GetAllPosts() ([]structs.Post, error) {
 	for rows.Next() {
 		var post structs.Post
 		var date time.Time
-		if err := rows.Scan(&post.ID, &post.Title, &post.Content, &date, &post.Author); err != nil {
+		if err := rows.Scan(&post.ID, &post.Title, &post.Content, &date, &post.Status, &post.Author); err != nil {
 			return nil, err
 		}
 		post.CreatedAt = TimeAgo(date)
@@ -68,8 +68,8 @@ func GetAllPosts() ([]structs.Post, error) {
 func GetPostByID(id int64) (*structs.Post, error) {
 	post := &structs.Post{}
 	var date time.Time
-	err := DB.QueryRow("SELECT p.id, p.title, p.user_id, p.content, p.created_at, u.username FROM posts p JOIN users u ON p.user_id = u.id WHERE p.id == ?",
-		id).Scan(&post.ID, &post.Title, &post.UserID, &post.Content, &date, &post.Author)
+	err := DB.QueryRow("SELECT p.id, p.title, p.user_id, p.content, p.created_at, p.status, u.username FROM posts p JOIN users u ON p.user_id = u.id WHERE p.id == ?",
+		id).Scan(&post.ID, &post.Title, &post.UserID, &post.Content, &date, &post.Status, &post.Author)
 	if err != nil {
 		return nil, err
 	}

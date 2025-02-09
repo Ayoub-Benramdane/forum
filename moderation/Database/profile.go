@@ -78,7 +78,11 @@ func LastPost(UserID int64) (*structs.Post, error) {
 	return nil, err
 }
 
-func UpdateInfo(userID int64, username, email string) error {
+func UpdateInfo(userID int64, username, email, role string) error {
+	if role != "" {
+		_, err := DB.Exec("UPDATE users SET role = ? WHERE id = ?", role, userID)
+		return err
+	}
 	_, err := DB.Exec("UPDATE users SET username = ?, email = ? WHERE id = ?", username, email, userID)
 	return err
 }

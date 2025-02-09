@@ -27,6 +27,7 @@ type Post struct {
 	UserID        int64    `sqlite:"user_id" json:"user_id"`
 	CreatedAt     string   `sqlite:"created_at" json:"created_at"`
 	Author        string   `sqlite:"author" json:"author"`
+	Status        string   `sqlite:"status" json:"status"`
 	TotalLikes    int64    `sqlite:"total_likes" json:"total_likes"`
 	TotalDislikes int64    `sqlite:"total_dislikes" json:"total_dislikes"`
 	TotalComments int64    `sqlite:"total_comments" json:"total_comments"`
@@ -79,11 +80,11 @@ type RecentActivities struct {
 }
 
 type Reports struct {
-	ID          int64  `sqlite:"id" json:"id"`
-	Description string `sqlite:"descreption" json:"descreption"`
-	Title       string `sqlite:"title" json:"title"`
-	PostID      int64  `sqlite:"post_id" json:"post_id"`
-	ReportedBy  string `sqlite:"reported_by" json:"reported_by"`
+	ID          int64     `sqlite:"id" json:"id"`
+	Description string    `sqlite:"descreption" json:"descreption"`
+	Title       string    `sqlite:"title" json:"title"`
+	PostID      int64     `sqlite:"post_id" json:"post_id"`
+	ReportedBy  string    `sqlite:"reported_by" json:"reported_by"`
 	ReportedAt  time.Time `sqlite:"reported_at" json:"reported_at"`
 }
 

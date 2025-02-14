@@ -33,3 +33,8 @@ func UpdatePost(title, content string, categories []string, PostID int64, status
 	}
 	return nil
 }
+
+func ChangeStatus(postId int64, status string) error {
+	_, err := DB.Exec("UPDATE posts SET status = ? WHERE id = ?", status, postId)
+	return err
+}

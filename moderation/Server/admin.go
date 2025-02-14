@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	structs "forum/Data"
 	database "forum/Database"
 	"html/template"
@@ -32,7 +33,8 @@ func Admin(w http.ResponseWriter, r *http.Request) {
 	}
 	users, err := database.GetAllUsers()
 	if err != nil {
-		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Failed to load activity page template", Page: "Home", Path: "/"})
+		fmt.Println(err)
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading users", Page: "Home", Path: "/"})
 		return
 	}
 	posts, errLoadPost := database.GetAllPosts()

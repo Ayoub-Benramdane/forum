@@ -6,6 +6,8 @@ docker stop $(docker ps -q)
 echo -e "\033[1;38;5;155mRemoving all stopped Docker containers... \033[0m"
 docker rm $(docker ps -a -q)
 # Clean up dangling images
-echo -e "\033[1;38;5;155mCleaning up Docker images... \033[0m"
-docker image rm -f $(docker image ls -q)
+docker image prune -a -f
+# Clean up unused volumes
+echo -e "\033[1;38;5;155mCleaning up unused Docker volumes... \033[0m"
+docker volume prune -f
 echo -e "\033[1;38;5;155mClean-up completed. \033[0m"

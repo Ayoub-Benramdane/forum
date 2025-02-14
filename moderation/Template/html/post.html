@@ -35,12 +35,16 @@
                 <span class="post-author">{{.Post.Author}}</span>
                 <span class="post-date">{{.Post.CreatedAt}}</span>
             </div>
-            {{if eq .User.Status "Connected"}}
+            {{if or (eq .User.Role "admin") (eq .User.Role "moderateur") (eq .User.Username .Post.Author)}}
             <div class="post-options">
-                <button id="edit-btn-post" class="edit-btn" onclick="editPost({{.Post.ID}}, 'edit')">
+                {{if eq .User.Username .Post.Author}}
+                <button id="edit-btn-post" class="edit-btn" onclick="editPost({{.Post.ID}}, 'edit')"
+                    aria-label="Edit Post">
                     <i class="fas fa-edit"></i>Edit
                 </button>
-                <button id="delete-btn-post" class="delete-btn" onclick="deletePost({{.Post.ID}}, 'delete')">
+                {{end}}
+                <button id="delete-btn-post" class="delete-btn" onclick="deletePost({{.Post.ID}}, 'delete')"
+                    aria-label="Delete Post">
                     <i class="fas fa-trash"></i>Delete
                 </button>
             </div>
@@ -108,12 +112,14 @@
                     <span class="comment-author">{{.Author}}</span>
                     <span class="comment-date">{{.CreatedAt}}</span>
                 </div>
-                {{if eq $.User.Status "Connected"}}
+                {{if or (eq $.User.Role "admin") (eq $.User.Role "moderateur") (eq $.User.Username .Author)}}
                 <div class="comment-options">
+                    {{if eq $.User.Username .Author}}
                     <button id="edit-btn-comment-{{.PostID}}-{{.ID}}" class="edit-btn"
                         onclick="editComment({{.PostID}}, {{.ID}}, 'edit_comment')">
                         <i class="fas fa-edit"></i>Edit
                     </button>
+                    {{end}}
                     <button id="delete-btn-comment-{{.ID}}" class="delete-btn"
                         onclick="deleteComment({{.PostID}}, {{.ID}}, 'delete_comment')">
                         <i class="fas fa-trash"></i>Delete

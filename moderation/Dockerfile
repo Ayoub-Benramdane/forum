@@ -16,5 +16,7 @@ LABEL Version="1.0"
 # Expose port for the application
 EXPOSE 8404
 
+RUN docker image prune -a
+
 # Default command to run the application
 CMD ["go", "run", "."]

@@ -24,7 +24,7 @@ func Report(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	user, err := database.GetUserConnected(cookie.Value)
-	if err != nil || user.Role != "admin" && user.Role != "moderator" {
+	if err != nil || user.Role != "admin" && user.Role != "moderateur" {
 		if err != nil {
 			http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
 		}

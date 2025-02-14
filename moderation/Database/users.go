@@ -6,7 +6,7 @@ import (
 )
 
 func CreateNewUser(username, email, hashedPassword string) error {
-	_, err := DB.Exec("INSERT INTO users (username, email, password, created_at, role) VALUES (?, ?, ?, ?, ?)", username, email, hashedPassword, time.Now(), "user")
+	_, err := DB.Exec("INSERT INTO users (username, email, password, created_at, status, role) VALUES (?, ?, ?, ?, ?, ?, ?)", username, email, hashedPassword, time.Now(), "Disconnected", "user")
 	return err
 }
 
@@ -16,13 +16,14 @@ func GetUserByUsername(username string) (*structs.User, error) {
 	return &user, err
 }
 
+
 func GetAllUsers() ([]structs.User, error) {
+	var users []structs.User
 	rows, err := DB.Query("SELECT id, username, email, role, created_at, status FROM users")
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var users []structs.User
 	for rows.Next() {
 		var user structs.User
 		if err := rows.Scan(&user.ID, &user.Username, &user.Email, &user.Role, &user.CreatedAt, &user.Status); err != nil {
@@ -33,9 +34,4 @@ func GetAllUsers() ([]structs.User, error) {
 		}
 	}
 	return users, nil
-}
-
-func UpdateRole(role string, id int64) error {
-	_, err := DB.Exec("UPDATE users SET role = ? WHERE id = ?", role, id)
-	return err
 }

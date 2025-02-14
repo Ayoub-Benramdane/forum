@@ -10,6 +10,7 @@ type User struct {
 	Email          string    `sqlite:"email" json:"email"`
 	Password       string    `sqlite:"password" json:"-"`
 	CreatedAt      time.Time `sqlite:"created_at" json:"created_at"`
+	Type      string `sqlite:"type" json:"type"`
 	Status         string    `sqlite:"status" json:"status"`
 	ConnectedAt    time.Time `sqlite:"connected_at" json:"connected_at"`
 	Posts          int64     `sqlite:"posts" json:"posts"`

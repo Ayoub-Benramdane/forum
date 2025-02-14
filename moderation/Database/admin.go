@@ -13,7 +13,7 @@ func CreateAdmin() error {
 		return errCrepting
 	}
 	if _, err := CheckAdmin(); err != nil {
-		_, err := DB.Exec("INSERT INTO users (username, email, password, created_at, role) VALUES (?, ?, ?, ?, ?)", "molchi", "molchi@gmail.com", hashedPassword, time.Now(), "admin")
+		_, err := DB.Exec("INSERT INTO users (username, email, password, created_at, type, status, role) VALUES (?, ?, ?, ?, ?, ?, ?)", "molchi", "molchi@gmail.com", hashedPassword, time.Now(), "", "", "admin")
 		return err
 	}
 	return nil

@@ -115,9 +115,24 @@
             <!-- Users Panel -->
             <div class="panel" id="users">
                 <h2>User Management</h2>
+                <div id="editUser" class="modal">
+                    <div class="modal-content">
+                        <span class="close" onclick="closeEditUser()">&times;</span>
+                        <h2>Change Role of user</h2>
+                        <form id="editUserRole" method="POST">
+                            <input type="number" id="id_role" value="" style="display: none;">
+                            <select name="role" id="role">
+                                <option value="user">user</option>
+                                <option value="guest">guest</option>
+                                <option value="moderateur">moderateur</option>
+                            </select>
+                            <button type="submit">Update Role</button>
+                        </form>
+                    </div>
+                </div>
                 <div class="panel-actions">
                     <div class="search-box">
-                        <input type="text" placeholder="Search users...">
+                        <input type="text" id="search_input" placeholder="Search users...">
                         <i class="fas fa-search"></i>
                     </div>
                 </div>
@@ -135,25 +150,20 @@
                         </thead>
                         <tbody>
                             {{range .Users}}
-                            <tr>
+                            {{if eq .Type ""}}
+                            <tr id="display_user" class="users" data_user="{{.Username}}">
                                 <td>{{.Username}}</td>
                                 <td>{{.Email}}</td>
-                                <td>{{.Role}}</td>
+                                <td id="role-{{.ID}}">{{.Role}}</td>
                                 <td><span class="status-badge {{.Status}}">{{.Status}}</span></td>
                                 <td>{{.CreatedAt.Format `January 2, 2006 at 3:04 PM`}}</td>
                                 <td class="actions">
                                     <button class="action-btn" onclick="editUser({{.ID}})">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="action-btn" onclick="toggleUserStatus({{.ID}})">
-                                        {{if eq .Status "Connected"}}
-                                        <i class="fas fa-ban"></i>
-                                        {{else}}
-                                        <i class="fas fa-check"></i>
-                                        {{end}}
-                                    </button>
                                 </td>
                             </tr>
+                            {{end}}
                             {{end}}
                         </tbody>
                     </table>
@@ -163,16 +173,19 @@
             <!-- Posts Panel -->
             <div class="panel" id="posts">
                 <h2>Post Management</h2>
-                <div class="panel-actions">
-                    <div class="search-box">
-                        <input type="text" placeholder="Search posts...">
-                        <i class="fas fa-search"></i>
+                <div id="editPost" class="modal">
+                    <div class="modal-content">
+                        <span class="close" onclick="closeEditPost()">&times;</span>
+                        <h2>Change Status of Post</h2>
+                        <form id="editPostStatus" method="POST">
+                            <input type="number" id="id_post" value="" style="display: none;">
+                            <select name="role" id="status_post">
+                                <option value="blocked">blocked</option>
+                                <option value="deblocked">deblocked</option>
+                            </select>
+                            <button type="submit">Update status</button>
+                        </form>
                     </div>
-                    <select class="filter-select">
-                        <option value="all">All Posts</option>
-                        <option value="reported">Reported Posts</option>
-                        <option value="flagged">Flagged Posts</option>
-                    </select>
                 </div>
                 <div class="data-table">
                     <table>
@@ -188,7 +201,7 @@
                         </thead>
                         <tbody>
                             {{range .Posts}}
-                            <tr>
+                            <tr id="post-{{.ID}}">
                                 <td>{{.Title}}</td>
                                 <td>{{.Author}}</td>
                                 <td>{{range .Categories}}
@@ -196,13 +209,16 @@
                                     {{end}}
                                 </td>
                                 <td>{{.CreatedAt}}</td>
-                                <td>{{.Status}}</td>
+                                <td id="status-{{.ID}}">{{.Status}}</td>
                                 <td class="actions">
                                     <button class="action-btn" onclick="viewPost({{.ID}})">
                                         <i class="fas fa-eye"></i>
                                     </button>
                                     <button class="action-btn" onclick="deletePost({{.ID}})">
                                         <i class="fas fa-trash"></i>
+                                    </button>
+                                    <button class="action-btn" onclick="showEditPost({{.ID}})">
+                                        <i class="fas fa-check-circle"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -256,7 +272,7 @@
                         <tbody id="table_cat">
                             {{range .Categories}}
                             <tr id="category-{{.ID}}">
-                                <td>{{.Name}}</td>
+                                <td id="n_cat-{{.ID}}">{{.Name}}</td>
                                 <td>{{.PostCount}}</td>
                                 <td>{{.CreatedAt.Format `January 2, 2006 at 3:04 PM`}}</td>
                                 <td class="actions">
@@ -277,13 +293,6 @@
             <!-- Reports Panel -->
             <div class="panel" id="reports">
                 <h2>Report Management</h2>
-                <div class="panel-actions">
-                    <select class="filter-select">
-                        <option value="all">All Reports</option>
-                        <option value="pending">Pending</option>
-                        <option value="resolved">Resolved</option>
-                    </select>
-                </div>
                 <div class="data-table">
                     <table>
                         <thead>
@@ -303,11 +312,8 @@
                                 <td>{{.Description}}</td>
                                 <td>{{.ReportedAt.Format `January 2, 2006 at 3:04 PM`}}</td>
                                 <td class="actions">
-                                    <button class="action-btn" onclick="viewReportedItem({{.PostID}})">
+                                    <button class="action-btn" onclick="viewPost({{.PostID}})">
                                         <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="action-btn" onclick="resolveReport({{.ID}})">
-                                        <i class="fas fa-check"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -323,11 +329,8 @@
         // Panel switching
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
-                // Update active nav item
                 document.querySelector('.nav-item.active').classList.remove('active');
                 item.classList.add('active');
-
-                // Show corresponding panel
                 const panelId = item.dataset.panel;
                 document.querySelector('.panel.active').classList.remove('active');
                 document.getElementById(panelId).classList.add('active');
@@ -335,22 +338,135 @@
         });
 
         // User management functions
-        function editUser(userId) {
-            // Implementation for editing user
+        function closeEditUser() {
+            document.getElementById("editUser").style.display = "none";
         }
 
-        function toggleUserStatus(userId) {
-            // Implementation for toggling user status
+        function editUser(userId) {
+            document.getElementById("editUser").style.display = "block";
+            document.getElementById("id_role").value = userId;
         }
+
+        document.getElementById("editUser").onsubmit = async function (event) {
+            event.preventDefault();
+            const role = document.getElementById("role").value.trim();
+            const id = document.getElementById("id_role").value.trim();
+            if (role === "") {
+                alert("role cannot be empty.");
+                return;
+            }
+            try {
+                const response = await fetch(`/users/${id}/${role}`, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ role: role })
+                });
+                if (response.ok) {
+                    document.getElementById(`role-${id}`).textContent = role;
+                    closeEditUser();
+                } else if (response.status === 400) {
+                    alert("Invalid category name.");
+                } else if (response.status === 405) {
+                    alert("Method not allowed.");
+                } else if (response.status === 404) {
+                    alert("Category not found. It might have already been deleted.");
+                } else {
+                    alert("You are not authorized to add this category.");
+                }
+            } catch (error) {
+                alert("An error occurred while trying to add the category. Please try again.");
+                console.error("Add category error:", error);
+            }
+        };
+
+        document.querySelectorAll('#display_user').forEach((x) => {
+            const sear = x.getAttribute('data_user').toLowerCase();
+            document.getElementById('search_input').addEventListener('input', function () {
+                const Search = document.getElementById('search_input').value;
+                const mo9aranna = sear.includes(Search.toLowerCase());
+                if (mo9aranna) {
+                    x.style.display = "";
+                } else {
+                    x.style.display = "none";
+                }
+            })
+        });
+
 
         // Post management functions
-        function viewPost(postId) {
-            // Implementation for viewing post
+        async function deletePost(postId) {
+            const confirmDelete = confirm("Are you sure you want to delete this post?");
+            if (!confirmDelete) return;
+
+            try {
+                const response = await fetch(`/delete/${postId}`, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    document.getElementById(`post-${postId}`).remove();
+                } else if (response.status === 400) {
+                    alert("Invalid post ID.");
+                } else if (response.status === 405) {
+                    alert("Method not allowed.");
+                } else if (response.status === 404) {
+                    alert("post not found. It might have already been deleted.");
+                } else {
+                    alert("You are not authorized to delete this post.");
+                }
+            } catch (error) {
+                alert("An error occurred while trying to delete the post. Please try again.");
+                console.error("Delete error:", error);
+            }
         }
 
-        function deletePost(postId) {
-            // Implementation for deleting post
+        function closeEditPost() {
+            document.getElementById("editPost").style.display = "none";
         }
+
+        function showEditPost(postId) {
+            document.getElementById("editPost").style.display = "block";
+            document.getElementById("id_post").value = postId;
+        }
+
+        document.getElementById("editPost").onsubmit = async function (event) {
+            event.preventDefault();
+            const status = document.getElementById("status_post").value.trim();
+            const id = document.getElementById("id_post").value.trim();
+            if (status === "") {
+                alert("role cannot be empty.");
+                return;
+            }
+            try {
+                const response = await fetch(`/block/${id}/${status}`, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ status: status })
+                });
+                if (response.ok) {
+                    document.getElementById(`status-${id}`).textContent = status;
+                    closeEditPost();
+                } else if (response.status === 400) {
+                    alert("Invalid category name.");
+                } else if (response.status === 405) {
+                    alert("Method not allowed.");
+                } else if (response.status === 404) {
+                    alert("Category not found. It might have already been deleted.");
+                } else {
+                    alert("You are not authorized to add this category.");
+                }
+            } catch (error) {
+                alert("An error occurred while trying to add the category. Please try again.");
+                console.error("Add category error:", error);
+            }
+        };
 
         function showAddCategoryModal() {
             document.getElementById("addCategoryModal").style.display = "block";
@@ -396,7 +512,36 @@
             }
         };
 
-        function showUpdateCategoryModal(id) {
+        function appendCategory(category) {
+            const categoryTable = document.getElementById("table_cat");
+            const cat_tr = document.createElement("tr");
+            const formattedDate = new Date(category.created_at).toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+
+            cat_tr.innerHTML = `
+                <td>${category.name || 'N/A'}</td>
+                <td>${category.post_count || '0'}</td>
+                <td>${formattedDate || 'N/A'}</td>
+                <td class="actions">
+                    <button class="action-btn"  onclick="showUpdateCategoryModal(${category.id}, ${category.name})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="action-btn" onclick="deleteCategory(${category.id}, ${category.name})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+
+            categoryTable.prepend(cat_tr);
+        }
+
+        function showUpdateCategoryModal(id, name) {
             document.getElementById("updateCategoryModal").style.display = "block";
             document.getElementById("id").value = id;
         }
@@ -422,12 +567,12 @@
                     },
                     body: JSON.stringify({ name: categoryName })
                 });
+
                 if (response.ok) {
-                    const newCategory = await response.json();
-                    appendCategory(newCategory);
-                    closeUpdateCategoryModal();
+                    console.log(document.getElementById(`n_cat-${categoryId}`));
+                    document.getElementById(`n_cat-${categoryId}`).textContent = categoryName;
                     categoryName.value = "";
-                    event.target.reset();
+                    closeUpdateCategoryModal();
                 } else if (response.status === 400) {
                     alert("Invalid category name.");
                 } else if (response.status === 405) {
@@ -443,55 +588,16 @@
             }
         };
 
-        // Close the modal when clicking outside of it
-        window.onclick = function (event) {
-            const modal = document.getElementById("addCategoryModal");
-            const modal1 = document.getElementById("updateCategoryModal");
-            if (event.target === modal) {
-                closeAddCategoryModal();
-            } else if (event.target === modal1) {
-                closeUpdateCategoryModal();
-            }
-        }
-
-        function appendCategory(category) {
-            const categoryTable = document.getElementById("table_cat");
-            const cat_tr = document.createElement("tr");
-            const formattedDate = new Date(category.created_at).toLocaleString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true
-            });
-
-            cat_tr.innerHTML = `
-                <td>${category.name || 'N/A'}</td>
-                <td>${category.post_count || '0'}</td>
-                <td>${formattedDate || 'N/A'}</td>
-                <td class="actions">
-                    <button class="action-btn"  onclick="showUpdateCategoryModal()">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="action-btn" onclick="deleteCategory(${category.id}, ${category.name})">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            `;
-
-            categoryTable.prepend(cat_tr);
-        }
-
-        function deleteCategory(categoryId, categoryName) {
+        async function deleteCategory(categoryId, categoryName) {
             const confirmDelete = confirm("Are you sure you want to delete this category?");
             if (!confirmDelete) return;
 
             try {
-                const response = fetch(`/categories/delete/${categoryId}/${categoryName}`, {
+                const response = await fetch(`/categories/delete/${categoryId}/${categoryName}`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                 });
+
                 if (response.ok) {
                     document.getElementById(`category-${categoryId}`).remove();
                 } else if (response.status === 400) {
@@ -509,13 +615,26 @@
             }
         }
 
-        // Report management functions
-        function viewReportedItem(itemId) {
-            // Implementation for viewing reported item
+        // Close the modal when clicking outside of it
+        window.onclick = function (event) {
+            const modal = document.getElementById("addCategoryModal");
+            const modal1 = document.getElementById("updateCategoryModal");
+            const modal2 = document.getElementById("editUser");
+            const modal3 = document.getElementById("editPost");
+            if (event.target === modal) {
+                closeAddCategoryModal();
+            } else if (event.target === modal1) {
+                closeUpdateCategoryModal();
+            } else if (event.target === modal2) {
+                closeEditUser();
+            } else if (event.target === modal3) {
+                closeEditPost();
+            }
         }
 
-        function resolveReport(reportId) {
-            // Implementation for resolving report
+        // Report management functions
+        function viewPost(itemId) {
+            window.location.href = `/post/${itemId}`
         }
     </script>
 </body>

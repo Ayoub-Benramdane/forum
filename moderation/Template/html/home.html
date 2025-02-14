@@ -16,10 +16,13 @@
             {{if eq .User.Status "Connected"}}
             <a href="/profile" class="myLink"><button class="log-btn"><i class="fa-solid fa-user"></i>
                     {{.User.Username}}</button></a>
-            <a href="/logout" class="myLink"><button class="log-btn">Logout</button></a>
             <a href="/notifications" class="myLink">
                 <button class="log-btn"><i class="fa-solid fa-bell"></i> Notifications</button>
             </a>
+            {{if eq .User.Role "admin"}}
+            <a href="/admin" class="myLink"><button class="log-btn">Admin</button></a>
+            {{end}}
+            <a href="/logout" class="myLink"><button class="log-btn">Logout</button></a>
             {{else}}
             <a href="/login" class="myLink"><button class="log-btn">Log In</button></a>
             {{end}}

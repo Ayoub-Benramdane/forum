@@ -35,7 +35,7 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
-	} else if user.ID != post.UserID {
+	} else if user.ID != post.UserID && user.Role != "admin" && user.Role != "moderateur" {
 		Errors(w, structs.Error{Code: http.StatusUnauthorized, Message: "you can't Delete Post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
 		return
 	} else if user.Role == "guest" {
@@ -133,4 +133,43 @@ func EditPostPost(w http.ResponseWriter, r *http.Request, id_post int64, cookie 
 	cookie.Path = "/"
 	http.SetCookie(w, cookie)
 	http.Redirect(w, r, fmt.Sprintf("/post/%d", id_post), http.StatusSeeOther)
+}
+
+func BlockPost(w http.ResponseWriter, r *http.Request) {
+	slc := strings.Split(r.URL.Path[len("/block/"):], "/")
+	if len(slc) != 2 {
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Post not found", Page: "Home", Path: "/"})
+		return
+	}
+	id_post, err := strconv.ParseInt(slc[0], 10, 64)
+	if err != nil {
+		Errors(w, structs.Error{Code: http.StatusBadRequest, Message: "Invalid post ID", Page: "Home", Path: "/"})
+		return
+	}
+	if r.Method != http.MethodPost {
+		Errors(w, structs.Error{Code: http.StatusMethodNotAllowed, Message: "Method not allowed", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+		return
+	}
+	_, errLoadPost := database.GetPostByID(id_post)
+	if errLoadPost != nil {
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Post not found", Page: "Home", Path: "/"})
+		return
+	}
+	cookie, err := r.Cookie("session")
+	if err != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Bloking Post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+		return
+	}
+	user, err := database.GetUserConnected(cookie.Value)
+	if err != nil || user.Role != "admin" {
+		if err != nil {
+			http.SetCookie(w, &http.Cookie{Name: "session", Value: "", MaxAge: -1})
+		}
+		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Page not found", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+		return
+	}
+	if database.ChangeStatus(id_post, slc[1]) != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error Bloking Post", Page: "Post", Path: fmt.Sprintf("/post/%d", id_post)})
+		return
+	}
 }

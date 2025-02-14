@@ -35,7 +35,7 @@ func Post(w http.ResponseWriter, r *http.Request) {
 	if errLoadPost != nil {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Post not found", Page: "Home", Path: "/"})
 		return
-	} else if post.Status == "blocked" {
+	} else if post.Status == "blocked" && user.Role != "admin" {
 		Errors(w, structs.Error{Code: http.StatusNotFound, Message: "Post blocked", Page: "Home", Path: "/"})
 		return
 	}

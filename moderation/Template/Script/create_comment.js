@@ -19,6 +19,9 @@ document.getElementById("postCommentBtn").addEventListener("click", async functi
         },
         body: `content=${encodeURIComponent(content)}`,
     });
+
+    console.log(response.status);
+    console.log(response);
     if (response.ok) {
         const newComment = await response.json();
         const postId = window.location.pathname.split("/").pop();

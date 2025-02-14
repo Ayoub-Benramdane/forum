@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"fmt"
 	structs "forum/Data"
 	database "forum/Database"
 	"net/http"
@@ -54,7 +53,6 @@ func Categories(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	fmt.Println("lool")
 }
 
 func CreateCategory(w http.ResponseWriter, r *http.Request, category_name string) {

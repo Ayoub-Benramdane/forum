@@ -48,6 +48,10 @@
                     <i class="fas fa-tags"></i>
                     <span>Categories</span>
                 </button>
+                <button class="nav-item" data-panel="request">
+                    <i class="fas fa-tags"></i>
+                    <span>Request</span>
+                </button>
                 <button class="nav-item" data-panel="reports">
                     <i class="fas fa-flag"></i>
                     <span>Reports</span>
@@ -150,7 +154,6 @@
                         </thead>
                         <tbody>
                             {{range .Users}}
-                            {{if eq .Type ""}}
                             <tr id="display_user" class="users" data_user="{{.Username}}">
                                 <td>{{.Username}}</td>
                                 <td>{{.Email}}</td>
@@ -163,7 +166,6 @@
                                     </button>
                                 </td>
                             </tr>
-                            {{end}}
                             {{end}}
                         </tbody>
                     </table>
@@ -291,6 +293,33 @@
             </div>
 
             <!-- Reports Panel -->
+            <div class="panel" id="request">
+                <h2>Request Moderation</h2>
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{range .Requests}}
+                            <tr id="request-{{.ID}}">
+                                <td>{{.Username}}</td>
+                                <td class="actions">
+                                    <button class="action-btn" onclick="editRequest({{.ID}})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {{end}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Reports Panel -->
             <div class="panel" id="reports">
                 <h2>Report Management</h2>
                 <div class="data-table">
@@ -378,6 +407,30 @@
             } catch (error) {
                 alert("An error occurred while trying to add the category. Please try again.");
                 console.error("Add category error:", error);
+            }
+        };
+
+        async function editRequest(userId) {
+            const confirmDelete = confirm("Are you sure you want to change role for this user?");
+            if (!confirmDelete) return;
+            const response = await fetch(`/users/${userId}/moderateur`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ role: role })
+            });
+            if (response.ok) {
+                document.getElementById(`role-${userId}`).innerText = "moderateur"
+                document.getElementById(`request-${userId}`).remove()
+            } else if (response.status === 400) {
+                alert("Invalid category name.");
+            } else if (response.status === 405) {
+                alert("Method not allowed.");
+            } else if (response.status === 404) {
+                alert("Category not found. It might have already been deleted.");
+            } else {
+                alert("You are not authorized to add this category.");
             }
         };
 
@@ -525,18 +578,18 @@
             });
 
             cat_tr.innerHTML = `
-                <td>${category.name || 'N/A'}</td>
-                <td>${category.post_count || '0'}</td>
-                <td>${formattedDate || 'N/A'}</td>
-                <td class="actions">
-                    <button class="action-btn"  onclick="showUpdateCategoryModal(${category.id}, ${category.name})">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="action-btn" onclick="deleteCategory(${category.id}, ${category.name})">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            `;
+                    <td>${category.name || 'N/A'}</td>
+                    <td>${category.post_count || '0'}</td>
+                    <td>${formattedDate || 'N/A'}</td>
+                    <td class="actions">
+                        <button class="action-btn"  onclick="showUpdateCategoryModal(${category.id}, ${category.name})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn" onclick="deleteCategory(${category.id}, ${category.name})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
 
             categoryTable.prepend(cat_tr);
         }

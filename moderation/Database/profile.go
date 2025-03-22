@@ -7,7 +7,7 @@ import (
 
 func GetInfoUser(UserID int64) (*structs.User, error) {
 	var user structs.User
-	err := DB.QueryRow("SELECT username, email, password, created_at FROM users WHERE id = ?", UserID).Scan(&user.Username, &user.Email, &user.Password, &user.CreatedAt)
+	err := DB.QueryRow("SELECT username, email, password, created_at, role, request FROM users WHERE id = ?", UserID).Scan(&user.Username, &user.Email, &user.Password, &user.CreatedAt, &user.Role, &user.Request)
 	if err != nil {
 		return nil, err
 	}
@@ -81,6 +81,10 @@ func LastPost(UserID int64) (*structs.Post, error) {
 func UpdateInfo(userID int64, username, email, role string) error {
 	if role != "" {
 		_, err := DB.Exec("UPDATE users SET role = ? WHERE id = ?", role, userID)
+		if err != nil {
+			return err
+		}
+		_, err = DB.Exec("UPDATE users SET request = ? WHERE id = ?", true, userID)
 		return err
 	}
 	_, err := DB.Exec("UPDATE users SET username = ?, email = ? WHERE id = ?", username, email, userID)

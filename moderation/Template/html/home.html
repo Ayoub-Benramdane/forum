@@ -62,7 +62,7 @@
         <!-- Posts Container -->
         {{if .Posts}}
         {{range .Posts}}
-        {{if or (eq .Status "") (eq .Status "reported")}}
+        {{if or (eq .Status "") (eq .Status "deblocked") (eq .Status "reported")}}
         <!-- Sample Post -->
         <div id="post" class="post">
             <a href="/post/{{.ID}}" class="myLink">

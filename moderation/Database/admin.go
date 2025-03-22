@@ -1,8 +1,9 @@
 package database
 
 import (
-	structs "forum/Data"
 	"time"
+
+	structs "forum/Data"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -13,7 +14,7 @@ func CreateAdmin() error {
 		return errCrepting
 	}
 	if _, err := CheckAdmin(); err != nil {
-		_, err := DB.Exec("INSERT INTO users (username, email, password, created_at, type, status, role) VALUES (?, ?, ?, ?, ?, ?, ?)", "molchi", "molchi@gmail.com", hashedPassword, time.Now(), "", "", "admin")
+		_, err := DB.Exec("INSERT INTO users (username, email, password, created_at, status, role, request) VALUES (?, ?, ?, ?, ?, ?)", "molchi", "molchi@gmail.com", hashedPassword, time.Now(), "", "admin", false)
 		return err
 	}
 	return nil

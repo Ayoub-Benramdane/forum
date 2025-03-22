@@ -51,6 +51,9 @@
         </div>
 
         <div class="button-group">
+            {{if and (eq .Role "user") (.Request)}}
+            <a href="/request" class="myLink"><button class="save-btn">Moderation Request</button></a>
+            {{end}}
             <a href="/profile_edit" class="myLink"><button class="save-btn">Edit Profile</button></a>
             <a href="/" class="myLink"><button class="password-btn">Back To Home</button></a>
         </div>

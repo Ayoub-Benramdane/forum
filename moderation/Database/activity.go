@@ -158,15 +158,7 @@ func ReactCommentsActivity(id int64) ([]structs.Comment, error) {
 }
 
 func GetActivities() ([]structs.RecentActivities, error) {
-	rows, err := DB.Query(`SELECT 'post' AS source, title AS name, created_at
-FROM posts
-UNION ALL
-SELECT 'report' AS source, description AS name, created_at
-FROM reports
-UNION ALL
-SELECT 'user' AS source, username AS name, created_at
-FROM users
-ORDER BY created_at DESC;`)
+	rows, err := DB.Query(`SELECT 'post' AS source, title AS name, created_at FROM posts UNION ALL SELECT 'report' AS source, description AS name, created_at FROM reports UNION ALL SELECT 'user' AS source, username AS name, created_at FROM users ORDER BY created_at DESC;`)
 	if err != nil {
 		return nil, err
 	}

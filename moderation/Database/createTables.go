@@ -14,6 +14,7 @@ func CreateTables() error {
             email TEXT UNIQUE NOT NULL,
             password TEXT NOT NULL,
             created_at DATETIME NOT NULL,
+			request BOOLEAN, 
 			token TEXT,
 			status TEXT,
 			role TEXT

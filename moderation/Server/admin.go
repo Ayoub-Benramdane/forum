@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	structs "forum/Data"
 	database "forum/Database"
 	"html/template"
@@ -33,7 +32,6 @@ func Admin(w http.ResponseWriter, r *http.Request) {
 	}
 	users, err := database.GetAllUsers()
 	if err != nil {
-		fmt.Println(err)
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading users", Page: "Home", Path: "/"})
 		return
 	}
@@ -62,6 +60,11 @@ func Admin(w http.ResponseWriter, r *http.Request) {
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading activities", Page: "Home", Path: "/"})
 		return
 	}
+	request, err := database.GetRequests()
+	if err != nil {
+		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading request", Page: "Home", Path: "/"})
+		return
+	}
 	stats := structs.Activity{}
 	stats.TotalPosts = int64(len(posts))
 	stats.TotalUsers = int64(len(users))
@@ -74,6 +77,7 @@ func Admin(w http.ResponseWriter, r *http.Request) {
 		Categories       []structs.Category
 		Stats            structs.Activity
 		Reports          []structs.Reports
+		Requests         []structs.Requests
 		RecentActivities []structs.RecentActivities
 	}{
 		User:             user,
@@ -82,6 +86,7 @@ func Admin(w http.ResponseWriter, r *http.Request) {
 		Categories:       categories,
 		Stats:            stats,
 		Reports:          reports,
+		Requests:         request,
 		RecentActivities: activities,
 	}
 	tmpl.Execute(w, data)

@@ -56,6 +56,7 @@ func RegisterPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if errCreate := database.CreateNewUser(username, email, string(hashedPassword)); errCreate != nil {
+		fmt.Println(errCreate)
 		if strings.Contains(errCreate.Error(), "UNIQUE constraint failed") {
 			Errors(w, structs.Error{Code: http.StatusConflict, Message: "Username or email already taken", Page: "Register", Path: "/register"})
 			return

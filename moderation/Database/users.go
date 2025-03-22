@@ -1,12 +1,13 @@
 package database
 
 import (
-	structs "forum/Data"
 	"time"
+
+	structs "forum/Data"
 )
 
 func CreateNewUser(username, email, hashedPassword string) error {
-	_, err := DB.Exec("INSERT INTO users (username, email, password, created_at, status, role) VALUES (?, ?, ?, ?, ?, ?, ?)", username, email, hashedPassword, time.Now(), "Disconnected", "user")
+	_, err := DB.Exec("INSERT INTO users (username, email, password, created_at, status, role, request) VALUES (?, ?, ?, ?, ?, ?, ?)", username, email, hashedPassword, time.Now(), "Disconnected", "user", true)
 	return err
 }
 
@@ -15,7 +16,6 @@ func GetUserByUsername(username string) (*structs.User, error) {
 	err := DB.QueryRow("SELECT username, email, password, created_at FROM users WHERE username = ?", username).Scan(&user.Username, &user.Email, &user.Password, &user.CreatedAt)
 	return &user, err
 }
-
 
 func GetAllUsers() ([]structs.User, error) {
 	var users []structs.User

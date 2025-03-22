@@ -20,6 +20,7 @@ func main() {
 	http.HandleFunc("/register", server.Register)
 	http.HandleFunc("/logout", server.Logout)
 	http.HandleFunc("/admin", server.Admin)
+	http.HandleFunc("/request", server.Moderation)
 	http.HandleFunc("/users/", server.Users)
 	http.HandleFunc("/categories/", server.Categories)
 	http.HandleFunc("/report/", server.Report)
@@ -43,6 +44,6 @@ func main() {
 	http.HandleFunc("/delete_comment/", server.DeleteComment)
 	http.HandleFunc("/edit_comment/", server.EditComment)
 	log.Println("Server is running...")
-	log.Println("Link: http://localhost:8444")
-	log.Fatal(http.ListenAndServe(":8444", nil))
+	log.Println("Link: http://localhost:8404")
+	log.Fatal(http.ListenAndServe(":8404", nil))
 }

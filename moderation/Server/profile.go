@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 	"strings"
@@ -34,6 +35,7 @@ func Profile(w http.ResponseWriter, r *http.Request) {
 	}
 	info, errLoadInfo := database.GetInfoUser(user.ID)
 	if errLoadInfo != nil {
+		fmt.Println(errLoadInfo)
 		Errors(w, structs.Error{Code: http.StatusInternalServerError, Message: "Error loading Info for user", Page: "Home", Path: "/"})
 		return
 	}

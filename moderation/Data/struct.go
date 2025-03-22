@@ -10,7 +10,7 @@ type User struct {
 	Email          string    `sqlite:"email" json:"email"`
 	Password       string    `sqlite:"password" json:"-"`
 	CreatedAt      time.Time `sqlite:"created_at" json:"created_at"`
-	Type      string `sqlite:"type" json:"type"`
+	Request        bool      `sqlite:"request" json:"request"`
 	Status         string    `sqlite:"status" json:"status"`
 	ConnectedAt    time.Time `sqlite:"connected_at" json:"connected_at"`
 	Posts          int64     `sqlite:"posts" json:"posts"`
@@ -78,6 +78,11 @@ type RecentActivities struct {
 	Type        string    `sqlite:"type" json:"type"`
 	Description string    `sqlite:"descreption" json:"descreption"`
 	CreatedAt   time.Time `sqlite:"created_at" json:"created_at"`
+}
+
+type Requests struct {
+	ID       int64  `sqlite:"id" json:"id"`
+	Username string `sqlite:"username" json:"username"`
 }
 
 type Reports struct {
